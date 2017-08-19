@@ -26,11 +26,7 @@ var toolpath = Argument("toolpath", @"tools");
 var branch = Argument("branch", EnvironmentVariable("APPVEYOR_REPO_BRANCH"));
 var nugetApiKey = EnvironmentVariable("nugetApiKey");
 
-var testProjects = new List<Tuple<string, string[]>>
-                {
-                    new Tuple<string, string[]>("EPPlus.Core.Extensions.Tests", new[] { "net461", "netcoreapp2.0" })                  
-                };
-                      
+var testProject = new Tuple<string, string[]>("EPPlus.Core.Extensions.Tests", new[] { "net461", "netstandard2.0" });                      
 
 var nupkgPath = "nupkg";
 var nupkgRegex = $"**/{projectName}*.nupkg";
@@ -76,9 +72,7 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        foreach (Tuple<string, string[]> testProject in testProjects)
-        {
-            foreach (string targetFramework in testProject.Item2)
+        foreach (string targetFramework in testProject.Item2)
             {
                  if(targetFramework == "net461")
                  {
@@ -92,7 +86,6 @@ Task("Run-Unit-Tests")
                     DotNetCoreTest(testProj.FullPath, new DotNetCoreTestSettings { Configuration = "Release", Framework = targetFramework });
                  }             
             }
-        }
     });
     
 Task("Pack")
@@ -105,7 +98,7 @@ Task("Pack")
 
 Task("NugetPublish")
     .IsDependentOn("Pack")
-    .WithCriteria(() => branch == "master" || branch == "netstandard2.0")
+    .WithCriteria(() => branch == "master")
     .Does(()=>
     {
         foreach(var nupkgFile in GetFiles(nupkgRegex))
