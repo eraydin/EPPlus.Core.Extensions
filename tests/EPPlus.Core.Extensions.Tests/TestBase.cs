@@ -1,7 +1,6 @@
-﻿using System.IO;
+﻿using OfficeOpenXml;
+using System.IO;
 using System.Reflection;
-
-using OfficeOpenXml;
 
 namespace EPPlus.Core.Extensions.Tests
 {
@@ -20,7 +19,7 @@ namespace EPPlus.Core.Extensions.Tests
 
         ~TestBase()
         {
-            excelPackage.Dispose(); 
+            excelPackage.Dispose();
         }
     }
 }

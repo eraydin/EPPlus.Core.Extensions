@@ -115,6 +115,22 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
+        /// Returns objects of specified type from table as list.
+        /// </summary>
+        /// <remarks>Exceptions are not cathed. It works on all or nothing basis. 
+        /// Only primitives and enums are supported as property.
+        /// Currently supports only tables with header.</remarks>
+        /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
+        /// <param name="table">Table object to fetch</param>
+        /// <param name="skipCastErrors">Determines how the method should handle exceptions when casting cell value to property type. 
+        /// If this is true, invlaid casts are silently skipped, otherwise any error will cause method to fail with exception.</param>
+        /// <returns>An enumerable of the generating type</returns>
+        public static IList<T> ToList<T>(this ExcelTable table, bool skipCastErrors = false) where T : class, new()
+        {
+            return AsEnumerable<T>(table, skipCastErrors).ToList();
+        }
+
+        /// <summary>
         /// Method prepares mapping using the type and the attributes decorating its properties
         /// </summary>
         /// <typeparam name="T">Type to parse</typeparam>

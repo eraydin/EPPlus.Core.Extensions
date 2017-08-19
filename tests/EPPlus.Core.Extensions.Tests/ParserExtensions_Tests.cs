@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
+using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Xunit;
 
@@ -9,6 +11,35 @@ namespace EPPlus.Core.Extensions.Tests
 {
     public class ParserExtensions_Tests : TestBase
     {
+        /// <summary>
+        ///     Test existence of test objects in the embedded workbook
+        /// </summary>
+        [Fact]
+        public void WarmUp()
+        {
+            excelPackage.Should().NotBeNull("Excel package is null");
+
+            // TEST1
+            ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets["TEST1"];
+            workSheet.Should().NotBeNull("Worksheet TEST1 missing");
+
+            ExcelTable table = workSheet.Tables["TEST1"];
+            table.Should().NotBeNull("Table TEST1 missing");
+
+            table.Address.Columns.Should().Be(5, "Table1 is not as expected");
+            table.Address.Rows.Should().BeGreaterThan(2, "Table1 has missing rows");
+
+            // TEST2
+            workSheet = excelPackage.Workbook.Worksheets["TEST2"];
+            workSheet.Should().NotBeNull("Worksheet TEST2 missing");
+
+            table = workSheet.Tables["TEST2"];
+            table.Should().NotBeNull("Table TEST2 missing");
+
+            table.Address.Columns.Should().Be(2, "Table2 is not as expected");
+            table.Address.Rows.Should().BeGreaterThan(2, "Table2 has missing rows");
+        }
+
         [Fact]
         public void Test_TableValidation()
         {
@@ -33,6 +64,300 @@ namespace EPPlus.Core.Extensions.Tests
             validation.Exists(x => x.CellAddress.Address.Equals("C6", StringComparison.InvariantCultureIgnoreCase)).Should().BeTrue("Toyota is not in the enumeration");
             validation.Exists(x => x.CellAddress.Address.Equals("D7", StringComparison.InvariantCultureIgnoreCase)).Should().BeTrue("Date is null");
         }
+
+        #region Test for default mapping, mapping by name and index
+        [Fact]
+        public void Test_MapByDefault()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IList<DefaultMap> list = table.ToList<DefaultMap>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count.Should().Be(5, "We have expected 5 elements");
+            list.First().Name.Should().Be("John", "We have expected John to be first");
+            list.First().Gender.Should().Be("MALE", "We have expected a male to be first");
+        }
+
+        [Fact]
+        public void Test_MapByName()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IList<NamedMap> list = table.ToList<NamedMap>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count.Should().Be(5, "We have expected 5 elements");
+            list.First().FirstName.Should().Be("John", "We have expected John to be first");
+            list.First().Sex.Should().Be("MALE", "We have expected a male to be first");
+        }
+
+        [Fact]
+        public void Test_MapByIndex()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IList<IndexMap> list = table.ToList<IndexMap>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count.Should().Be(5, "We have expected 5 elements");
+            list.First().Name.Should().Be("John", "We have expected John to be first");
+            list.First().Gender.Should().Be("MALE", "We have expected a male to be first");
+        }
+        #endregion
+
+        #region Type cast mapping tests
+
+        [Fact]
+        public void Test_MapEnumString()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IList<EnumStringMap> list = table.ToList<EnumStringMap>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count.Should().Be(5, "We have expected 5 elements");
+            list.Count(x => x.Gender == Genders.MALE).Should().Be(3, "We have expected 3 males");
+            list.Count(x => x.Gender == Genders.FEMALE).Should().Be(2, "We have expected 2 females");
+        }
+
+        [Fact]
+        public void Test_MapEnumNumeric()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IList<EnumByteMap> list = table.ToList<EnumByteMap>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count.Should().Be(5, "We have expected 5 elements");
+            list.Count(x => x.Class == Classes.Ten).Should().Be(2, "We have expected 2 in 10th class");
+            list.Count(x => x.Class == Classes.Nine).Should().Be(3, "We have expected 3 in 9th class");
+        }
+
+        /// <summary>
+        /// Test cases when a column is mapped to multiple properties (with different type)
+        /// </summary>
+        [Fact]
+        public void Test_MultiMap()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IList<MultiMap> list = table.ToList<MultiMap>();
+            MultiMap m = list.First(x => x.Class == Classes.Ten);
+            MultiMap n = list.First(x => x.Class == Classes.Nine);
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count.Should().Be(5, "We have expected 5 elements");
+
+            ((int)m.Class).Should().Be(m.ClassAsInt, "Ten sould be 10");
+            ((int)n.Class).Should().Be(n.ClassAsInt, "Nine sould be 9");
+        }
+
+        [Fact]
+        public void Test_DateMap()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IList<DateMap> list = table.ToList<DateMap>();
+            DateMap a = list.FirstOrDefault(x => x.Name == "Adam");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count.Should().Be(5, "We have expected 5 elements");
+
+            a.BirthDate.Should().Be(new DateTime(1981, 4, 2), "Adam' birthday is 1981.04.02");
+
+            list.Min(x => x.BirthDate).Should().Be(new DateTime(1979, 12, 1), "Oldest one was born on 1979.12.01");
+        }
+
+        #endregion
+
+        #region Failure tests
+
+        [Fact]
+        public void Test_MapFail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IList<EnumFailMap> list;
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () => { list = table.ToList<EnumFailMap>(); };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.ShouldThrow<ExcelTableConvertException>()
+                .And.Args.CellValue.Should().Be("MALE");
+
+            action.ShouldThrow<ExcelTableConvertException>()
+                  .And.Args.ExpectedType.Should().Be(typeof(Classes));
+
+            action.ShouldThrow<ExcelTableConvertException>()
+                  .And.Args.PropertyName.Should().Be("Gender");
+
+            action.ShouldThrow<ExcelTableConvertException>()
+                  .And.Args.ColumnName.Should().Be("Gender");
+        }
+
+        [Fact]
+        public void Test_MapSilentFail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IList<EnumFailMap> list;
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            list = table.ToList<EnumFailMap>(true);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Should().NotBeNull("We should get the list");
+
+            list.All(x => !string.IsNullOrWhiteSpace(x.Name)).Should().BeTrue("All names should be there");
+            list.All(x => x.Gender == 0).Should().BeTrue("All genders should be 0");
+        }
+
+        #endregion
+
+        #region Testing nullable
+
+        [Fact]
+        public void Test_Nullable()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST2"].Tables["TEST2"];
+            IList<CarNullable> list;
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            list = table.ToList<CarNullable>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count(x => !x.Price.HasValue).Should().Be(2, "Should have two");
+        }
+
+        #endregion
+
+        #region Complex tests
+        [Fact]
+        public void Test_ComplexFixtures()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets["TEST3"];
+            ExcelTable table = workSheet.Tables["TEST3"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            workSheet.Should().NotBeNull("Worksheet TEST3 missing");
+            table.Should().NotBeNull("Table TEST3 missing");
+
+            table.Address.Columns.Should().Be(6, "Table3 is not as expected");
+            table.Address.Rows.Should().Be(5 + (table.ShowTotal ? 1 : 0) + (table.ShowHeader ? 1 : 0), "Table3 has missing rows");
+        }
+
+        [Fact]
+        public void Test_ComplexExample()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.GetTable("TEST3");
+            IList<Cars> list = null;
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            list = table.ToList<Cars>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count().Should().Be(5, "We have 5 rows");
+            list.Count(x => string.IsNullOrWhiteSpace(x.LicensePlate)).Should().Be(1, "There is one without license plate");
+            list.All(x => x.Manufacturer > 0).Should().BeTrue("All should have manufacturers");
+            list.Last().ManufacturingDate.Should().BeNull("The last one's manufacturing date is unknown");
+            list.Count(x => x.ManufacturingDate == null).Should().Be(1, "Only one manufacturig date is unknown");
+            list.Single(x => x.LicensePlate == null).ShouldBeEquivalentTo(list.Single(x => !x.Ready), "The one without the license plate is not ready");
+            list.Max(x => x.Price).Should().Be(12000, "Highest price is 12000");
+            list.Max(x => x.ManufacturingDate).Should().Be(new DateTime(2015, 3, 10), "Oldest was manufactured on 2015.03.10");
+        }
+        #endregion
     }
 
     enum Manufacturers { Opel = 1, Ford, Mercedes };
@@ -49,5 +374,122 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn(ColumnName = "Is ready for traffic?")]
         public bool Ready { get; set; }
+    }
+
+    class DefaultMap
+    {
+        [ExcelTableColumn]
+        public string Name { get; set; }
+
+        [ExcelTableColumn]
+        public string Gender { get; set; }
+    }
+
+    class NamedMap
+    {
+        [ExcelTableColumn(ColumnName = "Name")]
+        public string FirstName { get; set; }
+
+        [ExcelTableColumn(ColumnName = "Gender")]
+        public string Sex { get; set; }
+    }
+
+    class IndexMap
+    {
+        [ExcelTableColumn(ColumnIndex = 1)]
+        public string Name { get; set; }
+
+        [ExcelTableColumn(ColumnIndex = 3)]
+        public string Gender { get; set; }
+    }
+
+    enum Genders { MALE = 1, FEMALE = 2 }
+    class EnumStringMap
+    {
+        [ExcelTableColumn(ColumnName = "Name")]
+        public string Name { get; set; }
+
+        [ExcelTableColumn(ColumnName = "Gender")]
+        public Genders Gender { get; set; }
+    }
+
+    enum Classes : byte { Ten = 10, Nine = 9 }
+    class EnumByteMap
+    {
+        [ExcelTableColumn]
+        public string Name { get; set; }
+
+        [ExcelTableColumn]
+        public Classes Class { get; set; }
+    }
+
+    class MultiMap
+    {
+        [ExcelTableColumn]
+        public string Name { get; set; }
+
+        [ExcelTableColumn(ColumnName = "Class")]
+        public Classes Class { get; set; }
+
+        [ExcelTableColumn(ColumnName = "Class")]
+        public int ClassAsInt { get; set; }
+    }
+
+    class DateMap
+    {
+        [ExcelTableColumn]
+        public string Name { get; set; }
+
+        [ExcelTableColumn]
+        public Genders Gender { get; set; }
+
+        [ExcelTableColumn(ColumnName = "Birth date")]
+        public DateTime BirthDate { get; set; }
+    }
+
+    class EnumFailMap
+    {
+        [ExcelTableColumn]
+        public string Name { get; set; }
+
+        [ExcelTableColumn(ColumnName = "Gender")]
+        public Classes Gender { get; set; }
+    }
+
+    class CarNullable
+    {
+        [ExcelTableColumn(ColumnName = "Car name")]
+        public string Name { get; set; }
+
+        [ExcelTableColumn]
+        public int? Price { get; set; }
+    }
+
+    enum Manufacturers2 { Opel = 1, Ford, Toyota };
+    class Cars
+    {
+        [ExcelTableColumn(ColumnIndex = 1)]
+        public string LicensePlate { get; set; }
+
+        [ExcelTableColumn]
+        public Manufacturers2 Manufacturer { get; set; }
+
+        [ExcelTableColumn(ColumnName = "Manufacturing date")]
+        public DateTime? ManufacturingDate { get; set; }
+
+        [ExcelTableColumn]
+        public int Price { get; set; }
+
+        [ExcelTableColumn]
+        public Color Color { get; set; }
+
+        [ExcelTableColumn(ColumnName = "Is ready for traffic?")]
+        public bool Ready { get; set; }
+
+        public string UnmappedProperty { get; set; }
+        public override string ToString()
+        {
+            return $"{(Color)} {(Manufacturer.ToString())} {(ManufacturingDate?.ToShortDateString())}";
+        }
     }
 }
