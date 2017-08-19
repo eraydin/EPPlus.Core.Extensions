@@ -1,0 +1,27 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>1.0.0-preview1</VersionPrefix>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageProjectUrl>https://github.com/eraydin/EPPlus.Core.Extensions</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/eraydin/EPPlus.Core.Extensions/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/eraydin/EPPlus.Core.Extensions</RepositoryUrl>
+    <Authors>Aydin ERAYDIN</Authors>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.2.0-b491" PrivateAssets="All" />
+  </ItemGroup>
+</Project>
