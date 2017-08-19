@@ -73,7 +73,8 @@ Task("Run-Unit-Tests")
     .Does(() =>
     {
          var testProj = GetFiles($"./test/**/*{testProject.Item1}.csproj").First();
-         DotNetCoreTest(testProj.FullPath, new DotNetCoreTestSettings { Configuration = "Release", Framework = targetFramework });
+		
+         DotNetCoreTest(testProj.FullPath, new DotNetCoreTestSettings { Configuration = "Release", Framework = "netstandard2.0" });
 
        // foreach (string targetFramework in testProject.Item2)
           //  {
