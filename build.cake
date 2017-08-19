@@ -76,7 +76,8 @@ Task("Run-Unit-Tests")
             {
                  if(targetFramework == "net461")
                  {
-                      var testFile = GetFiles($"**/bin/{configuration}/{targetFramework}/{testProject.Item1}*.dll").First();
+                      var testFile = GetFiles($"./test/**/*{testProject.Item1}.dll").First();
+                     // var testFile = GetFiles($"**/bin/{configuration}/{targetFramework}/{testProject.Item1}*.dll").First();
                       Information(testFile);
                       XUnit2(testFile.ToString(), new XUnit2Settings { });
                  }
