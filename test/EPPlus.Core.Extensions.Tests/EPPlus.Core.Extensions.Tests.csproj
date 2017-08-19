@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <AssemblyName>EPPlus.Core.Excelsior.Tests</AssemblyName>
+    <AssemblyName>EPPlus.Core.Extensions.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
