@@ -2,7 +2,7 @@
 
 namespace EPPlus.Core.Extensions
 {
-    internal static class HelperExtensions
+    public static class TypeExtensions
     {
         /// <summary>
         /// Helper extension method determining if a type is nullable

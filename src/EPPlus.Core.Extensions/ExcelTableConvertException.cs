@@ -12,27 +12,27 @@ namespace EPPlus.Core.Extensions
         /// <summary>
         /// Property that was tried to set
         /// </summary>
-        public string propertyName { get; set; }
+        public string PropertyName { get; set; }
 
         /// <summary>
         /// Column that was mapped to this property
         /// </summary>
-        public string columnName { get; set; }
+        public string ColumnName { get; set; }
 
         /// <summary>
         /// Type of the property
         /// </summary>
-        public Type expectedType { get; set; }
+        public Type ExpectedType { get; set; }
 
         /// <summary>
         /// Cell value returned by EPPlus
         /// </summary>
-        public object cellValue { get; set; }
+        public object CellValue { get; set; }
 
         /// <summary>
         /// Absolute address of the cell, where the conversion error occured
         /// </summary>
-        public ExcelCellAddress cellAddress { get; set; }
+        public ExcelCellAddress CellAddress { get; set; }
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions
     /// </summary>
     public class ExcelTableConvertException : Exception
     {
-        public ExcelTableConvertExceptionArgs args { get; private set; }
+        public ExcelTableConvertExceptionArgs Args { get; private set; }
 
         /// <summary>
         /// Default constructor
@@ -77,7 +77,7 @@ namespace EPPlus.Core.Extensions
         public ExcelTableConvertException(string message, Exception inner, ExcelTableConvertExceptionArgs args)
             : base(message, inner)
         {
-            this.args = args;
+            this.Args = args;
         }
     }
 }

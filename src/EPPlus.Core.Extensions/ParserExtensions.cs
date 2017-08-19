@@ -10,25 +10,10 @@ using OfficeOpenXml.Table;
 namespace EPPlus.Core.Extensions
 {
     /// <summary>
-    /// Class holding extensien methods implemented
+    /// Class holding extension methods implemented
     /// </summary>
-    public static class EnumerableExtensions
+    public static class ParserExtensions
     {
-        /// <summary>
-        /// Method returns table data bounds with regards to header and totoals row visibility
-        /// </summary>
-        /// <param name="table">Extended object</param>
-        /// <returns>Address range</returns>
-        public static ExcelAddress GetDataBounds(this ExcelTable table)
-        {
-            return new ExcelAddress(
-                table.Address.Start.Row + (table.ShowHeader ? 1 : 0),
-                table.Address.Start.Column,
-                table.Address.End.Row - (table.ShowTotal ? 1 : 0),
-                table.Address.End.Column
-            );
-        }
-
         /// <summary>
         /// Method validates the excel table against the generating type. While AsEnumerable skips null cells, validation winn not.
         /// </summary>
@@ -62,11 +47,11 @@ namespace EPPlus.Core.Extensions
                         result.AddLast(
                             new ExcelTableConvertExceptionArgs
                             {
-                                columnName = table.Columns[map.Key].Name,
-                                expectedType = property.PropertyType,
-                                propertyName = property.Name,
-                                cellValue = cell,
-                                cellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                ColumnName = table.Columns[map.Key].Name,
+                                ExpectedType = property.PropertyType,
+                                PropertyName = property.Name,
+                                CellValue = cell,
+                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
                             });
                     }
                 }
@@ -115,11 +100,11 @@ namespace EPPlus.Core.Extensions
                                 ex,
                                 new ExcelTableConvertExceptionArgs
                                 {
-                                    columnName = table.Columns[map.Key].Name,
-                                    expectedType = property.PropertyType,
-                                    propertyName = property.Name,
-                                    cellValue = cell,
-                                    cellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                    ColumnName = table.Columns[map.Key].Name,
+                                    ExpectedType = property.PropertyType,
+                                    PropertyName = property.Name,
+                                    CellValue = cell,
+                                    CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
                                 }
                             );
                     }
@@ -169,7 +154,7 @@ namespace EPPlus.Core.Extensions
 
                     if (col == -1)
                     {
-                        throw new ArgumentException("Sould never get here, but I can not identify column.");
+                        throw new ArgumentException("Should never get here, but I can not identify column.");
                     }
 
                     mapping.Add(new KeyValuePair<int, PropertyInfo>(col, property));
