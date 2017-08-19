@@ -26,7 +26,7 @@ var toolpath = Argument("toolpath", @"tools");
 var branch = Argument("branch", EnvironmentVariable("APPVEYOR_REPO_BRANCH"));
 var nugetApiKey = EnvironmentVariable("nugetApiKey");
 
-var testProject = new Tuple<string, string[]>("EPPlus.Core.Extensions.Tests", new[] { "net461", "netstandard2.0" });                      
+var testProject = new Tuple<string, string[]>($"{projectName}.Tests", new[] { "net461", "netstandard2.0" });                      
 
 var nupkgPath = "nupkg";
 var nupkgRegex = $"**/{projectName}*.nupkg";
@@ -76,7 +76,7 @@ Task("Run-Unit-Tests")
             {
                  if(targetFramework == "net461")
                  {
-                      var testFile = GetFiles($"./test/**/*{testProject.Item1}.dll").First();
+                      var testFile = GetFiles($"./test/{testProject.Item1}/bin/{configuration}/{targetFramework}/{testProject.Item1}.dll").First();
                      // var testFile = GetFiles($"**/bin/{configuration}/{targetFramework}/{testProject.Item1}*.dll").First();
                       Information(testFile);
                       XUnit2(testFile.ToString(), new XUnit2Settings { });
