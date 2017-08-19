@@ -72,21 +72,24 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        foreach (string targetFramework in testProject.Item2)
-            {
-                 if(targetFramework == "net461")
-                 {
-                      var testFile = GetFiles($"./test/{testProject.Item1}/bin/{configuration}/{targetFramework}/{testProject.Item1}.dll").First();
+         var testProj = GetFiles($"./test/**/*{testProject.Item1}.csproj").First();
+         DotNetCoreTest(testProj.FullPath, new DotNetCoreTestSettings { Configuration = "Release", Framework = targetFramework });
+
+       // foreach (string targetFramework in testProject.Item2)
+          //  {
+                 // if(targetFramework == "net461")
+                 // {
+                   //   var testFile = GetFiles($"./test/{testProject.Item1}/bin/{configuration}/{targetFramework}/{testProject.Item1}.dll").First();
                      // var testFile = GetFiles($"**/bin/{configuration}/{targetFramework}/{testProject.Item1}*.dll").First();
-                      Information(testFile);
-                      XUnit2(testFile.ToString(), new XUnit2Settings { });
-                 }
-                 else
-                 {
-                    var testProj = GetFiles($"./test/**/*{testProject.Item1}.csproj").First();
-                    DotNetCoreTest(testProj.FullPath, new DotNetCoreTestSettings { Configuration = "Release", Framework = targetFramework });
-                 }             
-            }
+                   //   Information(testFile);
+                      //XUnit2(testFile.ToString(), new XUnit2Settings { });
+                // }
+                 //else
+                // {
+                   // var testProj = GetFiles($"./test/**/*{testProject.Item1}.csproj").First();
+                   // DotNetCoreTest(testProj.FullPath, new DotNetCoreTestSettings { Configuration = "Release", Framework = targetFramework });
+                // }             
+            //}
     });
     
 Task("Pack")
