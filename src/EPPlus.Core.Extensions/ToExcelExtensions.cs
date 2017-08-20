@@ -1,39 +1,33 @@
 ﻿using OfficeOpenXml;
+using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EPPlus.Core.Extensions
 {
     public static class ToExcelExtensions
     {
-        public static ExcelPackage ToPackage<T>(this IList<T> rows)
+        public static ExcelPackage ToExcelPackage<T>(this IList<T> rows, string workSheetName, bool printHeaders = true, TableStyles tableStyle = TableStyles.None)
         {
-            throw new NotImplementedException();
+            var excelFile = new ExcelPackage();
+            ExcelWorksheet worksheet = excelFile.Workbook.Worksheets.Add(workSheetName);
+            worksheet.Cells["A1"].LoadFromCollection(Collection: rows, PrintHeaders: true, TableStyle: tableStyle);
+            excelFile.Save();
+            return excelFile;
         }
 
-        public static byte[] ToXlsx<T>(this IList<T> rows)
+        public static byte[] ToXlsx<T>(this IList<T> rows, string workSheetName)
         {
-            throw new NotImplementedException();
+            using (ExcelPackage excelPackage = ToExcelPackage(rows, workSheetName))
+            {
+                return excelPackage.GetAsByteArray();
+            }
         }
 
-        public static ExcelWorksheet ToWorksheet<T>(this IList<T> rows, string name)
+        public static ExcelWorksheet ToExcelWorksheet<T>(this IList<T> rows, string workSheetName)
         {
-            throw new NotImplementedException();
-        }
-
-        public static ExcelWorksheet WithColumn<T>(this ExcelWorksheet worksheet, Func<T, object> map)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static ExcelWorksheet WithTitle<T>(this ExcelWorksheet worksheet, string title)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static ExcelWorksheet AppendWorksheet<T>(this ExcelWorksheet previousSheet, IList<T> rows, string name)
-        {
-            throw new NotImplementedException();
+            return ToExcelPackage(rows, workSheetName).Workbook.Worksheets.FirstOrDefault(x => x.Name.Equals(workSheetName, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }
