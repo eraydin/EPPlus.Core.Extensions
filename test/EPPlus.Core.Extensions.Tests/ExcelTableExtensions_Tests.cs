@@ -9,7 +9,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ParserExtensions_Tests : TestBase
+    public class ExcelTableExtensions_Tests : TestBase
     {
         /// <summary>
         ///     Test existence of test objects in the embedded workbook
