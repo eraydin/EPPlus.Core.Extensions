@@ -5,7 +5,7 @@ namespace EPPlus.Core.Extensions
     public static class TypeExtensions
     {
         /// <summary>
-        /// Helper extension method determining if a type is nullable
+        /// Determines whether given type is nullable or not
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if type is nullable</returns>
@@ -15,7 +15,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Helper extension method to test if a type is numeric or not
+        /// Tests whether given type is numeric or not
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if type is numeric</returns>

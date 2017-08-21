@@ -12,7 +12,7 @@ namespace EPPlus.Core.Extensions
     public static class ExcelPackageExtensions
     {
         /// <summary>
-        /// Method returns all table names in the opened worksheet
+        /// Returns all table names in the opened worksheet
         /// </summary>
         /// <remarks>Excel is ensuring the uniqueness of table names</remarks>
         /// <param name="excel">Extended ExcelPackage object</param>
@@ -27,18 +27,18 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Method returns concrete ExcelTable by it's name 
+        /// Returns concrete ExcelTable by its name 
         /// </summary>
         /// <param name="excel">Extended ExcelPackage object</param>
         /// <param name="name">Name of the table</param>
-        /// <returns>ExcelTable object if found, null inf not</returns>
+        /// <returns>ExcelTable object if found, null if not</returns>
         public static ExcelTable GetTable(this ExcelPackage excel, string name)
         {
             return excel.GetTables().FirstOrDefault(t => t.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
-        /// Method checks for table in the ExcelPackage
+        /// Checks that given table name is in the ExcelPackage or not
         /// </summary>
         /// <param name="excel">Extended ExcelPackage object</param>
         /// <param name="name">Name of the table</param>

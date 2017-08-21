@@ -10,10 +10,13 @@ using OfficeOpenXml.Table;
 
 namespace EPPlus.Core.Extensions
 {
+    /// <summary>
+    /// Class holds extensions on ExcelTable object
+    /// </summary>
     public static class ExcelTableExtensions
     {
         /// <summary>
-        /// Method returns table data bounds with regards to header and totals row visibility
+        /// Returns table data bounds with regards to header and totals row visibility
         /// </summary>
         /// <param name="table">Extended object</param>
         /// <returns>Address range</returns>
@@ -28,7 +31,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Method validates the excel table against the generating type. While AsEnumerable skips null cells, validation winn not.
+        /// Validates the excel table against the generating type.
         /// </summary>
         /// <typeparam name="T">Generating class type</typeparam>
         /// <param name="table">Extended object</param>
@@ -76,13 +79,13 @@ namespace EPPlus.Core.Extensions
         /// <summary>
         /// Generic extension method yielding objects of specified type from table.
         /// </summary>
-        /// <remarks>Exceptions are not cathed. It works on all or nothing basis. 
+        /// <remarks>Exceptions are not catched. It works on all or nothing basis. 
         /// Only primitives and enums are supported as property.
         /// Currently supports only tables with header.</remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
         /// <param name="skipCastErrors">Determines how the method should handle exceptions when casting cell value to property type. 
-        /// If this is true, invlaid casts are silently skipped, otherwise any error will cause method to fail with exception.</param>
+        /// If this is true, invalid casts are silently skipped, otherwise any error will cause method to fail with exception.</param>
         /// <returns>An enumerable of the generating type</returns>
         public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, bool skipCastErrors = false) where T : class, new()
         {
@@ -130,7 +133,7 @@ namespace EPPlus.Core.Extensions
         /// <summary>
         /// Returns objects of specified type from table as list.
         /// </summary>
-        /// <remarks>Exceptions are not cathed. It works on all or nothing basis. 
+        /// <remarks>Exceptions are not catched. It works on all or nothing basis. 
         /// Only primitives and enums are supported as property.
         /// Currently supports only tables with header.</remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
@@ -144,7 +147,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Method prepares mapping using the type and the attributes decorating its properties
+        /// Prepares mapping using the type and the attributes decorating its properties
         /// </summary>
         /// <typeparam name="T">Type to parse</typeparam>
         /// <param name="table">Table to get columns from</param>
@@ -194,7 +197,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Method tries to set property of item
+        /// Tries to set property of item
         /// </summary>
         /// <param name="item">target object</param>
         /// <param name="property">property to be set</param>

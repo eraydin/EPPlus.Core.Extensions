@@ -2,6 +2,7 @@
 
 namespace EPPlus.Core.Extensions
 {
+    /// <inheritdoc />
     /// <summary>
     /// Attribute used to map property to Excel table column
     /// </summary>

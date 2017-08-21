@@ -35,6 +35,7 @@ namespace EPPlus.Core.Extensions
         public ExcelCellAddress CellAddress { get; set; }
     }
 
+    /// <inheritdoc />
     /// <summary>
     /// Class extends exception to hold casting exception circumstances
     /// </summary>
@@ -42,13 +43,15 @@ namespace EPPlus.Core.Extensions
     {
         public ExcelTableConvertExceptionArgs Args { get; private set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Default constructor
         /// </summary>
-        public ExcelTableConvertException()
+        protected ExcelTableConvertException()
         {
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Constructor with message
         /// </summary>
@@ -58,6 +61,7 @@ namespace EPPlus.Core.Extensions
         {
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Constructor with message and inner exception
         /// </summary>
@@ -68,8 +72,9 @@ namespace EPPlus.Core.Extensions
         {
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Custom constructor that takes message,, inner exception and conversion arguments
+        /// Custom constructor that takes message, inner exception and conversion arguments
         /// </summary>
         /// <param name="message">Exception message</param>
         /// <param name="inner">Actual conversion exception catched</param>
