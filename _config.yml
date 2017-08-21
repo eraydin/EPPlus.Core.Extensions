@@ -1,4 +1,4 @@
 theme: jekyll-theme-minimal
-title: [EPPlus.Core.Extensions]
-description: [Extensions library for EPPlus.Core package to manipulate MS Excel files easily.]
-show_downloads: ["true"]
+title: EPPlus.Core.Extensions
+description: Extensions library for EPPlus.Core package to manipulate MS Excel files easily.
+show_downloads: true
