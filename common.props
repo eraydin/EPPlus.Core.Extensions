@@ -1,10 +1,14 @@
 <Project>
   <PropertyGroup>
     <VersionPrefix>1.0.0-preview2</VersionPrefix>
+    <Description>Extensions library for EPPlus ExcelTable objects to manipulate MS Excel files easily.</Description>
+
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <PackageIconUrl></PackageIconUrl>
+    <PackageTags>EPPlus, EPPlus Core, Microsoft Excel, Excel, netstandart2.0, net461</PackageTags>
     <PackageProjectUrl>https://github.com/eraydin/EPPlus.Core.Extensions</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/eraydin/EPPlus.Core.Extensions/blob/master/LICENSE</PackageLicenseUrl>
+ 
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/eraydin/EPPlus.Core.Extensions</RepositoryUrl>
     <Authors>Aydin ERAYDIN</Authors>
@@ -19,6 +23,8 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,19 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\common.props"></Import>
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0-preview2</Version>
-    <Authors>Aydin ERAYDIN</Authors>
-    <Company />
-    <Product />
-    <Description>Extensions library for EPPlus ExcelTable objects to manipulate MS Excel files easily.</Description>
-    <PackageLicenseUrl>https://github.com/eraydin/EPPlus.Core.Extensions/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/eraydin/EPPlus.Core.Extensions</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/eraydin/EPPlus.Core.Extensions</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>EPPlus, EPPlus Core, Microsoft Excel, Excel, netstandart2.0, net461</PackageTags>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

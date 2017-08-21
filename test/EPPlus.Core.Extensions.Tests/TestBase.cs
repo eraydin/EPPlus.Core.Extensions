@@ -1,23 +1,20 @@
 ﻿using OfficeOpenXml;
-using System.IO;
+using System;
 using System.Reflection;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class TestBase
+    public class TestBase : IDisposable
     {
-        public static ExcelPackage excelPackage;
+        public readonly ExcelPackage excelPackage;
         private readonly string resourceName = "EPPlus.Core.Extensions.Tests.Resources.testsheets.xlsx";
 
         public TestBase()
         {
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
-            {
-                excelPackage = new ExcelPackage(stream);
-            }
+            excelPackage = new ExcelPackage(typeof(TestBase).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName));
         }
 
-        ~TestBase()
+        public void Dispose()
         {
             excelPackage.Dispose();
         }

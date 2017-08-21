@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>net461</TargetFrameworks>
     <AssemblyName>EPPlus.Core.Extensions.Tests</AssemblyName>
   </PropertyGroup>
 
@@ -11,9 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0-preview-20170810-02" />
+    <PackageReference Include="xunit" Version="2.3.0-beta4-build3742" />
   </ItemGroup>
 
   <ItemGroup>
