@@ -303,6 +303,27 @@ namespace EPPlus.Core.Extensions.Tests
             list.Count(x => !x.Price.HasValue).Should().Be(2, "Should have two");
         }
 
+        [Fact]
+        public void Test_Nullable_With_SkipCastErrors()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST4"].Tables["TEST4"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IList<StocksNullable> list = table.ToList<StocksNullable>(true);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count(x => !x.UpdatedDate.HasValue).Should().Be(2, "Should have two");
+            list.Count(x => !x.Quantity.HasValue).Should().Be(2, "Should have two");
+            list.Count.Should().Be(4, "Should have four");
+        }
+
         #endregion
 
         #region Complex tests
@@ -460,6 +481,18 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn]
         public int? Price { get; set; }
+    }
+
+    class StocksNullable
+    {
+        [ExcelTableColumn(ColumnIndex = 1)]
+        public string Barcode { get; set; }
+
+        [ExcelTableColumn(ColumnIndex = 2)]
+        public int? Quantity { get; set; }
+
+        [ExcelTableColumn(ColumnIndex = 3)]
+        public DateTime? UpdatedDate { get; set; }
     }
 
     enum Manufacturers2 { Opel = 1, Ford, Toyota };
