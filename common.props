@@ -6,12 +6,15 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <PackageIconUrl></PackageIconUrl>
     <PackageTags>EPPlus, EPPlus Core, Microsoft Excel, Excel, netstandart2.0, net461</PackageTags>
-    <PackageProjectUrl>https://github.com/eraydin/EPPlus.Core.Extensions</PackageProjectUrl>
+    <PackageProjectUrl>https://eraydin.github.io/EPPlus.Core.Extensions</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/eraydin/EPPlus.Core.Extensions/blob/master/LICENSE</PackageLicenseUrl>
- 
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/eraydin/EPPlus.Core.Extensions</RepositoryUrl>
+    
     <Authors>Aydin ERAYDIN</Authors>
+    
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -22,8 +25,8 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     
   </PropertyGroup>
 
