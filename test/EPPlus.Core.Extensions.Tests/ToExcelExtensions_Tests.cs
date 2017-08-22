@@ -38,11 +38,5 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             package.Workbook.Worksheets.First().Dimension.Rows.Should().Be(3);
         }
-
-        public class Car
-        {
-            public string Name { get; set; }
-            public decimal Price { get; set; }
-        }
     }
 }

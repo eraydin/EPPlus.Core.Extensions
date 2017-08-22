@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using OfficeOpenXml.Table;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Xunit;
 
@@ -34,6 +35,27 @@ namespace EPPlus.Core.Extensions.Tests
 
             excelPackage.HasTable("NOTABLE").Should().BeFalse("We don't have NOTABLE table");
             excelPackage.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
+        }
+
+
+        [Fact]
+        public void Test_ToDataSet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            DataSet dataset;
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            dataset = excelPackage.ToDataSet();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            dataset.Should().NotBeNull("We have 5 tables");
+            dataset.Tables.Count.Should().Be(5, "We have 5 tables");
         }
     }
 }

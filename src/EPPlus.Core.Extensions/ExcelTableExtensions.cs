@@ -1,12 +1,11 @@
 ﻿
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
-using OfficeOpenXml;
-using OfficeOpenXml.Table;
 
 namespace EPPlus.Core.Extensions
 {
