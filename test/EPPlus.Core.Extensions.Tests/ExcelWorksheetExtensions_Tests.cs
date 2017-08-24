@@ -3,6 +3,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 using Xunit;
 
@@ -130,6 +131,52 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             dataTable.Should().NotBeNull($"{nameof(dataTable)} should not be NULL");
             dataTable.Rows.Count.Should().Be(4, "We have 4 records");
+        }
+        
+
+        [Fact]
+        public void Test_Worksheet_AsEnumerable()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST4"];
+            ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST5"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(true);
+            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(true, false);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list1.Count().Should().Be(4, "Should have four");
+            list2.Count().Should().Be(4, "Should have four");
+        }
+
+
+        [Fact]
+        public void Test_Worksheet_ToList()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST4"];
+            ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST5"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IEnumerable<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(true);
+            IEnumerable<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(true, false);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list1.Count().Should().Be(4, "Should have four");
+            list2.Count().Should().Be(4, "Should have four");
         }
     }
 }

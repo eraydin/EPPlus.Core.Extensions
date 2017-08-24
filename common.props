@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionPrefix>1.0.2</VersionPrefix>
     <Description>Extensions library for EPPlus ExcelTable objects to manipulate MS Excel files easily.</Description>
 
     <NoWarn>$(NoWarn);CS1591</NoWarn>

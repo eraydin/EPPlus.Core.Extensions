@@ -54,16 +54,14 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="excelPackage">The ExcelPackage.</param>
         /// <param name="hasHeaderRow">Indicates whether worksheet has a header row or not.</param>
-        /// <param name="headerRowIndex"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException">If hasHeaderRow is true, than headerRowIndex must be 1 or greater.</exception>
-        public static DataSet ToDataSet(this ExcelPackage excelPackage, bool hasHeaderRow = true, int headerRowIndex = 1)
+        public static DataSet ToDataSet(this ExcelPackage excelPackage, bool hasHeaderRow = true)
         {
             var dataSet = new DataSet();
 
             foreach (ExcelWorksheet worksheet in excelPackage.Workbook.Worksheets)
             {
-                dataSet.Tables.Add(worksheet.ToDataTable(hasHeaderRow, headerRowIndex));
+                dataSet.Tables.Add(worksheet.ToDataTable(hasHeaderRow));
             }
 
             return dataSet;
