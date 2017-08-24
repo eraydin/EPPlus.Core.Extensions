@@ -153,4 +153,11 @@ namespace EPPlus.Core.Extensions.Tests
         public string Name { get; set; }
         public decimal Price { get; set; }
     }
+
+    public class Person
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int YearBorn { get; set; }
+    }
 }
