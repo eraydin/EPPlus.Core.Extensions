@@ -13,6 +13,10 @@ namespace EPPlus.Core.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
         /// <param name="name"></param>
+        /// <param name="configureColumn"></param>
+        /// <param name="configureHeader"></param>
+        /// <param name="configureHeaderRow"></param>
+        /// <param name="configureCell"></param>
         /// <returns></returns>
         public static WorksheetWrapper<T> ToWorksheet<T>(this IList<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
         {
@@ -38,6 +42,10 @@ namespace EPPlus.Core.Extensions
         /// <param name="previousSheet"></param>
         /// <param name="rows"></param>
         /// <param name="name"></param>
+        /// <param name="configureColumn"></param>
+        /// <param name="configureHeader"></param>
+        /// <param name="configureHeaderRow"></param>
+        /// <param name="configureCell"></param>
         /// <returns></returns>
         public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IList<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
         {
@@ -65,6 +73,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="columnHeader"></param>
         /// <param name="configureColumn"></param>
         /// <param name="configureHeader"></param>
+        /// <param name="configureCell"></param>
         /// <returns></returns>
         public static WorksheetWrapper<T> WithColumn<T>(this WorksheetWrapper<T> worksheet, Func<T, object> map,
             string columnHeader, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange, T> configureCell = null)
@@ -129,13 +138,14 @@ namespace EPPlus.Core.Extensions
         public static byte[] ToXlsx<T>(this WorksheetWrapper<T> lastWorksheet)
         {
             lastWorksheet.AppendWorksheet();
-            ExcelPackage package = lastWorksheet.Package;
-
-            using (var stream = new MemoryStream())
+            using (ExcelPackage package = lastWorksheet.Package)
             {
-                package.SaveAs(stream);
-                package.Dispose();
-                return stream.ToArray();
+                using (var stream = new MemoryStream())
+                {
+                    package.SaveAs(stream);
+                    package.Dispose();
+                    return stream.ToArray();
+                }
             }
         }
     }

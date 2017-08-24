@@ -21,7 +21,7 @@ namespace EPPlus.Core.Extensions
         internal Action<ExcelRange, T> ConfigureCell { get; set; }
 
         /// <summary>
-        /// generates columns for all public properties on the type
+        /// Generates columns for all public properties on the type
         /// </summary>
         /// <returns></returns>
         internal IList<WorksheetColumn<T>> AutoGenerateColumns()
@@ -35,7 +35,8 @@ namespace EPPlus.Core.Extensions
             {
                 var column = new WorksheetColumn<T>
                 {
-                    Header = ToSentenceCase(property.Name),
+                    // Convert to sentence case
+                    Header = Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}"),
                     Map = GetGetter<T>(property.Name),
                     ConfigureColumn = c => c.AutoFit()
                 };
@@ -46,21 +47,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Generates a Func from a propertyName
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        private Func<T, object> GetGetter<T>(string propertyName)
-        {
-            ParameterExpression arg = Expression.Parameter(typeof(T), "x");
-            MemberExpression expression = Expression.Property(arg, propertyName);
-            UnaryExpression conversion = Expression.Convert(expression, typeof(object));
-            return Expression.Lambda<Func<T, object>>(conversion, arg).Compile();
-        }
-
-        /// <summary>
-        /// wraps creation of an epplus worksheet
+        /// Wraps creation of an Excel worksheet
         /// </summary>
         internal void AppendWorksheet()
         {
@@ -156,9 +143,17 @@ namespace EPPlus.Core.Extensions
             }
         }
 
-        private string ToSentenceCase(string str)
+        /// <summary>
+        /// Generates a Func from a propertyName
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        private Func<T, object> GetGetter<T>(string propertyName)
         {
-            return Regex.Replace(str, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
+            ParameterExpression arg = Expression.Parameter(typeof(T), "x");
+            MemberExpression expression = Expression.Property(arg, propertyName);
+            UnaryExpression conversion = Expression.Convert(expression, typeof(object));
+            return Expression.Lambda<Func<T, object>>(conversion, arg).Compile();
         }
     }
 }
