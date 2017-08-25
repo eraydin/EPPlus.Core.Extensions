@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>1.1.1</VersionPrefix>
-    <Description>Extensions library for EPPlus ExcelTable objects to manipulate MS Excel files easily.</Description>
+    <VersionPrefix>1.1.2</VersionPrefix>
+    <Description>Extensions library for EPPlus to manipulate MS Excel files easily.</Description>
 
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <PackageIconUrl></PackageIconUrl>
@@ -29,8 +29,4 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.2.0-b502" />
-  </ItemGroup>
 </Project>
