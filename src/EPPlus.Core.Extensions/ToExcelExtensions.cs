@@ -137,10 +137,11 @@ namespace EPPlus.Core.Extensions
 
         public static byte[] ToXlsx<T>(this WorksheetWrapper<T> lastWorksheet)
         {
-            lastWorksheet.AppendWorksheet();
-            using (ExcelPackage package = lastWorksheet.Package)
+            using (var stream = new MemoryStream())
             {
-                using (var stream = new MemoryStream())
+                lastWorksheet.AppendWorksheet();
+
+                using (ExcelPackage package = lastWorksheet.Package)
                 {
                     package.SaveAs(stream);
                     package.Dispose();

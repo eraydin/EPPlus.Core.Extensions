@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using OfficeOpenXml;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 
@@ -185,6 +186,86 @@ namespace EPPlus.Core.Extensions.Tests
             package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(3);
             package.Workbook.Worksheets[2].Dimension.Rows.Should().Be(post50.Count + 2);
             package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(3);
+        }
+
+        [Fact]
+        public void Should_convert_list_of_objects_to_byte_array_of_xlsx_file()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            List<Person> pre50 = _personList.Where(x => x.YearBorn < 1950).ToList();
+            string tempFile = Path.Combine(Path.GetTempPath(), "persons_pre50.xlsx");
+          
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] result = pre50.ToXlsx();
+            File.WriteAllBytes(tempFile, result);
+            var excelPackage = new ExcelPackage(new FileInfo(tempFile));
+            
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            excelPackage.Workbook.Worksheets.Any().Should().Be(true);
+            excelPackage.Workbook.Worksheets.First().Should().NotBe(null);
+            excelPackage.Workbook.Worksheets.First().Dimension.Rows.Should().Be(3);
+        }
+
+        [Fact]
+        public void Should_convert_a_worksheet_to_byte_array_of_xlsx_file()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            List<Person> post50 = _personList.Where(x => x.YearBorn > 1950).ToList();
+            string tempFile = Path.Combine(Path.GetTempPath(), "persons_post50.xlsx");
+            WorksheetWrapper<Person> worksheetWrapper = post50.ToWorksheet("> 1950");
+           
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] result = worksheetWrapper.ToXlsx();
+            File.WriteAllBytes(tempFile, result);
+            var excelPackage = new ExcelPackage(new FileInfo(tempFile));
+            
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            excelPackage.Workbook.Worksheets.Any().Should().Be(true);
+            excelPackage.Workbook.Worksheets.First().Dimension.Rows.Should().Be(4);
+        }
+
+        [Fact]
+        public void Should_convert_multiple_worksheets_to_byte_array_of_xlsx_file()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            List<Person> pre50 = _personList.Where(x => x.YearBorn < 1950).ToList();
+            List<Person> post50 = _personList.Where(x => x.YearBorn >= 1950).ToList();
+
+            WorksheetWrapper<Person> worksheetWrapper = pre50
+                .ToWorksheet("< 1950")
+                .WithTitle("< 1950")
+                .NextWorksheet(post50, "> 1950")
+                .WithTitle("> 1950");
+            
+            string tempFile = Path.Combine(Path.GetTempPath(), "persons_pre50_post50.xlsx");
+            
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] result = worksheetWrapper.ToXlsx();
+            File.WriteAllBytes(tempFile, result);
+            var excelPackage = new ExcelPackage(new FileInfo(tempFile));
+            
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            excelPackage.Workbook.Worksheets.Count().Should().Be(2);
+            excelPackage.Workbook.Worksheets[1].Dimension.Rows.Should().Be(4);
+            excelPackage.Workbook.Worksheets[2].Dimension.Rows.Should().Be(5);
         }
     }
 }
