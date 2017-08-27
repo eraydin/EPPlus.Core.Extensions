@@ -121,7 +121,6 @@ _TeamCity*
 _NCrunch_*
 .*crunch*.local.xml
 nCrunchTemp_*
-*.v3.ncrunchsolution
 *.ncrunchsolution
 *.ncrunchproject
 
@@ -278,6 +277,7 @@ __pycache__/
 *.pyc
 
 # Cake - Uncomment if you are using it
+/tools
 # tools/**
 # !tools/packages.config
 
@@ -289,4 +289,3 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
-/tools
