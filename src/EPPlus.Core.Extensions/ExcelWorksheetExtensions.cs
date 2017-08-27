@@ -126,8 +126,5 @@ namespace EPPlus.Core.Extensions
         {
             return worksheet.AsEnumerable<T>(skipCastErrors, hasHeaderRow).ToList();
         }
-
-
-        
     }
 }
