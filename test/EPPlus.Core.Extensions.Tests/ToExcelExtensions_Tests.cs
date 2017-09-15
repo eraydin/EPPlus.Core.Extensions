@@ -34,7 +34,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            package = _personList.ToPackage();
+            package = _personList.ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -53,7 +53,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            package = _personList.ToPackage();
+            package = _personList.ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -75,7 +75,7 @@ namespace EPPlus.Core.Extensions.Tests
             package = _personList
                 .ToWorksheet("Actors")
                 .WithTitle("Actors")
-                .ToPackage();
+                .ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -98,7 +98,7 @@ namespace EPPlus.Core.Extensions.Tests
                 .ToWorksheet("Actors")
                 .WithTitle("Actors")
                 .WithTitle("In the movie Lincoln")
-                .ToPackage();
+                .ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -120,7 +120,7 @@ namespace EPPlus.Core.Extensions.Tests
             package = _personList
                 .ToWorksheet("Actors")
                 .WithColumn(x => x.LastName, "Last Name")
-                .ToPackage();
+                .ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -146,7 +146,7 @@ namespace EPPlus.Core.Extensions.Tests
             package = _personList
                 .ToWorksheet("Actors")
                 .WithColumn(x => x.YearBorn, "Year Born")
-                .ToPackage();
+                .ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -176,7 +176,7 @@ namespace EPPlus.Core.Extensions.Tests
                 .WithTitle("< 1950")
                 .NextWorksheet(post50, "> 1950")
                 .WithTitle("> 1950")
-                .ToPackage();
+                .ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

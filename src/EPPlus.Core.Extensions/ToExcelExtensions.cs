@@ -8,7 +8,7 @@ namespace EPPlus.Core.Extensions
     public static class ToExcelExtensions
     {
         /// <summary>
-        /// Generates an Excel worksheet from a list
+        ///     Generates an Excel worksheet from a list
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
@@ -35,7 +35,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Starts new worksheet on same Excel package
+        ///     Starts new worksheet on same Excel package
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="K"></typeparam>
@@ -65,7 +65,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Adds a column mapping.  If no column mappings are specified all public properties will be used
+        ///     Adds a column mapping.  If no column mappings are specified all public properties will be used
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -90,7 +90,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Adds a title row to the top of the sheet
+        ///     Adds a title row to the top of the sheet
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -112,22 +112,55 @@ namespace EPPlus.Core.Extensions
 
             return worksheet;
         }
+        
 
         /// <summary>
-        /// Converts given list of objects to ExcelPackage
+        ///     Converts given list of objects to ExcelPackage
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
         /// <returns></returns>
-        public static ExcelPackage ToPackage<T>(this IList<T> rows)
+        public static ExcelPackage ToExcelPackage<T>(this IList<T> rows)
         {
-            return rows.ToWorksheet(typeof(T).Name).ToPackage();
+            return rows.ToWorksheet(typeof(T).Name).ToExcelPackage();
         }
 
-        public static ExcelPackage ToPackage<T>(this WorksheetWrapper<T> lastWorksheet)
+        public static ExcelPackage ToExcelPackage<T>(this WorksheetWrapper<T> lastWorksheet)
         {
             lastWorksheet.AppendWorksheet();
             return lastWorksheet.Package;
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the ExcelPackage class based on a byte array
+        /// </summary>
+        /// <param name="buffer">The byte array</param>
+        /// <returns>An ExcelPackages</returns>
+        public static ExcelPackage ToExcelPackage(this byte[] buffer)
+        {
+            using (var memoryStream = new MemoryStream(buffer))
+            {
+                return new ExcelPackage(memoryStream);
+            }
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the ExcelPackage class based on a byte array
+        /// </summary>
+        /// <param name="buffer">The byte array</param>
+        /// <param name="password">The password to decrypt the document</param>
+        /// <returns>An ExcelPackages</returns>
+        public static ExcelPackage ToExcelPackage(this byte[] buffer, string password)
+        {
+            if (!string.IsNullOrEmpty(password))
+            {
+                using (var memoryStream = new MemoryStream(buffer))
+                {
+                    return new ExcelPackage(memoryStream, password);
+                }
+            }
+
+            return ToExcelPackage(buffer);
         }
 
         public static byte[] ToXlsx<T>(this IList<T> rows)
@@ -137,14 +170,13 @@ namespace EPPlus.Core.Extensions
 
         public static byte[] ToXlsx<T>(this WorksheetWrapper<T> lastWorksheet)
         {
+            lastWorksheet.AppendWorksheet();
+
             using (var stream = new MemoryStream())
             {
-                lastWorksheet.AppendWorksheet();
-
                 using (ExcelPackage package = lastWorksheet.Package)
                 {
                     package.SaveAs(stream);
-                    package.Dispose();
                     return stream.ToArray();
                 }
             }

@@ -10,7 +10,20 @@ namespace EPPlus.Core.Extensions
     [AttributeUsage(AttributeTargets.Property)]
     public class ExcelTableColumnAttribute : Attribute
     {
-        private string columnName = null;
+        public ExcelTableColumnAttribute()
+        {
+            
+        }
+
+        public ExcelTableColumnAttribute(int columnIndex)
+        {
+            ColumnIndex = columnIndex;
+        }
+
+        public ExcelTableColumnAttribute(string columnName)
+        {
+            ColumnName = columnName;
+        }
 
         /// <summary>
         ///     Set this property to map by name
@@ -27,8 +40,6 @@ namespace EPPlus.Core.Extensions
             }
         }
 
-        private int columnIndex = 0;
-
         /// <summary>
         ///     Use this property to map by 1-based index
         /// </summary>
@@ -43,5 +54,8 @@ namespace EPPlus.Core.Extensions
                 columnIndex = value;
             }
         }
+
+        private string columnName;
+        private int columnIndex;
     }
 }
