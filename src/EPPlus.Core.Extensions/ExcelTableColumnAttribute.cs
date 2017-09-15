@@ -15,11 +15,19 @@ namespace EPPlus.Core.Extensions
             
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Set this property to map by 1-based index
+        /// </summary>
         public ExcelTableColumnAttribute(int columnIndex)
         {
             ColumnIndex = columnIndex;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Set this property to map by name
+        /// </summary>
         public ExcelTableColumnAttribute(string columnName)
         {
             ColumnName = columnName;

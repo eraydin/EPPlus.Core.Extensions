@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace EPPlus.Core.Extensions
 {
@@ -18,13 +19,13 @@ namespace EPPlus.Core.Extensions
         /// <param name="configureHeaderRow"></param>
         /// <param name="configureCell"></param>
         /// <returns></returns>
-        public static WorksheetWrapper<T> ToWorksheet<T>(this IList<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
+        public static WorksheetWrapper<T> ToWorksheet<T>(this IEnumerable<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
         {
             var worksheet = new WorksheetWrapper<T>()
             {
                 Name = name,
                 Package = new ExcelPackage(),
-                Rows = rows,
+                Rows = rows.ToList(),
                 Columns = new List<WorksheetColumn<T>>(),
                 ConfigureHeader = configureHeader,
                 ConfigureColumn = configureColumn,
@@ -33,7 +34,7 @@ namespace EPPlus.Core.Extensions
             };
             return worksheet;
         }
-
+        
         /// <summary>
         ///     Starts new worksheet on same Excel package
         /// </summary>
@@ -112,17 +113,36 @@ namespace EPPlus.Core.Extensions
 
             return worksheet;
         }
-        
+
+        /// <summary>
+        ///     Indicates that the worksheet should not contain a header row
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="worksheet"></param>
+        /// <returns></returns>
+        public static WorksheetWrapper<T> WithoutHeader<T>(this WorksheetWrapper<T> worksheet)
+        {
+            worksheet.AppendHeaderRow = false;
+            return worksheet;
+        }
 
         /// <summary>
         ///     Converts given list of objects to ExcelPackage
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
+        /// <param name="addHeaderRow"></param>
         /// <returns></returns>
-        public static ExcelPackage ToExcelPackage<T>(this IList<T> rows)
+        public static ExcelPackage ToExcelPackage<T>(this IEnumerable<T> rows, bool addHeaderRow = true)
         {
-            return rows.ToWorksheet(typeof(T).Name).ToExcelPackage();
+            WorksheetWrapper<T> worksheet = rows.ToWorksheet(typeof(T).Name);
+
+            if (!addHeaderRow)
+            {
+                worksheet.WithoutHeader();
+            }
+
+            return worksheet.ToExcelPackage();
         }
 
         public static ExcelPackage ToExcelPackage<T>(this WorksheetWrapper<T> lastWorksheet)
@@ -163,11 +183,31 @@ namespace EPPlus.Core.Extensions
             return ToExcelPackage(buffer);
         }
 
-        public static byte[] ToXlsx<T>(this IList<T> rows)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rows"></param>
+        /// <param name="addHeaderRow"></param>
+        /// <returns></returns>
+        public static byte[] ToXlsx<T>(this IList<T> rows, bool addHeaderRow = true)
         {
-            return rows.ToWorksheet(typeof(T).Name).ToXlsx();
+            WorksheetWrapper<T> worksheet = rows.ToWorksheet(typeof(T).Name);
+
+            if (!addHeaderRow)
+            {
+               worksheet.WithoutHeader();
+            }
+
+            return worksheet.ToXlsx();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lastWorksheet"></param>
+        /// <returns></returns>
         public static byte[] ToXlsx<T>(this WorksheetWrapper<T> lastWorksheet)
         {
             lastWorksheet.AppendWorksheet();

@@ -6,16 +6,16 @@ namespace EPPlus.Core.Extensions.Tests
     enum Manufacturers { Opel = 1, Ford, Mercedes };
     class WrongCars
     {
-        [ExcelTableColumn(ColumnName = "License plate")]
+        [ExcelTableColumn("License plate")]
         public string LicensePlate { get; set; }
 
         [ExcelTableColumn]
         public Manufacturers Manufacturer { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Manufacturing date")]
+        [ExcelTableColumn("Manufacturing date")]
         public DateTime ManufacturingDate { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Is ready for traffic?")]
+        [ExcelTableColumn("Is ready for traffic?")]
         public bool Ready { get; set; }
     }
 
@@ -30,29 +30,29 @@ namespace EPPlus.Core.Extensions.Tests
 
     class NamedMap
     {
-        [ExcelTableColumn(ColumnName = "Name")]
+        [ExcelTableColumn("Name")]
         public string FirstName { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Gender")]
+        [ExcelTableColumn("Gender")]
         public string Sex { get; set; }
     }
 
     class IndexMap
     {
-        [ExcelTableColumn(ColumnIndex = 1)]
+        [ExcelTableColumn(1)]
         public string Name { get; set; }
 
-        [ExcelTableColumn(ColumnIndex = 3)]
+        [ExcelTableColumn(3)]
         public string Gender { get; set; }
     }
 
     enum Genders { MALE = 1, FEMALE = 2 }
     class EnumStringMap
     {
-        [ExcelTableColumn(ColumnName = "Name")]
+        [ExcelTableColumn("Name")]
         public string Name { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Gender")]
+        [ExcelTableColumn("Gender")]
         public Genders Gender { get; set; }
     }
 
@@ -71,10 +71,10 @@ namespace EPPlus.Core.Extensions.Tests
         [ExcelTableColumn]
         public string Name { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Class")]
+        [ExcelTableColumn("Class")]
         public Classes Class { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Class")]
+        [ExcelTableColumn("Class")]
         public int ClassAsInt { get; set; }
     }
 
@@ -86,7 +86,7 @@ namespace EPPlus.Core.Extensions.Tests
         [ExcelTableColumn]
         public Genders Gender { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Birth date")]
+        [ExcelTableColumn("Birth date")]
         public DateTime BirthDate { get; set; }
     }
 
@@ -95,13 +95,13 @@ namespace EPPlus.Core.Extensions.Tests
         [ExcelTableColumn]
         public string Name { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Gender")]
+        [ExcelTableColumn("Gender")]
         public Classes Gender { get; set; }
     }
 
     class CarNullable
     {
-        [ExcelTableColumn(ColumnName = "Car name")]
+        [ExcelTableColumn("Car name")]
         public string Name { get; set; }
 
         [ExcelTableColumn]
@@ -110,26 +110,26 @@ namespace EPPlus.Core.Extensions.Tests
 
     class StocksNullable
     {
-        [ExcelTableColumn(ColumnIndex = 1)]
+        [ExcelTableColumn(1)]
         public string Barcode { get; set; }
 
-        [ExcelTableColumn(ColumnIndex = 2)]
+        [ExcelTableColumn(2)]
         public int? Quantity { get; set; }
 
-        [ExcelTableColumn(ColumnIndex = 3)]
+        [ExcelTableColumn(3)]
         public DateTime? UpdatedDate { get; set; }
     }
 
     enum Manufacturers2 { Opel = 1, Ford, Toyota };
     class Cars
     {
-        [ExcelTableColumn(ColumnIndex = 1)]
+        [ExcelTableColumn(1)]
         public string LicensePlate { get; set; }
 
         [ExcelTableColumn]
         public Manufacturers2 Manufacturer { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Manufacturing date")]
+        [ExcelTableColumn("Manufacturing date")]
         public DateTime? ManufacturingDate { get; set; }
 
         [ExcelTableColumn]
@@ -138,7 +138,7 @@ namespace EPPlus.Core.Extensions.Tests
         [ExcelTableColumn]
         public Color Color { get; set; }
 
-        [ExcelTableColumn(ColumnName = "Is ready for traffic?")]
+        [ExcelTableColumn("Is ready for traffic?")]
         public bool Ready { get; set; }
 
         public string UnmappedProperty { get; set; }

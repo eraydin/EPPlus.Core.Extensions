@@ -62,6 +62,25 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Rowcount_should_match_listcount_without_header()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelPackage package;
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            package = _personList.ToExcelPackage(false);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count);
+        }
+
+        [Fact]
         public void Rowcount_should_match_listcount_plus_header_plus_one_title()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -185,6 +204,36 @@ namespace EPPlus.Core.Extensions.Tests
             package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(pre50.Count + 2);
             package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(3);
             package.Workbook.Worksheets[2].Dimension.Rows.Should().Be(post50.Count + 2);
+            package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(3);
+        }
+
+        [Fact]
+        public void Multiple_lists_should_create_multiple_worksheets_without_header()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            List<Person> pre50 = _personList.Where(x => x.YearBorn < 1950).ToList();
+            List<Person> post50 = _personList.Where(x => x.YearBorn >= 1950).ToList();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelPackage package = pre50
+                .ToWorksheet("< 1950")
+                .WithTitle("< 1950")
+                .NextWorksheet(post50, "> 1950")
+                .WithoutHeader()
+                .WithTitle("> 1950")
+                .ToExcelPackage();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            package.Workbook.Worksheets.Count.Should().Be(2);
+            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(pre50.Count + 2);
+            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(3);
+            package.Workbook.Worksheets[2].Dimension.Rows.Should().Be(post50.Count + 1);
             package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(3);
         }
 

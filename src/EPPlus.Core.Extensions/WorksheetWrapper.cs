@@ -11,6 +11,8 @@ namespace EPPlus.Core.Extensions
     public class WorksheetWrapper<T>
     {
         internal string Name { get; set; }
+
+        internal bool AppendHeaderRow { get; set; } = true;
         internal ExcelPackage Package { get; set; }
         internal IList<T> Rows { get; set; }
         internal IList<WorksheetColumn<T>> Columns { get; set; }
@@ -83,30 +85,36 @@ namespace EPPlus.Core.Extensions
             }
 
             //render headers
-            for (var i = 0; i < Columns.Count; i++)
+            if (AppendHeaderRow)
             {
-                worksheet.Cells[rowOffset + 1, i + 1].Value = Columns[i].Header;
-                if (ConfigureHeader != null)
+                for (var i = 0; i < Columns.Count; i++)
                 {
-                    ConfigureHeader(worksheet.Cells[rowOffset + 1, i + 1]);
+                    worksheet.Cells[rowOffset + 1, i + 1].Value = Columns[i].Header;
+                    worksheet.Cells[rowOffset + 1, i + 1].Style.Font.Bold = true;
+
+                    if (ConfigureHeader != null)
+                    {
+                        ConfigureHeader(worksheet.Cells[rowOffset + 1, i + 1]);
+                    }
+
+                    if (Columns[i].ConfigureHeader != null)
+                    {
+                        Columns[i].ConfigureHeader(worksheet.Cells[rowOffset + 1, i + 1]);
+                    }
                 }
-                if (Columns[i].ConfigureHeader != null)
+
+                //configure the header row
+                if (ConfigureHeaderRow != null)
                 {
-                    Columns[i].ConfigureHeader(worksheet.Cells[rowOffset + 1, i + 1]);
+                    ConfigureHeaderRow(worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count]);
                 }
-            }
+                else
+                {
+                    worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count].AutoFilter = true;
+                }
 
-            //configure the header row
-            if (ConfigureHeaderRow != null)
-            {
-                ConfigureHeaderRow(worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count]);
+                rowOffset++;
             }
-            else
-            {
-                worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count].AutoFilter = true;
-            }
-
-            rowOffset++;
 
             //render data
             if (Rows != null)
