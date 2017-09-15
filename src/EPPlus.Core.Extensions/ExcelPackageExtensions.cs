@@ -3,6 +3,7 @@ using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 
 namespace EPPlus.Core.Extensions
@@ -65,6 +66,38 @@ namespace EPPlus.Core.Extensions
             }
 
             return dataSet;
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the ExcelPackage class based on a byte array
+        /// </summary>
+        /// <param name="buffer">The byte array</param>
+        /// <returns>An ExcelPackages</returns>
+        public static ExcelPackage ToExcelPackage(this byte[] buffer)
+        {
+            using (var memoryStream = new MemoryStream(buffer))
+            {
+                return new ExcelPackage(memoryStream);
+            }
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the ExcelPackage class based on a byte array
+        /// </summary>
+        /// <param name="buffer">The byte array</param>
+        /// <param name="password">The password to decrypt the document</param>
+        /// <returns>An ExcelPackages</returns>
+        public static ExcelPackage ToExcelPackage(this byte[] buffer, string password)
+        {
+            if (!string.IsNullOrEmpty(password))
+            {
+                using (var memoryStream = new MemoryStream(buffer))
+                {
+                    return new ExcelPackage(memoryStream, password);
+                }
+            }
+
+            return ToExcelPackage(buffer);
         }
     }
 }

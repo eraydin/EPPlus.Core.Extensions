@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +11,7 @@ namespace EPPlus.Core.Extensions.Tests
     public class ExcelPackageExtensions_Tests : TestBase
     {
         [Fact]
-        public void Test_TableNameExtensions()
+        public void Should_extract_all_excelTables_from_an_excelPackage()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -39,7 +40,7 @@ namespace EPPlus.Core.Extensions.Tests
 
 
         [Fact]
-        public void Test_ToDataSet()
+        public void Should_convert_an_excelPackage_into_a_dataSet()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -56,6 +57,27 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             dataset.Should().NotBeNull("We have 5 tables");
             dataset.Tables.Count.Should().Be(5, "We have 5 tables");
+        }
+
+        [Fact]
+        public void Should_convert_a_byte_array_into_an_excelPackage()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] buffer = excelPackage.GetAsByteArray();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelPackage package = buffer.ToExcelPackage();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            package.Should().NotBeNull();
+            package.Workbook.Worksheets.Count.ShouldBeEquivalentTo(excelPackage.Workbook.Worksheets.Count);
+            package.GetTables().Count().ShouldBeEquivalentTo(excelPackage.GetTables().Count());
         }
     }
 }
