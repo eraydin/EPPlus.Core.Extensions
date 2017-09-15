@@ -126,5 +126,30 @@ namespace EPPlus.Core.Extensions
         {
             return worksheet.AsEnumerable<T>(skipCastErrors, hasHeaderRow).ToList();
         }
+
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="worksheet"></param>
+        /// <param name="startRowIndex"></param>
+        /// <param name="items"></param>
+        /// <param name="propertySelectors"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, int startRowIndex, IList<T> items, params Func<T, object>[] propertySelectors)
+        {
+            if (items != null   &&  propertySelectors != null)
+            {
+                for (var i = 0; i < items.Count; i++)
+                {
+                    for (var j = 0; j < propertySelectors.Length; j++)
+                    {
+                        worksheet.Cells[i + startRowIndex, j + 1].Value = propertySelectors[j](items[i]);
+                    }
+                }
+            }
+
+            return worksheet;
+        }
     }
 }
