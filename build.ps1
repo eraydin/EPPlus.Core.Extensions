@@ -31,8 +31,8 @@ Param(
     [string[]]$ScriptArgs
 )
 
-$CakeVersion = "0.21.1"
-$DotNetChannel = "preview";
+$CakeVersion = "0.22.0"
+$DotNetChannel = "LTS";
 $DotNetVersion = "2.0.0";
 $DotNetInstallerUri = "https://dot.net/v1/dotnet-install.ps1";
 $NugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
