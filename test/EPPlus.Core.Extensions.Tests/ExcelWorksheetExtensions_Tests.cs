@@ -199,7 +199,6 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-
             worksheet.AddObjects(5, stocks, _ =>  _.Barcode,  _ => _.Quantity, _ => _.UpdatedDate );
             IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
 
