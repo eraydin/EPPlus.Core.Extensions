@@ -5,7 +5,7 @@ namespace EPPlus.Core.Extensions
     public static class TypeExtensions
     {
         /// <summary>
-        /// Determines whether given type is nullable or not
+        ///     Determines whether given type is nullable or not
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if type is nullable</returns>
@@ -15,7 +15,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Tests whether given type is numeric or not
+        ///     Tests whether given type is numeric or not
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if type is numeric</returns>
@@ -39,5 +39,16 @@ namespace EPPlus.Core.Extensions
                     return false;
             }
         }
+
+        /// <summary>
+        ///     Returns value of the property name
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public static object GetPropertyValue(this object obj, string propertyName)
+        {
+            return obj.GetType().GetProperty(propertyName).GetValue(obj, null);
+        } 
     }
 }

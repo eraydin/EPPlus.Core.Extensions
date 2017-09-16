@@ -10,7 +10,7 @@ namespace EPPlus.Core.Extensions
     public static class ExcelWorksheetExtensions
     {
         /// <summary>
-        /// Returns worksheet data bounds
+        ///     Returns given ExcelWorksheet data bounds as ExcelAddress
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
@@ -26,7 +26,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Returns worksheet data cell ranges
+        ///     Returns given ExcelWorksheet data cell ranges as ExcelRange
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
@@ -37,7 +37,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Extracts an ExcelTable from given ExcelWorkSheet
+        ///     Extracts an ExcelTable from given ExcelWorkSheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
@@ -63,7 +63,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Indicates whether ExcelWorksheet contains any formula or not
+        ///     Indicates whether the ExcelWorksheet contains any formula or not
         /// </summary>
         /// <param name="worksheet"></param>
         /// <returns></returns>
@@ -73,7 +73,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Extracts a DataTable from the ExcelWorksheet.
+        ///     Extracts a DataTable from the ExcelWorksheet.
         /// </summary>
         /// <param name="worksheet">The ExcelWorksheet.</param>
         /// <param name="hasHeaderRow">Indicates whether worksheet has a header row or not.</param>
@@ -102,7 +102,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Generic extension method yielding objects of specified type from excel worksheet.
+        ///     Generic extension method yielding objects of specified type from the ExcelWorksheet
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -115,7 +115,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Returns objects of specified type from excel worksheet as list.
+        ///     Returns objects of specified type from the ExcelWorksheet as a list.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -128,7 +128,42 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     
+        ///     Adds a line to the worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value)
+        {
+            worksheet.Cells[rowIndex, columnIndex].Value = value;
+            return worksheet;
+        }
+
+        /// <summary>
+        ///     Adds given list of objects to the worksheet
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="worksheet"></param>
+        /// <param name="startRowIndex"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, int startRowIndex, IList<T> items)
+        {
+            for (var i = 0; i < items.Count; i++)
+            {
+                for (var j = 0; j < typeof(T).GetProperties().Length; j++)
+                {
+                    AddLine(worksheet, i + startRowIndex, j + 1, items[i].GetPropertyValue(typeof(T).GetProperties()[j].Name));
+                }
+            }
+
+            return worksheet;
+        }
+
+        /// <summary>
+        ///     Adds given list of objects to the worksheet with propery selectors
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -138,14 +173,11 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, int startRowIndex, IList<T> items, params Func<T, object>[] propertySelectors)
         {
-            if (items != null   &&  propertySelectors != null)
+            for (var i = 0; i < items.Count; i++)
             {
-                for (var i = 0; i < items.Count; i++)
+                for (var j = 0; j < propertySelectors.Length; j++)
                 {
-                    for (var j = 0; j < propertySelectors.Length; j++)
-                    {
-                        worksheet.Cells[i + startRowIndex, j + 1].Value = propertySelectors[j](items[i]);
-                    }
+                    AddLine(worksheet, i + startRowIndex, j + 1, propertySelectors[j](items[i]));
                 }
             }
 

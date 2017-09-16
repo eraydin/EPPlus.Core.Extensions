@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System;
+
+using FluentAssertions;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System.Collections.Generic;
@@ -177,6 +179,61 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             list1.Count().Should().Be(4, "Should have four");
             list2.Count().Should().Be(4, "Should have four");
+        }
+
+        [Fact]
+        public void Test_AddObjects_With_Parameters()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            var stocks = new List<StocksNullable>();
+            stocks.Add(new StocksNullable
+                       {
+                           Barcode = "barcode123",
+                           Quantity = 5,
+                           UpdatedDate = DateTime.MaxValue
+                       });
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+
+            worksheet.AddObjects(5, stocks, _ =>  _.Barcode,  _ => _.Quantity, _ => _.UpdatedDate );
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count().Should().Be(4);
+        }
+
+        [Fact]
+        public void Test_AddObjects_Without_Parameters()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            var stocks = new List<StocksNullable>();
+            stocks.Add(new StocksNullable
+                       {
+                           Barcode = "barcode123",
+                           Quantity = 5,
+                           UpdatedDate = DateTime.MaxValue
+                       });
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.AddObjects(5, stocks);
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Count().Should().Be(4);
         }
     }
 }
