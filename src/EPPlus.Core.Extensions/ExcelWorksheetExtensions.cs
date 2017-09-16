@@ -173,6 +173,11 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, int startRowIndex, IList<T> items, params Func<T, object>[] propertySelectors)
         {
+            if (!propertySelectors.Any())
+            {
+                return AddObjects(worksheet, startRowIndex, items);
+            }
+
             for (var i = 0; i < items.Count; i++)
             {
                 for (var j = 0; j < propertySelectors.Length; j++)
