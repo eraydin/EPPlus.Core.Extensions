@@ -128,16 +128,46 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Adds a line to the worksheet
+        ///     Changes value of the specified cell
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="rowIndex"></param>
         /// <param name="columnIndex"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value)
+        public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value)
         {
             worksheet.Cells[rowIndex, columnIndex].Value = value;
+            return worksheet;
+        }
+    
+        /// <summary>
+        ///     Adds a line to the worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, params object[] values)
+        {
+            return worksheet.AddLine(rowIndex, 1, values);
+        }
+
+        /// <summary>
+        ///     Adds a line to the worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="startColumnIndex"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, int startColumnIndex, params object[] values)
+        {
+            for (var i = 0; i < values.Length; i++)
+            {
+                ChangeCellValue(worksheet, rowIndex, i + startColumnIndex, values[i]);
+            }
+
             return worksheet;
         }
 
