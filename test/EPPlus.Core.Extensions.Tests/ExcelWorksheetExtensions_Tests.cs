@@ -1,12 +1,10 @@
-﻿using System;
-
-using FluentAssertions;
+﻿using FluentAssertions;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-
 using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
@@ -134,7 +132,7 @@ namespace EPPlus.Core.Extensions.Tests
             dataTable.Should().NotBeNull($"{nameof(dataTable)} should not be NULL");
             dataTable.Rows.Count.Should().Be(4, "We have 4 records");
         }
-        
+
 
         [Fact]
         public void Test_Worksheet_AsEnumerable()
@@ -182,7 +180,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Test_AddObjects_With_Parameters()
+        public void Should_work_AddObjects_method_with_parameters()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -190,16 +188,16 @@ namespace EPPlus.Core.Extensions.Tests
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
             var stocks = new List<StocksNullable>();
             stocks.Add(new StocksNullable
-                       {
-                           Barcode = "barcode123",
-                           Quantity = 5,
-                           UpdatedDate = DateTime.MaxValue
-                       });
+            {
+                Barcode = "barcode123",
+                Quantity = 5,
+                UpdatedDate = DateTime.MaxValue
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.AddObjects(5, stocks, _ =>  _.Barcode,  _ => _.Quantity, _ => _.UpdatedDate );
+            worksheet.AddObjects(5, stocks, _ => _.Barcode, _ => _.Quantity, _ => _.UpdatedDate);
             IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
 
             //-----------------------------------------------------------------------------------------------------------
@@ -209,7 +207,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Test_AddObjects_Without_Parameters()
+        public void Should_throw_exception_when_the_parameters_of_AddObjects_method_are_null()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -217,11 +215,38 @@ namespace EPPlus.Core.Extensions.Tests
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
             var stocks = new List<StocksNullable>();
             stocks.Add(new StocksNullable
-                       {
-                           Barcode = "barcode123",
-                           Quantity = 5,
-                           UpdatedDate = DateTime.MaxValue
-                       });
+            {
+                Barcode = "barcode123",
+                Quantity = 5,
+                UpdatedDate = DateTime.MaxValue
+            });
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () => { worksheet.AddObjects(5, stocks, null); };
+
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.ShouldThrow<ArgumentException>();
+        }
+
+        [Fact]
+        public void Should_work_AddObjects_method_without_parameters()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            var stocks = new List<StocksNullable>();
+            stocks.Add(new StocksNullable
+            {
+                Barcode = "barcode123",
+                Quantity = 5,
+                UpdatedDate = DateTime.MaxValue
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -242,7 +267,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
@@ -253,6 +278,25 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             list.Count().Should().Be(4);
+        }
+
+        [Fact]
+        public void AddHeader_method_should_work()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.AddHeader("Barcode", "Quantity", "UpdatedDate");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Dimension.End.Row.Should().Be(5);
         }
     }
 }

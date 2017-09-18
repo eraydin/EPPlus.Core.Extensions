@@ -44,6 +44,13 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
+            // Table names should be unique
+            string tableName = $"{worksheet.Name}-{new Random(Guid.NewGuid().GetHashCode()).Next(9999)}";
+            return worksheet.AsExcelTable(tableName, hasHeaderRow);
+        }
+
+        public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, string tableName, bool hasHeaderRow = true)
+        {
             if (worksheet.Tables.Any())
             {
                 // Has any table on same addresses
@@ -54,9 +61,7 @@ namespace EPPlus.Core.Extensions
                     return excelTable;
                 }
             }
-
-            // Table names should be unique
-            string tableName = $"{worksheet.Name}-{new Random(Guid.NewGuid().GetHashCode()).Next(9999)}";
+         
             worksheet.Tables.Add(worksheet.GetExcelRange(hasHeaderRow), tableName);
             worksheet.Tables[tableName].ShowHeader = false;
             return worksheet.Tables[tableName];
@@ -140,7 +145,31 @@ namespace EPPlus.Core.Extensions
             worksheet.Cells[rowIndex, columnIndex].Value = value;
             return worksheet;
         }
-    
+        
+        /// <summary>
+        ///     Inserts a header line to the top of the Excel worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="headerTexts"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, params string[] headerTexts)
+        {
+            if (!headerTexts.Any())
+            {
+                return worksheet;
+            }
+
+            worksheet.InsertRow(1, 1);
+
+            for (var i = 0; i < headerTexts.Length; i++)
+            {
+                worksheet.AddLine(1, i + 1, headerTexts[i]);
+                worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+            }
+
+            return worksheet;
+        }
+        
         /// <summary>
         ///     Adds a line to the worksheet
         /// </summary>
@@ -165,12 +194,12 @@ namespace EPPlus.Core.Extensions
         {
             for (var i = 0; i < values.Length; i++)
             {
-                ChangeCellValue(worksheet, rowIndex, i + startColumnIndex, values[i]);
+                worksheet.ChangeCellValue(rowIndex, i + startColumnIndex, values[i]);
             }
 
             return worksheet;
         }
-
+        
         /// <summary>
         ///     Adds given list of objects to the worksheet
         /// </summary>
@@ -185,7 +214,7 @@ namespace EPPlus.Core.Extensions
             {
                 for (var j = 0; j < typeof(T).GetProperties().Length; j++)
                 {
-                    AddLine(worksheet, i + startRowIndex, j + 1, items[i].GetPropertyValue(typeof(T).GetProperties()[j].Name));
+                    worksheet.AddLine(i + startRowIndex, j + 1, items[i].GetPropertyValue(typeof(T).GetProperties()[j].Name));
                 }
             }
 
@@ -203,16 +232,16 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, int startRowIndex, IList<T> items, params Func<T, object>[] propertySelectors)
         {
-            if (!propertySelectors.Any())
+            if (propertySelectors == null)
             {
-                return AddObjects(worksheet, startRowIndex, items);
+                throw new ArgumentException($"{nameof(propertySelectors)} cannot be null");
             }
 
             for (var i = 0; i < items.Count; i++)
             {
                 for (var j = 0; j < propertySelectors.Length; j++)
                 {
-                    AddLine(worksheet, i + startRowIndex, j + 1, propertySelectors[j](items[i]));
+                    worksheet.AddLine(i + startRowIndex, j + 1, propertySelectors[j](items[i]));
                 }
             }
 

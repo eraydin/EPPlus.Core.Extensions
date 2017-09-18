@@ -180,7 +180,7 @@ namespace EPPlus.Core.Extensions
                 }
             }
 
-            return ToExcelPackage(buffer);
+            return buffer.ToExcelPackage();
         }
 
         /// <summary>
