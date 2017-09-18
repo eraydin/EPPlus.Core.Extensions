@@ -58,8 +58,7 @@ namespace EPPlus.Core.Extensions
                     }
                     catch
                     {
-                        result.AddLast(
-                            new ExcelTableConvertExceptionArgs
+                        result.AddLast(new ExcelTableConvertExceptionArgs
                             {
                                 ColumnName = table.Columns[map.Key].Name,
                                 ExpectedType = property.PropertyType,
@@ -109,8 +108,9 @@ namespace EPPlus.Core.Extensions
                     catch (Exception ex)
                     {
                         if (!skipCastErrors)
+                        {
                             throw new ExcelTableConvertException(
-                                "Cell casting error occures",
+                                "An error occured while parsing the cell",
                                 ex,
                                 new ExcelTableConvertExceptionArgs
                                 {
@@ -121,6 +121,7 @@ namespace EPPlus.Core.Extensions
                                     CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
                                 }
                             );
+                        }
                     }
                 }
 
@@ -184,7 +185,7 @@ namespace EPPlus.Core.Extensions
 
                     if (col == -1)
                     {
-                        throw new ArgumentException("Should never get here, but I can not identify column.");
+                        throw new ArgumentException($"{mappingAttribute.ColumnName} column could not found on the worksheet");
                     }
 
                     mapping.Add(new KeyValuePair<int, PropertyInfo>(col, property));

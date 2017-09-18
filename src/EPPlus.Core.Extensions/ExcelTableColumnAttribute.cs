@@ -62,7 +62,7 @@ namespace EPPlus.Core.Extensions
                 columnIndex = value;
             }
         }
-
+        
         private string columnName;
         private int columnIndex;
     }

@@ -74,7 +74,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static bool HasAnyFormula(this ExcelWorksheet worksheet)
         {
-            return worksheet.Cells.Any(x => !string.IsNullOrEmpty(x.Formula));
+            return worksheet.Cells.Any(x => !string.IsNullOrEmpty(x.Formula)) || worksheet.Cells.Any(x => !string.IsNullOrEmpty(x.FormulaR1C1));
         }
 
         /// <summary>

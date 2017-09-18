@@ -234,7 +234,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_work_AddObjects_method_without_parameters()
+        public void Should_AddObjects_method_work_without_parameters()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -261,7 +261,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void AddLine_method_should_work()
+        public void Should_AddLine_method_work()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -281,7 +281,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void AddHeader_method_should_work()
+        public void Should_AddHeader_method_work()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -298,5 +298,30 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             worksheet.Dimension.End.Row.Should().Be(5);
         }
+
+        [Fact]
+        public void Should_HasAnyFormula_method_work()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST5"];
+            worksheet1.Cells[18, 2, 18, 2].Formula = "=SUM(B2:B4)";
+
+            ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST4"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            bool result1 = worksheet1.HasAnyFormula();
+            bool result2 = worksheet2.HasAnyFormula();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            result1.Should().BeTrue();
+            result2.Should().BeFalse();
+        }
+
     }
 }
