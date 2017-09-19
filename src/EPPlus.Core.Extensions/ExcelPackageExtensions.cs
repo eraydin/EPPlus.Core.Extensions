@@ -8,12 +8,12 @@ using System.Linq;
 namespace EPPlus.Core.Extensions
 {
     /// <summary>
-    /// Class holds extensions on ExcelPackage object
+    ///     Class holds extensions on ExcelPackage object
     /// </summary>
     public static class ExcelPackageExtensions
     {
         /// <summary>
-        /// Returns all table names in the opened worksheet
+        ///     Returns all table names in the opened worksheet
         /// </summary>
         /// <remarks>Excel is ensuring the uniqueness of table names</remarks>
         /// <param name="excelPackage">The ExcelPackage object</param>
@@ -28,7 +28,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Returns concrete ExcelTable by its name 
+        ///     Returns concrete ExcelTable by its name 
         /// </summary>
         /// <param name="excelPackage">The ExcelPackage object</param>
         /// <param name="name">Name of the table</param>
@@ -39,7 +39,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Checks that given table name is in the ExcelPackage or not
+        ///     Checks that given table name is in the ExcelPackage or not
         /// </summary>
         /// <param name="excel">The ExcelPackage object</param>
         /// <param name="name">Name of the table</param>
@@ -50,7 +50,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Extracts a DataSet from the ExcelPackage.
+        ///     Extracts a DataSet from the ExcelPackage.
         /// </summary>
         /// <param name="excelPackage">The ExcelPackage.</param>
         /// <param name="hasHeaderRow">Indicates whether worksheet has a header row or not.</param>
@@ -65,6 +65,34 @@ namespace EPPlus.Core.Extensions
             }
 
             return dataSet;
+        }
+
+        /// <summary> 
+        ///     Yields objects of specified type from given ExcelPackage
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="excelPackage"></param>
+        /// <param name="worksheetIndex"></param>
+        /// <param name="skipCastingErrors"></param>
+        /// <param name="hasHeaderRow"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage excelPackage, int worksheetIndex = 1, bool skipCastingErrors = false, bool hasHeaderRow = true) where T : class, new()
+        {
+            return excelPackage.Workbook.Worksheets[worksheetIndex].AsEnumerable<T>(skipCastingErrors, hasHeaderRow);
+        }
+
+        /// <summary>
+        ///     Converts given ExcelPackage to list of objects
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="excelPackage"></param>
+        /// <param name="worksheetIndex"></param>
+        /// <param name="skipCastingErrors"></param>
+        /// <param name="hasHeaderRow"></param>
+        /// <returns></returns>
+        public static IList<T> ToList<T>(this ExcelPackage excelPackage, int worksheetIndex = 1, bool skipCastingErrors = false, bool hasHeaderRow = true) where T : class, new()
+        {
+            return excelPackage.AsEnumerable<T>(worksheetIndex, skipCastingErrors, hasHeaderRow).ToList();
         }
     }
 }

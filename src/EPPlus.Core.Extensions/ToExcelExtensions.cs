@@ -156,7 +156,7 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="buffer">The byte array</param>
         /// <returns>An ExcelPackages</returns>
-        public static ExcelPackage ToExcelPackage(this byte[] buffer)
+        public static ExcelPackage GetAsExcelPackage(this byte[] buffer)
         {
             using (var memoryStream = new MemoryStream(buffer))
             {
@@ -170,7 +170,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="buffer">The byte array</param>
         /// <param name="password">The password to decrypt the document</param>
         /// <returns>An ExcelPackages</returns>
-        public static ExcelPackage ToExcelPackage(this byte[] buffer, string password)
+        public static ExcelPackage GetAsExcelPackage(this byte[] buffer, string password)
         {
             if (!string.IsNullOrEmpty(password))
             {
@@ -184,13 +184,13 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// 
+        ///     Converts list of items to Excel and returns the Excel file as a bytearray.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="rows"></param>
-        /// <param name="addHeaderRow"></param>
+        /// <typeparam name="T">Type of object</typeparam>
+        /// <param name="rows">List of objects</param>
+        /// <param name="addHeaderRow">Add header row to worksheet</param>
         /// <returns></returns>
-        public static byte[] ToXlsx<T>(this IList<T> rows, bool addHeaderRow = true)
+        public static byte[] ToXlsx<T>(this IEnumerable<T> rows, bool addHeaderRow = true)
         {
             WorksheetWrapper<T> worksheet = rows.ToWorksheet(typeof(T).Name);
 
@@ -203,7 +203,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// 
+        ///     Returns the Excel file as a bytearray.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lastWorksheet"></param>
