@@ -1,6 +1,5 @@
 #addin "nuget:?package=Cake.ExtendedNuGet"
 #addin "nuget:?package=NuGet.Core"
-#addin "nuget:?package=Cake.Nuget"
 
 #tool "nuget:?package=xunit.runner.console&version=2.3.0-beta5-build3769"
 
