@@ -23,7 +23,7 @@ namespace EPPlus.Core.Extensions
         internal Action<ExcelRange, T> ConfigureCell { get; set; }
 
         /// <summary>
-        /// Generates columns for all public properties on the type
+        ///     Generates columns for all public properties on the type
         /// </summary>
         /// <returns></returns>
         internal IList<WorksheetColumn<T>> AutoGenerateColumns()
@@ -49,7 +49,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Wraps creation of an Excel worksheet
+        ///     Wraps creation of an Excel worksheet
         /// </summary>
         internal void AppendWorksheet()
         {
@@ -152,16 +152,17 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Generates a Func from a propertyName
+        ///     Generates a Func from a propertyName
         /// </summary>
+        /// <typeparam name="TP"></typeparam>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        private Func<T, object> GetGetter<T>(string propertyName)
+        private Func<TP, object> GetGetter<TP>(string propertyName) 
         {
-            ParameterExpression arg = Expression.Parameter(typeof(T), "x");
+            ParameterExpression arg = Expression.Parameter(typeof(TP), "x");
             MemberExpression expression = Expression.Property(arg, propertyName);
             UnaryExpression conversion = Expression.Convert(expression, typeof(object));
-            return Expression.Lambda<Func<T, object>>(conversion, arg).Compile();
+            return Expression.Lambda<Func<TP, object>>(conversion, arg).Compile();
         }
     }
 }
