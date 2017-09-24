@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
+[assembly:InternalsVisibleTo("EPPlus.Core.Extensions.Tests")]
 namespace EPPlus.Core.Extensions
 {
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         /// <summary>
         ///     Determines whether given type is nullable or not
