@@ -35,10 +35,14 @@ namespace EPPlus.Core.Extensions
 
             foreach (PropertyInfo property in properties)
             {
+                var mappingAttribute = (ExcelTableColumnAttribute)property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault();
+
+                //  Use mapping attribute or sentence case property name
+                string header = (mappingAttribute != null && !string.IsNullOrEmpty(mappingAttribute.ColumnName)) ? mappingAttribute.ColumnName : Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
+
                 var column = new WorksheetColumn<T>
                 {
-                    // Convert to sentence case
-                    Header = Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}"),
+                    Header = header,
                     Map = GetGetter<T>(property.Name),
                     ConfigureColumn = c => c.AutoFit()
                 };
@@ -157,7 +161,7 @@ namespace EPPlus.Core.Extensions
         /// <typeparam name="TP"></typeparam>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        private Func<TP, object> GetGetter<TP>(string propertyName) 
+        private Func<TP, object> GetGetter<TP>(string propertyName)
         {
             ParameterExpression arg = Expression.Parameter(typeof(TP), "x");
             MemberExpression expression = Expression.Property(arg, propertyName);

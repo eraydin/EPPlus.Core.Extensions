@@ -157,7 +157,10 @@ namespace EPPlus.Core.Extensions.Tests
     public class Person
     {
         public string FirstName { get; set; }
+        
         public string LastName { get; set; }
+
+        [ExcelTableColumn("Year of Birth")]
         public int YearBorn { get; set; }
     }
 }
