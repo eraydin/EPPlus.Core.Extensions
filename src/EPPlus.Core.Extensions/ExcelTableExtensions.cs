@@ -165,7 +165,7 @@ namespace EPPlus.Core.Extensions
             IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
 
             PropertyInfo[] propInfo = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
+            
             // Build property-table column mapping
             foreach (PropertyInfo property in propInfo)
             {
@@ -189,7 +189,10 @@ namespace EPPlus.Core.Extensions
                     // Column name was specified
                     if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
                     {
-                        col = table.Columns[mappingAttribute.ColumnName].Position;
+                        if (table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null)
+                        {
+                            col = table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)).Position;
+                        }
                     }
 
                     if (col == -1)
