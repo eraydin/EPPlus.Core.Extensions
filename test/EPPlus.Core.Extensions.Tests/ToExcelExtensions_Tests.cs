@@ -39,7 +39,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(3);
+            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(2);
         }
 
         [Fact]
@@ -115,9 +115,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Cells[1, 1, 1, 1].Value.Should().Be("First Name");
-            package.Workbook.Worksheets[1].Cells[1, 2, 1, 2].Value.Should().Be("Last Name");
-            package.Workbook.Worksheets[1].Cells[1, 3, 1, 3].Value.Should().Be("Year of Birth");
+            package.Workbook.Worksheets[1].Cells[1, 1, 1, 1].Value.Should().Be("Last Name");
+            package.Workbook.Worksheets[1].Cells[1, 2, 1, 2].Value.Should().Be("Year of Birth");
             package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count + 1);
         }
         
@@ -233,11 +232,16 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package = pre50
                 .ToWorksheet("< 1950")
+                .WithColumn(x => x.FirstName, "First Name")
+                .WithColumn(x => x.LastName, "Last Name")
+                .WithColumn(x => x.YearBorn, "Year of Birth")
                 .WithTitle("< 1950")
                 .NextWorksheet(post50, "> 1950")
+                .WithColumn(x => x.LastName, "Last Name")
+                .WithColumn(x => x.YearBorn, "Year of Birth")
                 .WithTitle("> 1950")
                 .ToExcelPackage();
-
+            
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
@@ -245,7 +249,7 @@ namespace EPPlus.Core.Extensions.Tests
             package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(pre50.Count + 2);
             package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(3);
             package.Workbook.Worksheets[2].Dimension.Rows.Should().Be(post50.Count + 2);
-            package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(3);
+            package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(2);
         }
 
         [Fact]
@@ -273,9 +277,9 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             package.Workbook.Worksheets.Count.Should().Be(2);
             package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(pre50.Count + 2);
-            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(3);
+            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(2);
             package.Workbook.Worksheets[2].Dimension.Rows.Should().Be(post50.Count + 1);
-            package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(3);
+            package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(2);
         }
 
         [Fact]

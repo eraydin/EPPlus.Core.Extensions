@@ -37,16 +37,18 @@ namespace EPPlus.Core.Extensions
             {
                 var mappingAttribute = (ExcelTableColumnAttribute)property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault();
 
-                //  Use mapping attribute or sentence case property name
-                string header = (mappingAttribute != null && !string.IsNullOrEmpty(mappingAttribute.ColumnName)) ? mappingAttribute.ColumnName : Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
-
-                var column = new WorksheetColumn<T>
+                if (mappingAttribute != null)
                 {
-                    Header = header,
-                    Map = GetGetter<T>(property.Name),
-                    ConfigureColumn = c => c.AutoFit()
-                };
-                columns.Add(column);
+                    string header = !string.IsNullOrEmpty(mappingAttribute.ColumnName) ? mappingAttribute.ColumnName : Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
+
+                    var column = new WorksheetColumn<T>
+                    {
+                        Header = header,
+                        Map = GetGetter<T>(property.Name),
+                        ConfigureColumn = c => c.AutoFit()
+                    };
+                    columns.Add(column);
+                }
             }
 
             return columns;

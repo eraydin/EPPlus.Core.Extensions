@@ -1,8 +1,10 @@
 ﻿using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 
 namespace EPPlus.Core.Extensions
@@ -61,7 +63,7 @@ namespace EPPlus.Core.Extensions
                     return excelTable;
                 }
             }
-         
+
             worksheet.Tables.Add(worksheet.GetExcelRange(hasHeaderRow), tableName);
             worksheet.Tables[tableName].ShowHeader = false;
             return worksheet.Tables[tableName];
@@ -145,7 +147,7 @@ namespace EPPlus.Core.Extensions
             worksheet.Cells[rowIndex, columnIndex].Value = value;
             return worksheet;
         }
-        
+
         /// <summary>
         ///     Inserts a header line to the top of the Excel worksheet
         /// </summary>
@@ -169,7 +171,7 @@ namespace EPPlus.Core.Extensions
 
             return worksheet;
         }
-        
+
         /// <summary>
         ///     Adds a line to the worksheet
         /// </summary>
@@ -199,7 +201,7 @@ namespace EPPlus.Core.Extensions
 
             return worksheet;
         }
-        
+
         /// <summary>
         ///     Adds given list of objects to the worksheet
         /// </summary>
@@ -245,6 +247,36 @@ namespace EPPlus.Core.Extensions
                 }
             }
 
+            return worksheet;
+        }
+
+        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelAddress address, Font font)
+        {
+            worksheet.Cells[address.Address].Style.Font.SetFromFont(font);
+            return worksheet;
+        }
+
+        public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, ExcelAddress address, Color fontColor)
+        {
+            worksheet.Cells[address.Address].Style.Font.Color.SetColor(fontColor);
+            return worksheet;
+        }
+
+        public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, ExcelAddress address, Color backgroundColor)
+        {
+            worksheet.Cells[address.Address].Style.Fill.BackgroundColor.SetColor(backgroundColor);
+            return worksheet;
+        }
+
+        public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelAddress address, ExcelHorizontalAlignment horizontalAlignment)
+        {
+            worksheet.Cells[address.Address].Style.HorizontalAlignment = horizontalAlignment;
+            return worksheet;
+        }
+
+        public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelAddress address, ExcelVerticalAlignment verticalAlignment)
+        {
+            worksheet.Cells[address.Address].Style.VerticalAlignment = verticalAlignment;
             return worksheet;
         }
     }

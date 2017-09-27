@@ -1,8 +1,10 @@
-﻿using OfficeOpenXml;
+﻿using EPPlus.Core.Extensions.Validation;
+using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
@@ -59,13 +61,13 @@ namespace EPPlus.Core.Extensions
                     catch
                     {
                         result.AddLast(new ExcelTableConvertExceptionArgs
-                            {
-                                ColumnName = table.Columns[map.Key].Name,
-                                ExpectedType = property.PropertyType,
-                                PropertyName = property.Name,
-                                CellValue = cell,
-                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                            });
+                        {
+                            ColumnName = table.Columns[map.Key].Name,
+                            ExpectedType = property.PropertyType,
+                            PropertyName = property.Name,
+                            CellValue = cell,
+                            CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                        });
                     }
                 }
             }
@@ -104,6 +106,13 @@ namespace EPPlus.Core.Extensions
                     try
                     {
                         TrySetProperty(item, property, cell);
+
+                        // Validate parsed object according to data annotations
+                        EntityValidationResult validationResult = DataAnnotation.ValidateEntity(item);
+                        if (validationResult.HasError)
+                        {
+                            throw new AggregateException(validationResult.ValidationErrors.Select(x => new ValidationException(x.ErrorMessage)));
+                        }
                     }
                     catch (Exception ex)
                     {

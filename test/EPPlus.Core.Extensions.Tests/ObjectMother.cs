@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 
 namespace EPPlus.Core.Extensions.Tests
@@ -81,6 +82,7 @@ namespace EPPlus.Core.Extensions.Tests
     class DateMap
     {
         [ExcelTableColumn]
+        [MinLength(1), MaxLength(50)]
         public string Name { get; set; }
 
         [ExcelTableColumn]
@@ -157,7 +159,8 @@ namespace EPPlus.Core.Extensions.Tests
     public class Person
     {
         public string FirstName { get; set; }
-        
+
+        [ExcelTableColumn(2)]
         public string LastName { get; set; }
 
         [ExcelTableColumn("Year of Birth")]
