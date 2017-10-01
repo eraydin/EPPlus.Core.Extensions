@@ -232,16 +232,17 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
-        /// <param name="startRowIndex"></param>
         /// <param name="items"></param>
+        /// <param name="startRowIndex"></param>
+        /// <param name="startColumnIndex"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, int startRowIndex, IList<T> items)
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IList<T> items, int startRowIndex, int startColumnIndex=0)
         {
             for (var i = 0; i < items.Count; i++)
             {
-                for (var j = 0; j < typeof(T).GetProperties().Length; j++)
+                for (int j = startColumnIndex; j < (startColumnIndex + typeof(T).GetProperties().Length); j++)
                 {
-                    worksheet.AddLine(i + startRowIndex, j + 1, items[i].GetPropertyValue(typeof(T).GetProperties()[j].Name));
+                    worksheet.AddLine(i + startRowIndex, j + 1, items[i].GetPropertyValue(typeof(T).GetProperties()[j-startColumnIndex].Name));
                 }
             }
 
@@ -249,15 +250,30 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
+        ///      Adds given list of objects to the worksheet with propery selectors
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="worksheet"></param>
+        /// <param name="items"></param>
+        /// <param name="startRowIndex"></param>
+        /// <param name="propertySelectors"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IList<T> items, int startRowIndex, params Func<T, object>[] propertySelectors)
+        {
+            return worksheet.AddObjects(items, startRowIndex, 0, propertySelectors);
+        }
+        
+        /// <summary>
         ///     Adds given list of objects to the worksheet with propery selectors
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
-        /// <param name="startRowIndex"></param>
         /// <param name="items"></param>
+        /// <param name="startRowIndex"></param>
+        /// <param name="startColumnIndex"></param>
         /// <param name="propertySelectors"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, int startRowIndex, IList<T> items, params Func<T, object>[] propertySelectors)
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IList<T> items, int startRowIndex, int startColumnIndex, params Func<T, object>[] propertySelectors)
         {
             if (propertySelectors == null)
             {
@@ -266,15 +282,15 @@ namespace EPPlus.Core.Extensions
 
             for (var i = 0; i < items.Count; i++)
             {
-                for (var j = 0; j < propertySelectors.Length; j++)
+                for (int j = startColumnIndex; j < (startColumnIndex+propertySelectors.Length); j++)
                 {
-                    worksheet.AddLine(i + startRowIndex, j + 1, propertySelectors[j](items[i]));
+                    worksheet.AddLine(i + startRowIndex, j + 1, propertySelectors[j-startColumnIndex](items[i]));
                 }
             }
 
             return worksheet;
         }
-
+        
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelAddress address, Font font)
         {
             worksheet.Cells[address.Address].Style.Font.SetFromFont(font);
