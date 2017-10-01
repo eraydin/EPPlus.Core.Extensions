@@ -19,8 +19,9 @@ namespace EPPlus.Core.Extensions
             return row;
         }
 
-        public static ExcelRow SetBackgroundColor(this ExcelRow row, Color backgroundColor)
+        public static ExcelRow SetBackgroundColor(this ExcelRow row, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
+            row.Style.Fill.PatternType = fillStyle;
             row.Style.Fill.BackgroundColor.SetColor(backgroundColor);
             return row;
         }

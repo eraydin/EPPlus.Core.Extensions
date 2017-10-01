@@ -1,9 +1,11 @@
 ﻿using FluentAssertions;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using Xunit;
 
@@ -226,7 +228,6 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             Action action = () => { worksheet.AddObjects(stocks, 5, null); };
 
-
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
@@ -291,7 +292,11 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.AddHeader("Barcode", "Quantity", "UpdatedDate");
+            worksheet.AddHeader(x =>
+            {
+                x.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                x.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(170, 170, 170));
+            }, "Barcode", "Quantity", "UpdatedDate");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

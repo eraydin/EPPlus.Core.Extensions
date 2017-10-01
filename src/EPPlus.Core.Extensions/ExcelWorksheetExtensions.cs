@@ -166,9 +166,11 @@ namespace EPPlus.Core.Extensions
         /// <param name="rowIndex"></param>
         /// <param name="columnIndex"></param>
         /// <param name="value"></param>
+        /// <param name="configureCell"></param>
         /// <returns></returns>
-        public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value)
+        public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value, Action<ExcelRange> configureCell=null)
         {
+            configureCell?.Invoke(worksheet.Cells[rowIndex, columnIndex]);
             worksheet.Cells[rowIndex, columnIndex].Value = value;
             return worksheet;
         }
@@ -181,6 +183,18 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, params string[] headerTexts)
         {
+            return worksheet.AddHeader(null, headerTexts);
+        }
+
+        /// <summary>
+        ///     Inserts a header line to the top of the Excel worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="configureHeader"></param>
+        /// <param name="headerTexts"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, Action<ExcelRange> configureHeader = null,  params string[] headerTexts)
+        {
             if (!headerTexts.Any())
             {
                 return worksheet;
@@ -190,8 +204,8 @@ namespace EPPlus.Core.Extensions
 
             for (var i = 0; i < headerTexts.Length; i++)
             {
-                worksheet.AddLine(1, i + 1, headerTexts[i]);
                 worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                worksheet.AddLine(1, i + 1, configureHeader, headerTexts[i]);
             }
 
             return worksheet;
@@ -206,7 +220,20 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, params object[] values)
         {
-            return worksheet.AddLine(rowIndex, 1, values);
+            return worksheet.AddLine(rowIndex, 1, null, values);
+        }
+
+        /// <summary>
+        ///     Adds a line to the worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="configureCells"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, Action<ExcelRange> configureCells = null,params object[] values)
+        {
+            return worksheet.AddLine(rowIndex, 1, configureCells, values);
         }
 
         /// <summary>
@@ -215,13 +242,14 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="rowIndex"></param>
         /// <param name="startColumnIndex"></param>
+        /// <param name="configureCells"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, int startColumnIndex, params object[] values)
+        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, int startColumnIndex, Action<ExcelRange> configureCells = null, params object[] values)
         {
             for (var i = 0; i < values.Length; i++)
             {
-                worksheet.ChangeCellValue(rowIndex, i + startColumnIndex, values[i]);
+                worksheet.ChangeCellValue(rowIndex, i + startColumnIndex, values[i], configureCells);
             }
 
             return worksheet;
@@ -235,14 +263,15 @@ namespace EPPlus.Core.Extensions
         /// <param name="items"></param>
         /// <param name="startRowIndex"></param>
         /// <param name="startColumnIndex"></param>
+        /// <param name="configureCells"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IList<T> items, int startRowIndex, int startColumnIndex=0)
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IList<T> items, int startRowIndex, int startColumnIndex=0, Action<ExcelRange> configureCells=null)
         {
             for (var i = 0; i < items.Count; i++)
             {
                 for (int j = startColumnIndex; j < (startColumnIndex + typeof(T).GetProperties().Length); j++)
                 {
-                    worksheet.AddLine(i + startRowIndex, j + 1, items[i].GetPropertyValue(typeof(T).GetProperties()[j-startColumnIndex].Name));
+                    worksheet.AddLine(i + startRowIndex, j + 1, configureCells, items[i].GetPropertyValue(typeof(T).GetProperties()[j-startColumnIndex].Name));
                 }
             }
 
@@ -260,9 +289,9 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IList<T> items, int startRowIndex, params Func<T, object>[] propertySelectors)
         {
-            return worksheet.AddObjects(items, startRowIndex, 0, propertySelectors);
+            return worksheet.AddObjects(items, startRowIndex, 0, null, propertySelectors);
         }
-        
+
         /// <summary>
         ///     Adds given list of objects to the worksheet with propery selectors
         /// </summary>
@@ -271,9 +300,10 @@ namespace EPPlus.Core.Extensions
         /// <param name="items"></param>
         /// <param name="startRowIndex"></param>
         /// <param name="startColumnIndex"></param>
+        /// <param name="configureCells"></param>
         /// <param name="propertySelectors"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IList<T> items, int startRowIndex, int startColumnIndex, params Func<T, object>[] propertySelectors)
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IList<T> items, int startRowIndex, int startColumnIndex, Action<ExcelRange> configureCells=null, params Func<T, object>[] propertySelectors)
         {
             if (propertySelectors == null)
             {
@@ -284,40 +314,66 @@ namespace EPPlus.Core.Extensions
             {
                 for (int j = startColumnIndex; j < (startColumnIndex+propertySelectors.Length); j++)
                 {
-                    worksheet.AddLine(i + startRowIndex, j + 1, propertySelectors[j-startColumnIndex](items[i]));
+                    worksheet.AddLine(i + startRowIndex, j + 1, configureCells, propertySelectors[j-startColumnIndex](items[i]));
                 }
             }
 
             return worksheet;
         }
         
-        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelAddress address, Font font)
+        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)
         {
-            worksheet.Cells[address.Address].Style.Font.SetFromFont(font);
+            return worksheet.SetFont(worksheet.Cells, font);
+        }
+
+        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelRange cellRange, Font font)
+        {
+            worksheet.Cells[cellRange.Address].Style.Font.SetFromFont(font);
             return worksheet;
         }
 
-        public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, ExcelAddress address, Color fontColor)
+        public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, Color fontColor)
         {
-            worksheet.Cells[address.Address].Style.Font.Color.SetColor(fontColor);
+            return worksheet.SetFontColor(worksheet.Cells, fontColor);
+        }
+
+        public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color fontColor)
+        {
+            worksheet.Cells[cellRange.Address].Style.Font.Color.SetColor(fontColor);
             return worksheet;
         }
 
-        public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, ExcelAddress address, Color backgroundColor)
+        public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-            worksheet.Cells[address.Address].Style.Fill.BackgroundColor.SetColor(backgroundColor);
+           return worksheet.SetBackgroundColor(worksheet.Cells, backgroundColor, fillStyle);
+        }
+
+        public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
+        {
+            worksheet.Cells[cellRange.Address].Style.Fill.PatternType = fillStyle;
+            worksheet.Cells[cellRange.Address].Style.Fill.BackgroundColor.SetColor(backgroundColor);
             return worksheet;
         }
 
-        public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelAddress address, ExcelHorizontalAlignment horizontalAlignment)
+        public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelHorizontalAlignment horizontalAlignment)
         {
-            worksheet.Cells[address.Address].Style.HorizontalAlignment = horizontalAlignment;
+            return worksheet.SetHorizontalAlignment(worksheet.Cells, horizontalAlignment);
+        }
+
+        public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelRange cellRange, ExcelHorizontalAlignment horizontalAlignment)
+        {
+            worksheet.Cells[cellRange.Address].Style.HorizontalAlignment = horizontalAlignment;
             return worksheet;
         }
 
-        public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelAddress address, ExcelVerticalAlignment verticalAlignment)
+        public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelVerticalAlignment verticalAlignment)
         {
-            worksheet.Cells[address.Address].Style.VerticalAlignment = verticalAlignment;
+            return worksheet.SetVerticalAlignment(worksheet.Cells, verticalAlignment);
+        }
+
+        public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelRange cellRange, ExcelVerticalAlignment verticalAlignment)
+        {
+            worksheet.Cells[cellRange.Address].Style.VerticalAlignment = verticalAlignment;
             return worksheet;
         }
     }
