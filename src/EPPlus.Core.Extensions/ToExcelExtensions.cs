@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace EPPlus.Core.Extensions
 {
@@ -25,7 +24,7 @@ namespace EPPlus.Core.Extensions
             {
                 Name = name,
                 Package = new ExcelPackage(),
-                Rows = rows.ToList(),
+                Rows = rows,
                 Columns = new List<WorksheetColumn<T>>(),
                 ConfigureHeader = configureHeader,
                 ConfigureColumn = configureColumn,
@@ -34,7 +33,7 @@ namespace EPPlus.Core.Extensions
             };
             return worksheet;
         }
-        
+
         /// <summary>
         ///     Starts new worksheet on same Excel package
         /// </summary>
@@ -48,7 +47,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="configureHeaderRow"></param>
         /// <param name="configureCell"></param>
         /// <returns></returns>
-        public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IList<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
+        public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IEnumerable<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
         {
             previousSheet.AppendWorksheet();
             var worksheet = new WorksheetWrapper<T>()
@@ -196,7 +195,7 @@ namespace EPPlus.Core.Extensions
 
             if (!addHeaderRow)
             {
-               worksheet.WithoutHeader();
+                worksheet.WithoutHeader();
             }
 
             return worksheet.ToXlsx();
