@@ -131,10 +131,11 @@ namespace EPPlus.Core.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
         /// <param name="addHeaderRow"></param>
+        /// <param name="worksheetName"></param>
         /// <returns></returns>
-        public static ExcelPackage ToExcelPackage<T>(this IEnumerable<T> rows, bool addHeaderRow = true)
+        public static ExcelPackage ToExcelPackage<T>(this IEnumerable<T> rows, bool addHeaderRow = true, string worksheetName = null)
         {
-            WorksheetWrapper<T> worksheet = rows.ToWorksheet(typeof(T).Name);
+            WorksheetWrapper<T> worksheet = rows.ToWorksheet(string.IsNullOrEmpty(worksheetName) ? typeof(T).Name: worksheetName);
 
             if (!addHeaderRow)
             {

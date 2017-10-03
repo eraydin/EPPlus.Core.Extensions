@@ -118,8 +118,7 @@ namespace EPPlus.Core.Extensions
                     {
                         if (!skipCastErrors)
                         {
-                            throw new ExcelTableConvertException(
-                                "An error occured while parsing the cell",
+                            throw new ExcelTableConvertException("An error occured while parsing the cell",
                                 ex,
                                 new ExcelTableConvertExceptionArgs
                                 {

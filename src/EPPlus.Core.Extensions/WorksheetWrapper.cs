@@ -35,6 +35,7 @@ namespace EPPlus.Core.Extensions
             foreach (PropertyInfo property in properties)
             {
                 var mappingAttribute = (ExcelTableColumnAttribute)property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault();
+                bool isNullableProperty = property.PropertyType.IsNullable();
 
                 if (mappingAttribute != null)
                 {
@@ -44,7 +45,8 @@ namespace EPPlus.Core.Extensions
                     {
                         Header = header,
                         Map = GetGetter<T>(property.Name),
-                        ConfigureColumn = c => c.AutoFit()
+                        ConfigureColumn = c => c.AutoFit(),
+                        ConfigureHeader = c => { c.Style.Font.Bold = !isNullableProperty; }
                     };
                     columns.Add(column);
                 }
@@ -95,7 +97,7 @@ namespace EPPlus.Core.Extensions
                 for (var i = 0; i < Columns.Count; i++)
                 {
                     worksheet.Cells[rowOffset + 1, i + 1].Value = Columns[i].Header;
-                    worksheet.Cells[rowOffset + 1, i + 1].Style.Font.Bold = true;
+                   
 
                     if (ConfigureHeader != null)
                     {

@@ -67,8 +67,7 @@ namespace EPPlus.Core.Extensions
 
             worksheet.Tables.Add(worksheet.GetExcelRange(hasHeaderRow), tableName);
             worksheet.Tables[tableName].ShowHeader = false;
-
-
+            
             // TODO : 
             PropertyInfo[] propInfo = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
