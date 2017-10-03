@@ -231,7 +231,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="configureCells"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, Action<ExcelRange> configureCells = null,params object[] values)
+        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, Action<ExcelRange> configureCells = null, params object[] values)
         {
             return worksheet.AddLine(rowIndex, 1, configureCells, values);
         }
@@ -289,7 +289,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, params Func<T, object>[] propertySelectors)
         {
-            return worksheet.AddObjects(items, startRowIndex, 0, null, propertySelectors);
+            return worksheet.AddObjects(items, startRowIndex, 1, null, propertySelectors);
         }
 
         /// <summary>
@@ -314,7 +314,7 @@ namespace EPPlus.Core.Extensions
             {
                 for (int j = startColumnIndex; j < (startColumnIndex+propertySelectors.Length); j++)
                 {
-                    worksheet.AddLine(i + startRowIndex, j + 1, configureCells, propertySelectors[j-startColumnIndex](items.ElementAt(i)));
+                    worksheet.AddLine(i + startRowIndex, j, configureCells, propertySelectors[j-startColumnIndex](items.ElementAt(i)));
                 }
             }
 
