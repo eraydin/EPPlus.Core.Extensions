@@ -188,13 +188,15 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
-            var stocks = new List<StocksNullable>();
-            stocks.Add(new StocksNullable
+            var stocks = new List<StocksNullable>
             {
-                Barcode = "barcode123",
-                Quantity = 5,
-                UpdatedDate = DateTime.MaxValue
-            });
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = DateTime.MaxValue
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -215,13 +217,15 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
-            var stocks = new List<StocksNullable>();
-            stocks.Add(new StocksNullable
+            var stocks = new List<StocksNullable>
             {
-                Barcode = "barcode123",
-                Quantity = 5,
-                UpdatedDate = DateTime.MaxValue
-            });
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = DateTime.MaxValue
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -241,13 +245,15 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
-            var stocks = new List<StocksNullable>();
-            stocks.Add(new StocksNullable
+            var stocks = new List<StocksNullable>
             {
-                Barcode = "barcode123",
-                Quantity = 5,
-                UpdatedDate = DateTime.MaxValue
-            });
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = DateTime.MaxValue
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

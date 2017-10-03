@@ -265,13 +265,13 @@ namespace EPPlus.Core.Extensions
         /// <param name="startColumnIndex"></param>
         /// <param name="configureCells"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex=0, Action<ExcelRange> configureCells=null)
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex=1, Action<ExcelRange> configureCells=null)
         {
             for (var i = 0; i < items.Count(); i++)
             {
                 for (int j = startColumnIndex; j < (startColumnIndex + typeof(T).GetProperties().Length); j++)
                 {
-                    worksheet.AddLine(i + startRowIndex, j + 1, configureCells, items.ElementAt(i).GetPropertyValue(typeof(T).GetProperties()[j-startColumnIndex].Name));
+                    worksheet.AddLine(i + startRowIndex, j, configureCells, items.ElementAt(i).GetPropertyValue(typeof(T).GetProperties()[j-startColumnIndex].Name));
                 }
             }
 
