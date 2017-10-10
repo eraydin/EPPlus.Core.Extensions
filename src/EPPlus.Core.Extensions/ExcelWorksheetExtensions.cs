@@ -1,12 +1,13 @@
-﻿using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 
 namespace EPPlus.Core.Extensions
 {
@@ -67,7 +68,13 @@ namespace EPPlus.Core.Extensions
 
             worksheet.Tables.Add(worksheet.GetExcelRange(hasHeaderRow), tableName);
             worksheet.Tables[tableName].ShowHeader = false;
-            
+
+            int headerRowIndex = worksheet.Tables[tableName].Address.Start.Row - 1;
+            if (headerRowIndex <= 0)
+            {
+                headerRowIndex++;
+            }
+
             // TODO : 
             PropertyInfo[] propInfo = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
@@ -82,6 +89,15 @@ namespace EPPlus.Core.Extensions
                     {
                         worksheet.Tables[tableName].Columns[i].Name = property.Name;
                     }
+
+                    // Column index was specified
+                    if (mappingAttribute.ColumnIndex > 0)
+                    {
+                        int headerColumnIndex = mappingAttribute.ColumnIndex - 1;
+                        string headerValue = worksheet.Cells[headerRowIndex, worksheet.Tables[tableName].Address.Start.Column + headerColumnIndex].Value.ToString();
+                        worksheet.Tables[tableName].Columns[headerColumnIndex].Name = headerValue.Trim();
+                    }
+
                     // Column name was specified
                     if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
                     {
@@ -167,7 +183,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="value"></param>
         /// <param name="configureCell"></param>
         /// <returns></returns>
-        public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value, Action<ExcelRange> configureCell=null)
+        public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value, Action<ExcelRange> configureCell = null)
         {
             configureCell?.Invoke(worksheet.Cells[rowIndex, columnIndex]);
             worksheet.Cells[rowIndex, columnIndex].Value = value;
@@ -192,7 +208,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="configureHeader"></param>
         /// <param name="headerTexts"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, Action<ExcelRange> configureHeader = null,  params string[] headerTexts)
+        public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, Action<ExcelRange> configureHeader = null, params string[] headerTexts)
         {
             if (!headerTexts.Any())
             {
@@ -264,13 +280,13 @@ namespace EPPlus.Core.Extensions
         /// <param name="startColumnIndex"></param>
         /// <param name="configureCells"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex=1, Action<ExcelRange> configureCells=null)
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex = 1, Action<ExcelRange> configureCells = null)
         {
             for (var i = 0; i < items.Count(); i++)
             {
-                for (int j = startColumnIndex; j < (startColumnIndex + typeof(T).GetProperties().Length); j++)
+                for (int j = startColumnIndex; j < startColumnIndex + typeof(T).GetProperties().Length; j++)
                 {
-                    worksheet.AddLine(i + startRowIndex, j, configureCells, items.ElementAt(i).GetPropertyValue(typeof(T).GetProperties()[j-startColumnIndex].Name));
+                    worksheet.AddLine(i + startRowIndex, j, configureCells, items.ElementAt(i).GetPropertyValue(typeof(T).GetProperties()[j - startColumnIndex].Name));
                 }
             }
 
@@ -278,7 +294,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///      Adds given list of objects to the worksheet with propery selectors
+        ///     Adds given list of objects to the worksheet with propery selectors
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -302,7 +318,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="configureCells"></param>
         /// <param name="propertySelectors"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex, Action<ExcelRange> configureCells=null, params Func<T, object>[] propertySelectors)
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex, Action<ExcelRange> configureCells = null, params Func<T, object>[] propertySelectors)
         {
             if (propertySelectors == null)
             {
@@ -311,15 +327,15 @@ namespace EPPlus.Core.Extensions
 
             for (var i = 0; i < items.Count(); i++)
             {
-                for (int j = startColumnIndex; j < (startColumnIndex+propertySelectors.Length); j++)
+                for (int j = startColumnIndex; j < startColumnIndex + propertySelectors.Length; j++)
                 {
-                    worksheet.AddLine(i + startRowIndex, j, configureCells, propertySelectors[j-startColumnIndex](items.ElementAt(i)));
+                    worksheet.AddLine(i + startRowIndex, j, configureCells, propertySelectors[j - startColumnIndex](items.ElementAt(i)));
                 }
             }
 
             return worksheet;
         }
-        
+
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)
         {
             return worksheet.SetFont(worksheet.Cells, font);
@@ -344,7 +360,7 @@ namespace EPPlus.Core.Extensions
 
         public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-           return worksheet.SetBackgroundColor(worksheet.Cells, backgroundColor, fillStyle);
+            return worksheet.SetBackgroundColor(worksheet.Cells, backgroundColor, fillStyle);
         }
 
         public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
