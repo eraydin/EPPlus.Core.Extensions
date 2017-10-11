@@ -63,13 +63,13 @@ namespace EPPlus.Core.Extensions
                     catch
                     {
                         result.AddLast(new ExcelTableConvertExceptionArgs
-                        {
-                            ColumnName = table.Columns[map.Key].Name,
-                            ExpectedType = property.PropertyType,
-                            PropertyName = property.Name,
-                            CellValue = cell,
-                            CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                        });
+                                       {
+                                           ColumnName = table.Columns[map.Key].Name,
+                                           ExpectedType = property.PropertyType,
+                                           PropertyName = property.Name,
+                                           CellValue = cell,
+                                           CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                       });
                     }
                 }
             }
@@ -124,16 +124,17 @@ namespace EPPlus.Core.Extensions
                     {
                         if (!skipCastErrors)
                         {
-                            throw new ExcelTableConvertException("An error occured while parsing the cell",
-                                ex,
-                                new ExcelTableConvertExceptionArgs
-                                {
-                                    ColumnName = table.Columns[map.Key].Name,
-                                    ExpectedType = property.PropertyType,
-                                    PropertyName = property.Name,
-                                    CellValue = cell,
-                                    CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                                }
+                            var exceptionArgs = new ExcelTableConvertExceptionArgs
+                                                {
+                                                    ColumnName = table.Columns[map.Key].Name,
+                                                    ExpectedType = property.PropertyType,
+                                                    PropertyName = property.Name,
+                                                    CellValue = cell,
+                                                    CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                                };
+
+                            throw new ExcelTableConvertException($"The expected type of '{exceptionArgs.PropertyName}' property is '{exceptionArgs.ExpectedType.Name}', but the cell [{exceptionArgs.CellAddress.Address}] contains an invalid value.",
+                                ex, exceptionArgs
                             );
                         }
                     }
