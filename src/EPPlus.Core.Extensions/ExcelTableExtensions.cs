@@ -1,22 +1,24 @@
-﻿using EPPlus.Core.Extensions.Validation;
-using OfficeOpenXml;
-using OfficeOpenXml.Table;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
+using EPPlus.Core.Extensions.Validation;
+
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
+
 namespace EPPlus.Core.Extensions
 {
     /// <summary>
-    /// Class holds extensions on ExcelTable object
+    ///     Class holds extensions on ExcelTable object
     /// </summary>
     public static class ExcelTableExtensions
     {
         /// <summary>
-        /// Returns table data bounds with regards to header and totals row visibility
+        ///     Returns table data bounds with regards to header and totals row visibility
         /// </summary>
         /// <param name="table">Extended object</param>
         /// <returns>Address range</returns>
@@ -31,11 +33,11 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Validates the excel table against the generating type.
+        ///     Validates the excel table against the generating type.
         /// </summary>
         /// <typeparam name="T">Generating class type</typeparam>
         /// <param name="table">Extended object</param>
-        /// <returns>An enumerable of <see cref="ExcelTableConvertExceptionArgs"/> containing </returns>
+        /// <returns>An enumerable of <see cref="ExcelTableConvertExceptionArgs" /> containing </returns>
         public static IEnumerable<ExcelTableConvertExceptionArgs> Validate<T>(this ExcelTable table) where T : class, new()
         {
             IList mapping = PrepareMappings<T>(table);
@@ -76,15 +78,19 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Generic extension method yielding objects of specified type from table.
+        ///     Generic extension method yielding objects of specified type from table.
         /// </summary>
-        /// <remarks>Exceptions are not catched. It works on all or nothing basis. 
-        /// Only primitives and enums are supported as property.
-        /// Currently supports only tables with header.</remarks>
+        /// <remarks>
+        ///     Exceptions are not catched. It works on all or nothing basis.
+        ///     Only primitives and enums are supported as property.
+        ///     Currently supports only tables with header.
+        /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="skipCastErrors">Determines how the method should handle exceptions when casting cell value to property type. 
-        /// If this is true, invalid casts are silently skipped, otherwise any error will cause method to fail with exception.</param>
+        /// <param name="skipCastErrors">
+        ///     Determines how the method should handle exceptions when casting cell value to property type.
+        ///     If this is true, invalid casts are silently skipped, otherwise any error will cause method to fail with exception.
+        /// </param>
         /// <returns>An enumerable of the generating type</returns>
         public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, bool skipCastErrors = false) where T : class, new()
         {
@@ -138,15 +144,19 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Returns objects of specified type from table as list.
+        ///     Returns objects of specified type from table as list.
         /// </summary>
-        /// <remarks>Exceptions are not catched. It works on all or nothing basis. 
-        /// Only primitives and enums are supported as property.
-        /// Currently supports only tables with header.</remarks>
+        /// <remarks>
+        ///     Exceptions are not catched. It works on all or nothing basis.
+        ///     Only primitives and enums are supported as property.
+        ///     Currently supports only tables with header.
+        /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="skipCastErrors">Determines how the method should handle exceptions when casting cell value to property type. 
-        /// If this is true, invlaid casts are silently skipped, otherwise any error will cause method to fail with exception.</param>
+        /// <param name="skipCastErrors">
+        ///     Determines how the method should handle exceptions when casting cell value to property type.
+        ///     If this is true, invlaid casts are silently skipped, otherwise any error will cause method to fail with exception.
+        /// </param>
         /// <returns>An enumerable of the generating type</returns>
         public static IList<T> ToList<T>(this ExcelTable table, bool skipCastErrors = false) where T : class, new()
         {
@@ -154,7 +164,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Prepares mapping using the type and the attributes decorating its properties
+        ///     Prepares mapping using the type and the attributes decorating its properties
         /// </summary>
         /// <typeparam name="T">Type to parse</typeparam>
         /// <param name="table">Table to get columns from</param>
@@ -164,7 +174,7 @@ namespace EPPlus.Core.Extensions
             IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
 
             PropertyInfo[] propInfo = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            
+
             // Build property-table column mapping
             foreach (PropertyInfo property in propInfo)
             {
@@ -172,6 +182,7 @@ namespace EPPlus.Core.Extensions
                 if (mappingAttribute != null)
                 {
                     int col = -1;
+
                     // There is no case when both column name and index is specified since this is excluded by the attribute
                     // Neither index, nor column name is specified, use property name
                     if (mappingAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
@@ -207,7 +218,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// Tries to set property of item
+        ///     Tries to set property of item
         /// </summary>
         /// <param name="item">target object</param>
         /// <param name="property">property to be set</param>
@@ -220,7 +231,10 @@ namespace EPPlus.Core.Extensions
             // If type is nullable, get base type instead
             if (property.PropertyType.IsNullable())
             {
-                if (cell == null) return; // If it is nullable, and we have null we should not waste time
+                if (cell == null)
+                {
+                    return; // If it is nullable, and we have null we should not waste time
+                }
 
                 type = type.GetGenericArguments()[0];
             }

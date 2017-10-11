@@ -1,7 +1,8 @@
-﻿using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+
+using OfficeOpenXml;
 
 namespace EPPlus.Core.Extensions
 {
@@ -20,7 +21,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static WorksheetWrapper<T> ToWorksheet<T>(this IEnumerable<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
         {
-            var worksheet = new WorksheetWrapper<T>()
+            var worksheet = new WorksheetWrapper<T>
             {
                 Name = name,
                 Package = new ExcelPackage(),
@@ -50,7 +51,7 @@ namespace EPPlus.Core.Extensions
         public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IEnumerable<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
         {
             previousSheet.AppendWorksheet();
-            var worksheet = new WorksheetWrapper<T>()
+            var worksheet = new WorksheetWrapper<T>
             {
                 Name = name,
                 Package = previousSheet.Package,
@@ -78,7 +79,7 @@ namespace EPPlus.Core.Extensions
         public static WorksheetWrapper<T> WithColumn<T>(this WorksheetWrapper<T> worksheet, Func<T, object> map,
             string columnHeader, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange, T> configureCell = null)
         {
-            worksheet.Columns.Add(new WorksheetColumn<T>()
+            worksheet.Columns.Add(new WorksheetColumn<T>
             {
                 Map = map,
                 ConfigureHeader = configureHeader,
@@ -104,7 +105,7 @@ namespace EPPlus.Core.Extensions
                 worksheet.Titles = new List<WorksheetTitleRow>();
             }
 
-            worksheet.Titles.Add(new WorksheetTitleRow()
+            worksheet.Titles.Add(new WorksheetTitleRow
             {
                 Title = title,
                 ConfigureTitle = configureTitle
@@ -135,7 +136,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelPackage ToExcelPackage<T>(this IEnumerable<T> rows, bool addHeaderRow = true, string worksheetName = null)
         {
-            WorksheetWrapper<T> worksheet = rows.ToWorksheet(string.IsNullOrEmpty(worksheetName) ? typeof(T).Name: worksheetName);
+            WorksheetWrapper<T> worksheet = rows.ToWorksheet(string.IsNullOrEmpty(worksheetName) ? typeof(T).Name : worksheetName);
 
             if (!addHeaderRow)
             {

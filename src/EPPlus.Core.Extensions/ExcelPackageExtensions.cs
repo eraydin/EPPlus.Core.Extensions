@@ -1,9 +1,10 @@
-﻿using OfficeOpenXml;
-using OfficeOpenXml.Table;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 
 namespace EPPlus.Core.Extensions
 {
@@ -23,12 +24,14 @@ namespace EPPlus.Core.Extensions
             foreach (ExcelWorksheet ws in excelPackage.Workbook.Worksheets)
             {
                 foreach (ExcelTable t in ws.Tables)
+                {
                     yield return t;
+                }
             }
         }
 
         /// <summary>
-        ///     Returns concrete ExcelTable by its name 
+        ///     Returns concrete ExcelTable by its name
         /// </summary>
         /// <param name="excelPackage">The ExcelPackage object</param>
         /// <param name="name">Name of the table</param>
@@ -67,7 +70,7 @@ namespace EPPlus.Core.Extensions
             return dataSet;
         }
 
-        /// <summary> 
+        /// <summary>
         ///     Yields objects of specified type from given ExcelPackage
         /// </summary>
         /// <typeparam name="T"></typeparam>

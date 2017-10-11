@@ -10,10 +10,11 @@ namespace EPPlus.Core.Extensions
     [AttributeUsage(AttributeTargets.Property)]
     public class ExcelTableColumnAttribute : Attribute
     {
-        public ExcelTableColumnAttribute()
-        {
-            
-        }
+        private int columnIndex;
+
+        private string columnName;
+
+        public ExcelTableColumnAttribute() { }
 
         /// <inheritdoc />
         /// <summary>
@@ -41,8 +42,14 @@ namespace EPPlus.Core.Extensions
             get => columnName;
             set
             {
-                if (columnIndex > 0) throw new ArgumentException("Cannot set both ColumnName and ColumnIndex!");
-                if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("ColumnName can't be empty!");
+                if (columnIndex > 0)
+                {
+                    throw new ArgumentException("Cannot set both ColumnName and ColumnIndex!");
+                }
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("ColumnName can't be empty!");
+                }
 
                 columnName = value;
             }
@@ -56,14 +63,17 @@ namespace EPPlus.Core.Extensions
             get => columnIndex;
             set
             {
-                if (columnName != null) throw new ArgumentException("Cannot set both ColumnName and ColumnIndex!");
-                if (value <= 0) throw new ArgumentException("ColumnIndex can't be zero or negative!");
+                if (columnName != null)
+                {
+                    throw new ArgumentException("Cannot set both ColumnName and ColumnIndex!");
+                }
+                if (value <= 0)
+                {
+                    throw new ArgumentException("ColumnIndex can't be zero or negative!");
+                }
 
                 columnIndex = value;
             }
         }
-        
-        private string columnName;
-        private int columnIndex;
     }
 }

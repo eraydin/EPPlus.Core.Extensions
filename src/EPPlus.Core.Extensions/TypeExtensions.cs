@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-[assembly:InternalsVisibleTo("EPPlus.Core.Extensions.Tests")]
+[assembly: InternalsVisibleTo("EPPlus.Core.Extensions.Tests")]
+
 namespace EPPlus.Core.Extensions
 {
     internal static class TypeExtensions
@@ -13,7 +14,7 @@ namespace EPPlus.Core.Extensions
         /// <returns>True if type is nullable</returns>
         public static bool IsNullable(this Type type)
         {
-            return (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         /// <summary>
@@ -51,6 +52,6 @@ namespace EPPlus.Core.Extensions
         public static object GetPropertyValue(this object obj, string propertyName)
         {
             return obj.GetType().GetProperty(propertyName).GetValue(obj, null);
-        } 
+        }
     }
 }

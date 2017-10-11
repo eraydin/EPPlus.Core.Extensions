@@ -1,24 +1,34 @@
-﻿using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+using OfficeOpenXml;
+
 namespace EPPlus.Core.Extensions
 {
     public class WorksheetWrapper<T>
     {
         internal string Name { get; set; }
+
         internal bool AppendHeaderRow { get; set; } = true;
+
         internal ExcelPackage Package { get; set; }
+
         internal IEnumerable<T> Rows { get; set; }
+
         internal IList<WorksheetColumn<T>> Columns { get; set; }
+
         internal IList<WorksheetTitleRow> Titles { get; set; }
+
         internal Action<ExcelColumn> ConfigureColumn { get; set; }
+
         internal Action<ExcelRange> ConfigureHeader { get; set; }
+
         internal Action<ExcelRange> ConfigureHeaderRow { get; set; }
+
         internal Action<ExcelRange, T> ConfigureCell { get; set; }
 
         /// <summary>
@@ -65,7 +75,7 @@ namespace EPPlus.Core.Extensions
                 Package = new ExcelPackage();
             }
 
-            ExcelWorksheet worksheet = Package.Workbook.Worksheets.Add(this.Name);
+            ExcelWorksheet worksheet = Package.Workbook.Worksheets.Add(Name);
 
             var rowOffset = 0;
 
@@ -88,6 +98,7 @@ namespace EPPlus.Core.Extensions
                         Titles[i].ConfigureTitle(range);
                     }
                 }
+
                 rowOffset = rowOffset + Titles.Count;
             }
 
@@ -97,7 +108,6 @@ namespace EPPlus.Core.Extensions
                 for (var i = 0; i < Columns.Count; i++)
                 {
                     worksheet.Cells[rowOffset + 1, i + 1].Value = Columns[i].Header;
-                   
 
                     if (ConfigureHeader != null)
                     {
@@ -132,9 +142,9 @@ namespace EPPlus.Core.Extensions
                     {
                         worksheet.Cells[r + rowOffset + 1, c + 1].Value = Columns[c].Map(Rows.ElementAt(r));
 
-                        if (this.ConfigureCell != null)
+                        if (ConfigureCell != null)
                         {
-                            this.ConfigureCell(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
+                            ConfigureCell(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
                         }
                         if (Columns[c].ConfigureCell != null)
                         {

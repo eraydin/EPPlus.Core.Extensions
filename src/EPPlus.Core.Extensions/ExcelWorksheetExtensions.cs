@@ -46,14 +46,14 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
         /// <returns></returns>
-        public static ExcelTable AsExcelTable<T>(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
+        public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
             // Table names should be unique
             string tableName = $"{worksheet.Name}-{new Random(Guid.NewGuid().GetHashCode()).Next(9999)}";
-            return worksheet.AsExcelTable<T>(tableName, hasHeaderRow);
+            return worksheet.AsExcelTable(tableName, hasHeaderRow);
         }
 
-        public static ExcelTable AsExcelTable<T>(this ExcelWorksheet worksheet, string tableName, bool hasHeaderRow = true)
+        public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, string tableName, bool hasHeaderRow = true)
         {
             if (worksheet.Tables.Any())
             {
@@ -66,45 +66,8 @@ namespace EPPlus.Core.Extensions
                 }
             }
 
-            worksheet.Tables.Add(worksheet.GetExcelRange(hasHeaderRow), tableName);
-            worksheet.Tables[tableName].ShowHeader = false;
-
-            int headerRowIndex = worksheet.Tables[tableName].Address.Start.Row - 1;
-            if (headerRowIndex <= 0)
-            {
-                headerRowIndex++;
-            }
-
-            // TODO : 
-            PropertyInfo[] propInfo = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-            // Build property-table column mapping
-            for (var i = 0; i < propInfo.Length; i++)
-            {
-                PropertyInfo property = propInfo[i];
-                var mappingAttribute = (ExcelTableColumnAttribute)property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault();
-                if (mappingAttribute != null)
-                {
-                    if (mappingAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
-                    {
-                        worksheet.Tables[tableName].Columns[i].Name = property.Name;
-                    }
-
-                    // Column index was specified
-                    if (mappingAttribute.ColumnIndex > 0)
-                    {
-                        int headerColumnIndex = mappingAttribute.ColumnIndex - 1;
-                        string headerValue = worksheet.Cells[headerRowIndex, worksheet.Tables[tableName].Address.Start.Column + headerColumnIndex].Value.ToString();
-                        worksheet.Tables[tableName].Columns[headerColumnIndex].Name = headerValue.Trim();
-                    }
-
-                    // Column name was specified
-                    if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
-                    {
-                        worksheet.Tables[tableName].Columns[i].Name = mappingAttribute.ColumnName;
-                    }
-                }
-            }
+            worksheet.Tables.Add(worksheet.GetExcelRange(false), tableName);
+            worksheet.Tables[tableName].ShowHeader = hasHeaderRow;
 
             return worksheet.Tables[tableName];
         }
@@ -129,7 +92,7 @@ namespace EPPlus.Core.Extensions
         {
             ExcelAddress dataBounds = worksheet.GetDataBounds(hasHeaderRow);
 
-            IEnumerable<DataColumn> columns = worksheet.AsExcelTable<DataColumn>(!hasHeaderRow).Columns.Select(x => new DataColumn(!hasHeaderRow ? "Column" + x.Id : x.Name));
+            IEnumerable<DataColumn> columns = worksheet.AsExcelTable(!hasHeaderRow).Columns.Select(x => new DataColumn(!hasHeaderRow ? "Column" + x.Id : x.Name));
 
             var dataTable = new DataTable(worksheet.Name);
             dataTable.Columns.AddRange(columns.ToArray());
@@ -158,7 +121,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, bool skipCastErrors = false, bool hasHeaderRow = true) where T : class, new()
         {
-            return worksheet.AsExcelTable<T>(hasHeaderRow).AsEnumerable<T>(skipCastErrors);
+            return worksheet.AsExcelTable(hasHeaderRow).AsEnumerable<T>(skipCastErrors);
         }
 
         /// <summary>
