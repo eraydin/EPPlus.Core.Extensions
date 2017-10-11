@@ -1,10 +1,12 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using FluentAssertions;
+
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+
 using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
@@ -51,8 +53,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<ExcelTableConvertExceptionArgs> validation = table.Validate<WrongCars>().ToList();
-
+            List<ExcelTableExceptionArgs> validation = table.Validate<WrongCars>().ToList();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -65,7 +66,6 @@ namespace EPPlus.Core.Extensions.Tests
             validation.Exists(x => x.CellAddress.Address.Equals("D7", StringComparison.InvariantCultureIgnoreCase)).Should().BeTrue("Date is null");
         }
 
-        #region Test for default mapping, mapping by name and index
         [Fact]
         public void Test_MapByDefault()
         {
@@ -128,9 +128,6 @@ namespace EPPlus.Core.Extensions.Tests
             list.First().Name.Should().Be("John", "We have expected John to be first");
             list.First().Gender.Should().Be("MALE", "We have expected a male to be first");
         }
-        #endregion
-
-        #region Type cast mapping tests
 
         [Fact]
         public void Test_MapEnumString()
@@ -175,7 +172,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         /// <summary>
-        /// Test cases when a column is mapped to multiple properties (with different type)
+        ///     Test cases when a column is mapped to multiple properties (with different type)
         /// </summary>
         [Fact]
         public void Test_MultiMap()
@@ -191,6 +188,7 @@ namespace EPPlus.Core.Extensions.Tests
             IList<MultiMap> list = table.ToList<MultiMap>();
             MultiMap m = list.First(x => x.Class == Classes.Ten);
             MultiMap n = list.First(x => x.Class == Classes.Nine);
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
@@ -224,10 +222,6 @@ namespace EPPlus.Core.Extensions.Tests
             list.Min(x => x.BirthDate).Should().Be(new DateTime(1979, 12, 1), "Oldest one was born on 1979.12.01");
         }
 
-        #endregion
-
-        #region Failure tests
-
         [Fact]
         public void Test_MapFail()
         {
@@ -246,7 +240,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             action.ShouldThrow<ExcelTableConvertException>()
-                .And.Args.CellValue.Should().Be("MALE");
+                  .And.Args.CellValue.Should().Be("MALE");
 
             action.ShouldThrow<ExcelTableConvertException>()
                   .And.Args.ExpectedType.Should().Be(typeof(Classes));
@@ -264,7 +258,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];;
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            ;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -279,10 +274,6 @@ namespace EPPlus.Core.Extensions.Tests
             list.All(x => !string.IsNullOrWhiteSpace(x.Name)).Should().BeTrue("All names should be there");
             list.All(x => x.Gender == 0).Should().BeTrue("All genders should be 0");
         }
-
-        #endregion
-
-        #region Testing nullable
 
         [Fact]
         public void Test_Nullable()
@@ -324,9 +315,6 @@ namespace EPPlus.Core.Extensions.Tests
             list.Count.Should().Be(4, "Should have four");
         }
 
-        #endregion
-
-        #region Complex tests
         [Fact]
         public void Test_ComplexFixtures()
         {
@@ -357,7 +345,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.GetTable("TEST3");
-          
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
@@ -375,6 +363,5 @@ namespace EPPlus.Core.Extensions.Tests
             list.Max(x => x.Price).Should().Be(12000, "Highest price is 12000");
             list.Max(x => x.ManufacturingDate).Should().Be(new DateTime(2015, 3, 10), "Oldest was manufactured on 2015.03.10");
         }
-        #endregion
     }
 }

@@ -1,26 +1,29 @@
-﻿using FluentAssertions;
-using OfficeOpenXml;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using FluentAssertions;
+
+using OfficeOpenXml;
+
 using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
     public class ToExcelExtensions_Tests
     {
-        private IList<Person> _personList;
+        private readonly IList<Person> _personList;
 
         public ToExcelExtensions_Tests()
         {
             _personList = new List<Person>
-            {
-                new Person { FirstName = "Daniel", LastName = "Day-Lewis", YearBorn = 1957 },
-                new Person { FirstName = "Sally", LastName = "Field", YearBorn = 1946 },
-                new Person { FirstName = "David", LastName = "Strathairn", YearBorn = 1949 },
-                new Person { FirstName = "Joseph", LastName = "Gordon-Levitt", YearBorn = 1981 },
-                new Person { FirstName = "James", LastName = "Spader", YearBorn = 1960 }
-            };
+                          {
+                              new Person { FirstName = "Daniel", LastName = "Day-Lewis", YearBorn = 1957 },
+                              new Person { FirstName = "Sally", LastName = "Field", YearBorn = 1946 },
+                              new Person { FirstName = "David", LastName = "Strathairn", YearBorn = 1949 },
+                              new Person { FirstName = "Joseph", LastName = "Gordon-Levitt", YearBorn = 1981 },
+                              new Person { FirstName = "James", LastName = "Spader", YearBorn = 1960 }
+                          };
         }
 
         [Fact]
@@ -119,7 +122,7 @@ namespace EPPlus.Core.Extensions.Tests
             package.Workbook.Worksheets[1].Cells[1, 2, 1, 2].Value.Should().Be("Year of Birth");
             package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count + 1);
         }
-        
+
         [Fact]
         public void Rowcount_should_match_listcount_plus_header_plus_one_title()
         {
@@ -241,7 +244,7 @@ namespace EPPlus.Core.Extensions.Tests
                 .WithColumn(x => x.YearBorn, "Year of Birth")
                 .WithTitle("> 1950")
                 .ToExcelPackage();
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
@@ -290,14 +293,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             List<Person> pre50 = _personList.Where(x => x.YearBorn < 1950).ToList();
             string tempFile = Path.Combine(Path.GetTempPath(), "persons_pre50.xlsx");
-          
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             byte[] result = pre50.ToXlsx();
             File.WriteAllBytes(tempFile, result);
             var excelPackage = new ExcelPackage(new FileInfo(tempFile));
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
@@ -315,14 +318,14 @@ namespace EPPlus.Core.Extensions.Tests
             List<Person> post50 = _personList.Where(x => x.YearBorn > 1950).ToList();
             string tempFile = Path.Combine(Path.GetTempPath(), "persons_post50.xlsx");
             WorksheetWrapper<Person> worksheetWrapper = post50.ToWorksheet("> 1950");
-           
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             byte[] result = worksheetWrapper.ToXlsx();
             File.WriteAllBytes(tempFile, result);
             var excelPackage = new ExcelPackage(new FileInfo(tempFile));
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
@@ -344,16 +347,16 @@ namespace EPPlus.Core.Extensions.Tests
                 .WithTitle("< 1950")
                 .NextWorksheet(post50, "> 1950")
                 .WithTitle("> 1950");
-            
+
             string tempFile = Path.Combine(Path.GetTempPath(), "persons_pre50_post50.xlsx");
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             byte[] result = worksheetWrapper.ToXlsx();
             File.WriteAllBytes(tempFile, result);
             var excelPackage = new ExcelPackage(new FileInfo(tempFile));
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------

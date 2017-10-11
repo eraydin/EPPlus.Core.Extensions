@@ -1,12 +1,15 @@
-﻿using FluentAssertions;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+
+using FluentAssertions;
+
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
+
 using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
@@ -135,7 +138,6 @@ namespace EPPlus.Core.Extensions.Tests
             dataTable.Rows.Count.Should().Be(4, "We have 4 records");
         }
 
-
         [Fact]
         public void Test_Worksheet_AsEnumerable()
         {
@@ -157,7 +159,6 @@ namespace EPPlus.Core.Extensions.Tests
             list1.Count().Should().Be(4, "Should have four");
             list2.Count().Should().Be(4, "Should have four");
         }
-
 
         [Fact]
         public void Test_Worksheet_ToList()
@@ -189,14 +190,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
             var stocks = new List<StocksNullable>
-            {
-                new StocksNullable
-                {
-                    Barcode = "barcode123",
-                    Quantity = 5,
-                    UpdatedDate = DateTime.MaxValue
-                }
-            };
+                         {
+                             new StocksNullable
+                             {
+                                 Barcode = "barcode123",
+                                 Quantity = 5,
+                                 UpdatedDate = DateTime.MaxValue
+                             }
+                         };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -218,14 +219,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
             var stocks = new List<StocksNullable>
-            {
-                new StocksNullable
-                {
-                    Barcode = "barcode123",
-                    Quantity = 5,
-                    UpdatedDate = DateTime.MaxValue
-                }
-            };
+                         {
+                             new StocksNullable
+                             {
+                                 Barcode = "barcode123",
+                                 Quantity = 5,
+                                 UpdatedDate = DateTime.MaxValue
+                             }
+                         };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -246,14 +247,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
             var stocks = new List<StocksNullable>
-            {
-                new StocksNullable
-                {
-                    Barcode = "barcode123",
-                    Quantity = 5,
-                    UpdatedDate = DateTime.MaxValue
-                }
-            };
+                         {
+                             new StocksNullable
+                             {
+                                 Barcode = "barcode123",
+                                 Quantity = 5,
+                                 UpdatedDate = DateTime.MaxValue
+                             }
+                         };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -333,6 +334,5 @@ namespace EPPlus.Core.Extensions.Tests
             result1.Should().BeTrue();
             result2.Should().BeFalse();
         }
-
     }
 }

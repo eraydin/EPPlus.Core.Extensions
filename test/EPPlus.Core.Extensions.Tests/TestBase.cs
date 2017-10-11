@@ -1,6 +1,7 @@
-﻿using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Reflection;
+
+using OfficeOpenXml;
 
 namespace EPPlus.Core.Extensions.Tests
 {

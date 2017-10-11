@@ -4,8 +4,14 @@ using System.Drawing;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    enum Manufacturers { Opel = 1, Ford, Mercedes };
-    class WrongCars
+    internal enum Manufacturers
+    {
+        Opel = 1,
+        Ford,
+        Mercedes
+    }
+
+    internal class WrongCars
     {
         [ExcelTableColumn("License plate")]
         public string LicensePlate { get; set; }
@@ -20,7 +26,7 @@ namespace EPPlus.Core.Extensions.Tests
         public bool Ready { get; set; }
     }
 
-    class DefaultMap
+    internal class DefaultMap
     {
         [ExcelTableColumn]
         public string Name { get; set; }
@@ -29,7 +35,7 @@ namespace EPPlus.Core.Extensions.Tests
         public string Gender { get; set; }
     }
 
-    class NamedMap
+    internal class NamedMap
     {
         [ExcelTableColumn("Name")]
         public string FirstName { get; set; }
@@ -38,7 +44,7 @@ namespace EPPlus.Core.Extensions.Tests
         public string Sex { get; set; }
     }
 
-    class IndexMap
+    internal class IndexMap
     {
         [ExcelTableColumn(1)]
         public string Name { get; set; }
@@ -47,8 +53,13 @@ namespace EPPlus.Core.Extensions.Tests
         public string Gender { get; set; }
     }
 
-    enum Genders { MALE = 1, FEMALE = 2 }
-    class EnumStringMap
+    internal enum Genders
+    {
+        MALE = 1,
+        FEMALE = 2
+    }
+
+    internal class EnumStringMap
     {
         [ExcelTableColumn("Name")]
         public string Name { get; set; }
@@ -57,8 +68,13 @@ namespace EPPlus.Core.Extensions.Tests
         public Genders Gender { get; set; }
     }
 
-    enum Classes : byte { Ten = 10, Nine = 9 }
-    class EnumByteMap
+    internal enum Classes : byte
+    {
+        Ten = 10,
+        Nine = 9
+    }
+
+    internal class EnumByteMap
     {
         [ExcelTableColumn]
         public string Name { get; set; }
@@ -67,7 +83,7 @@ namespace EPPlus.Core.Extensions.Tests
         public Classes Class { get; set; }
     }
 
-    class MultiMap
+    internal class MultiMap
     {
         [ExcelTableColumn]
         public string Name { get; set; }
@@ -79,10 +95,11 @@ namespace EPPlus.Core.Extensions.Tests
         public int ClassAsInt { get; set; }
     }
 
-    class DateMap
+    internal class DateMap
     {
         [ExcelTableColumn]
-        [MinLength(1), MaxLength(50)]
+        [MinLength(1)]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         [ExcelTableColumn]
@@ -92,7 +109,7 @@ namespace EPPlus.Core.Extensions.Tests
         public DateTime BirthDate { get; set; }
     }
 
-    class EnumFailMap
+    internal class EnumFailMap
     {
         [ExcelTableColumn]
         public string Name { get; set; }
@@ -101,7 +118,7 @@ namespace EPPlus.Core.Extensions.Tests
         public Classes Gender { get; set; }
     }
 
-    class CarNullable
+    internal class CarNullable
     {
         [ExcelTableColumn("Car name")]
         public string Name { get; set; }
@@ -110,7 +127,7 @@ namespace EPPlus.Core.Extensions.Tests
         public int? Price { get; set; }
     }
 
-    class StocksNullable
+    internal class StocksNullable
     {
         [ExcelTableColumn(1)]
         public string Barcode { get; set; }
@@ -122,8 +139,14 @@ namespace EPPlus.Core.Extensions.Tests
         public DateTime? UpdatedDate { get; set; }
     }
 
-    enum Manufacturers2 { Opel = 1, Ford, Toyota };
-    class Cars
+    internal enum Manufacturers2
+    {
+        Opel = 1,
+        Ford,
+        Toyota
+    }
+
+    internal class Cars
     {
         [ExcelTableColumn(1)]
         public string LicensePlate { get; set; }
@@ -144,15 +167,17 @@ namespace EPPlus.Core.Extensions.Tests
         public bool Ready { get; set; }
 
         public string UnmappedProperty { get; set; }
+
         public override string ToString()
         {
-            return $"{(Color)} {(Manufacturer.ToString())} {(ManufacturingDate?.ToShortDateString())}";
+            return $"{Color} {Manufacturer.ToString()} {ManufacturingDate?.ToShortDateString()}";
         }
     }
 
     public class Car
     {
         public string Name { get; set; }
+
         public decimal Price { get; set; }
     }
 
