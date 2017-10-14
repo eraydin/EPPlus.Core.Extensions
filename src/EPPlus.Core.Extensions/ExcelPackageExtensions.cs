@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Configuration;
+
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 
@@ -75,13 +77,12 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="excelPackage"></param>
+        /// <param name="configuration"></param>
         /// <param name="worksheetIndex"></param>
-        /// <param name="skipCastingErrors"></param>
-        /// <param name="hasHeaderRow"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage excelPackage, int worksheetIndex = 1, bool skipCastingErrors = false, bool hasHeaderRow = true) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage excelPackage, IExcelConfiguration configuration, int worksheetIndex = 1) where T : class, new()
         {
-            return excelPackage.Workbook.Worksheets[worksheetIndex].AsEnumerable<T>(skipCastingErrors, hasHeaderRow);
+            return excelPackage.Workbook.Worksheets[worksheetIndex].AsEnumerable<T>(configuration);
         }
 
         /// <summary>
@@ -89,13 +90,12 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="excelPackage"></param>
+        /// <param name="configuration"></param>
         /// <param name="worksheetIndex"></param>
-        /// <param name="skipCastingErrors"></param>
-        /// <param name="hasHeaderRow"></param>
         /// <returns></returns>
-        public static IList<T> ToList<T>(this ExcelPackage excelPackage, int worksheetIndex = 1, bool skipCastingErrors = false, bool hasHeaderRow = true) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelPackage excelPackage, IExcelConfiguration configuration, int worksheetIndex = 1) where T : class, new()
         {
-            return excelPackage.AsEnumerable<T>(worksheetIndex, skipCastingErrors, hasHeaderRow).ToList();
+            return excelPackage.AsEnumerable<T>(configuration, worksheetIndex).ToList();
         }
     }
 }

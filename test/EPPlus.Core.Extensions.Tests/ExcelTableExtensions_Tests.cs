@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Configuration;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
@@ -73,11 +75,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<DefaultMap> list = table.ToList<DefaultMap>();
+            IList<DefaultMap> list = table.ToList<DefaultMap>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -94,11 +97,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<NamedMap> list = table.ToList<NamedMap>();
+            IList<NamedMap> list = table.ToList<NamedMap>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -115,11 +119,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<IndexMap> list = table.ToList<IndexMap>();
+            IList<IndexMap> list = table.ToList<IndexMap>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -136,11 +141,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<EnumStringMap> list = table.ToList<EnumStringMap>();
+            IList<EnumStringMap> list = table.ToList<EnumStringMap>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -157,11 +163,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<EnumByteMap> list = table.ToList<EnumByteMap>();
+            IList<EnumByteMap> list = table.ToList<EnumByteMap>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -181,11 +188,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<MultiMap> list = table.ToList<MultiMap>();
+            IList<MultiMap> list = table.ToList<MultiMap>(configuration);
             MultiMap m = list.First(x => x.Class == Classes.Ten);
             MultiMap n = list.First(x => x.Class == Classes.Nine);
 
@@ -205,11 +213,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<DateMap> list = table.ToList<DateMap>();
+            IList<DateMap> list = table.ToList<DateMap>(configuration);
             DateMap a = list.FirstOrDefault(x => x.Name == "Adam");
 
             //-----------------------------------------------------------------------------------------------------------
@@ -229,12 +238,13 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
             IList<EnumFailMap> list;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = table.ToList<EnumFailMap>(); };
+            Action action = () => { list = table.ToList<EnumFailMap>(configuration); };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -259,12 +269,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
-            ;
+            IExcelConfiguration configuration = new ExcelConfiguration { SkipCastingErrors = true };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<EnumFailMap> list = table.ToList<EnumFailMap>(true);
+            IList<EnumFailMap> list = table.ToList<EnumFailMap>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -282,11 +292,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST2"].Tables["TEST2"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<CarNullable> list = table.ToList<CarNullable>();
+            IList<CarNullable> list = table.ToList<CarNullable>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -301,11 +312,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST4"].Tables["TEST4"];
+            IExcelConfiguration configuration = new ExcelConfiguration { SkipCastingErrors = true };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<StocksNullable> list = table.ToList<StocksNullable>(true);
+            IList<StocksNullable> list = table.ToList<StocksNullable>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -345,11 +357,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.GetTable("TEST3");
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<Cars> list = table.ToList<Cars>();
+            IList<Cars> list = table.ToList<Cars>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

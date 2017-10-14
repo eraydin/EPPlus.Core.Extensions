@@ -4,6 +4,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Configuration;
+
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
@@ -115,12 +117,11 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
-        /// <param name="hasHeaderRow"></param>
-        /// <param name="skipCastErrors"></param>
+        /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, bool skipCastErrors = false, bool hasHeaderRow = true) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, IExcelConfiguration configuration) where T : class, new()
         {
-            return worksheet.AsExcelTable(hasHeaderRow).AsEnumerable<T>(skipCastErrors);
+            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable<T>(configuration);
         }
 
         /// <summary>
@@ -128,12 +129,11 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
-        /// <param name="hasHeaderRow"></param>
-        /// <param name="skipCastErrors"></param>
+        /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IList<T> ToList<T>(this ExcelWorksheet worksheet, bool skipCastErrors = false, bool hasHeaderRow = true) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelWorksheet worksheet, IExcelConfiguration configuration) where T : class, new()
         {
-            return worksheet.AsEnumerable<T>(skipCastErrors, hasHeaderRow).ToList();
+            return worksheet.AsEnumerable<T>(configuration).ToList();
         }
 
         /// <summary>

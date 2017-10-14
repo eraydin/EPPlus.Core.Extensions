@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Validation;
 
 using FluentAssertions;
@@ -65,6 +66,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -75,7 +77,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>();
+            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration);
             listOfStocks.Count.Should().Be(3);
         }
 
@@ -86,6 +88,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            IExcelConfiguration configuration = new ExcelConfiguration { SkipCastingErrors = true };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -96,7 +99,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(true);
+            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration);
             listOfStocks.Count.Should().Be(4);
         }
 
@@ -148,12 +151,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST4"];
             ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST5"];
+            IExcelConfiguration configuration1 = new ExcelConfiguration { SkipCastingErrors = true, HasHeaderRow = true };
+            IExcelConfiguration configuration2 = new ExcelConfiguration { SkipCastingErrors = true, HasHeaderRow = false };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(true);
-            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(true, false);
+            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(configuration1);
+            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(configuration2);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -170,12 +175,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST4"];
             ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST5"];
+            IExcelConfiguration configuration1 = new ExcelConfiguration { SkipCastingErrors = true, HasHeaderRow = true };
+            IExcelConfiguration configuration2 = new ExcelConfiguration { SkipCastingErrors = true, HasHeaderRow = false };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(true);
-            IEnumerable<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(true, false);
+            IEnumerable<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(configuration1);
+            IEnumerable<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(configuration2);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -191,6 +198,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            IExcelConfiguration configuration1 = new ExcelConfiguration { SkipCastingErrors = false, HasHeaderRow = true };
+
             var stocks = new List<StocksNullable>
                          {
                              new StocksNullable
@@ -205,7 +214,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, _ => _.Barcode, _ => _.Quantity, _ => _.UpdatedDate);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration1);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -248,6 +257,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            IExcelConfiguration configuration = new ExcelConfiguration { SkipCastingErrors = true, HasHeaderRow = true };
+
             var stocks = new List<StocksNullable>
                          {
                              new StocksNullable
@@ -262,7 +273,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, 3);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -277,12 +288,13 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            IExcelConfiguration configuration = new ExcelConfiguration { SkipCastingErrors = false, HasHeaderRow = true };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddLine(5, "barcode123", 5, DateTime.UtcNow);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -385,12 +397,13 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            IExcelConfiguration configuration = new ExcelConfiguration { SkipCastingErrors = false, HasHeaderRow = true };
             IList<StocksValidation> list;
-           
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = worksheet.ToList<StocksValidation>(true); };
+            Action action = () => { list = worksheet.ToList<StocksValidation>(configuration); };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

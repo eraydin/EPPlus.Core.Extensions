@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Validation;
 
 using OfficeOpenXml;
@@ -86,12 +87,9 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="skipCastErrors">
-        ///     Determines how the method should handle exceptions when casting cell value to property type.
-        ///     If this is true, invalid casts are silently skipped, otherwise any error will cause method to fail with exception.
-        /// </param>
+        /// <param name="configuration"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, bool skipCastErrors = false) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, IExcelConfiguration configuration) where T : class, new()
         {
             IList mapping = PrepareMappings<T>(table);
 
@@ -114,7 +112,7 @@ namespace EPPlus.Core.Extensions
                     }
                     catch (Exception ex)
                     {
-                        if (!skipCastErrors)
+                        if (!configuration.SkipCastingErrors)
                         {
                             var exceptionArgs = new ExcelTableExceptionArgs
                                                 {
@@ -133,8 +131,11 @@ namespace EPPlus.Core.Extensions
                 }
 
                 // TODO:
-                // Validate parsed object according to data annotations
-                item.Validate(row);
+                if (!configuration.SkipValidationErrors)
+                {
+                    // Validate parsed object according to data annotations
+                    item.Validate(row);
+                }
 
                 yield return item;
             }
@@ -150,14 +151,11 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="skipCastErrors">
-        ///     Determines how the method should handle exceptions when casting cell value to property type.
-        ///     If this is true, invlaid casts are silently skipped, otherwise any error will cause method to fail with exception.
-        /// </param>
+        /// <param name="configuration"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IList<T> ToList<T>(this ExcelTable table, bool skipCastErrors = false) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelTable table, IExcelConfiguration configuration) where T : class, new()
         {
-            return AsEnumerable<T>(table, skipCastErrors).ToList();
+            return AsEnumerable<T>(table, configuration).ToList();
         }
 
         /// <summary>
