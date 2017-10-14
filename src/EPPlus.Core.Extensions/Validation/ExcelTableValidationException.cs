@@ -14,13 +14,5 @@ namespace EPPlus.Core.Extensions.Validation
         }
 
         public IEnumerable<ValidationResult> ValidationErrors { get; }
-
-        public ExcelTableExceptionArgs Args { get; protected set;}
-
-        internal ExcelTableValidationException AddExceptionArguments(ExcelTableExceptionArgs args)
-        {
-            Args = args;
-            return this;
-        }
     }
 }

@@ -139,6 +139,21 @@ namespace EPPlus.Core.Extensions.Tests
         public DateTime? UpdatedDate { get; set; }
     }
 
+    internal class StocksValidation
+    {
+        [ExcelTableColumn(1)]
+        [MinLength(1)]
+        [MaxLength(255)]
+        public string Barcode { get; set; }
+
+        [ExcelTableColumn(2)]
+        [Range(10, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
+        public int Quantity { get; set; }
+
+        [ExcelTableColumn(3)]
+        public DateTime UpdatedDate { get; set; }
+    }
+
     internal enum Manufacturers2
     {
         Opel = 1,

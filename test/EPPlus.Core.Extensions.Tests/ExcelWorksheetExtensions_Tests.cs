@@ -4,6 +4,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Validation;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
@@ -374,6 +376,26 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             result1.Should().BeTrue();
             result2.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Test_StocksValidation()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            IList<StocksValidation> list;
+           
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () => { list = worksheet.ToList<StocksValidation>(true); };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.ShouldThrow<ExcelTableValidationException>();
         }
     }
 }

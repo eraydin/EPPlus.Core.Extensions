@@ -111,37 +111,30 @@ namespace EPPlus.Core.Extensions
                     try
                     {
                         TrySetProperty(item, property, cell);
-
-                        // TODO:
-                        // Validate parsed object according to data annotations
-                        item.Validate();
                     }
                     catch (Exception ex)
                     {
-                        var exceptionArgs = new ExcelTableExceptionArgs
-                                            {
-                                                ColumnName = table.Columns[map.Key].Name,
-                                                ExpectedType = property.PropertyType,
-                                                PropertyName = property.Name,
-                                                CellValue = cell,
-                                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                                            };
-
-                        // TODO:
-                        if (ex is ExcelTableValidationException validationException)
-                        {
-                            validationException.AddExceptionArguments(exceptionArgs);
-                            throw validationException;
-                        }
-
                         if (!skipCastErrors)
                         {
+                            var exceptionArgs = new ExcelTableExceptionArgs
+                                                {
+                                                    ColumnName = table.Columns[map.Key].Name,
+                                                    ExpectedType = property.PropertyType,
+                                                    PropertyName = property.Name,
+                                                    CellValue = cell,
+                                                    CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                                };
+
                             throw new ExcelTableConvertException($"The expected type of '{exceptionArgs.PropertyName}' property is '{exceptionArgs.ExpectedType.Name}', but the cell [{exceptionArgs.CellAddress.Address}] contains an invalid value.",
                                 ex, exceptionArgs
                             );
                         }
                     }
                 }
+
+                // TODO:
+                // Validate parsed object according to data annotations
+                item.Validate(row);
 
                 yield return item;
             }
