@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -297,6 +296,33 @@ namespace EPPlus.Core.Extensions
             }
 
             return worksheet;
+        }
+
+        /// <summary>
+        ///     Returns index and value pairs of columns
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        public static IEnumerable<KeyValuePair<int, string>> GetColumns(this ExcelWorksheet worksheet, int rowIndex)
+        {
+            for (int i = worksheet.Dimension.Start.Column; i <= worksheet.Dimension.End.Column; i++)
+            {
+                yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Value.ToString());
+            }
+        }
+
+        /// <summary>
+        ///     Checks whether given worksheet address has a value or not
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <returns></returns>
+        public static bool CheckIfColumnValueIfNullOrEmpty(this ExcelWorksheet worksheet, int rowIndex, int columnIndex)
+        {
+            object value = worksheet.Cells[rowIndex, columnIndex, rowIndex, columnIndex].Value;
+            return value == null || string.IsNullOrWhiteSpace(value.ToString());
         }
 
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)
