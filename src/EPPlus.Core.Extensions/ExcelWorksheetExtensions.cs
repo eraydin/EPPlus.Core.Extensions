@@ -319,7 +319,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="rowIndex"></param>
         /// <param name="columnIndex"></param>
         /// <returns></returns>
-        public static bool CheckIfColumnValueIfNullOrEmpty(this ExcelWorksheet worksheet, int rowIndex, int columnIndex)
+        public static bool CheckColumnValueIsNullOrEmpty(this ExcelWorksheet worksheet, int rowIndex, int columnIndex)
         {
             object value = worksheet.Cells[rowIndex, columnIndex, rowIndex, columnIndex].Value;
             return value == null || string.IsNullOrWhiteSpace(value.ToString());
