@@ -370,7 +370,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Test_CheckIfColumnValueIfNullOrEmpty()
+        public void Test_CheckColumnValueIsNullOrEmpty()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -380,8 +380,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            bool result1 = worksheet.CheckIfColumnValueIfNullOrEmpty(3, 4);
-            bool result2 = worksheet.CheckIfColumnValueIfNullOrEmpty(2, 1);
+            bool result1 = worksheet.CheckColumnValueIsNullOrEmpty(3, 4);
+            bool result2 = worksheet.CheckColumnValueIsNullOrEmpty(2, 1);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
