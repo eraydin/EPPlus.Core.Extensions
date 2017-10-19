@@ -11,3 +11,7 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 
 **.NET Standard 2.0**
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus.Core >= 1.5.2*
+
+### **Documentation and Examples**
+
+The project will be documented soon. For now, just look at the test project (EPPlus.Core.Extensions.Tests). It has just enough examples to show you how to use these extension methods. 
