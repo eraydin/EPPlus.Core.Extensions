@@ -1,11 +1,10 @@
 ﻿using System;
 
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace EPPlus.Core.Extensions.Configuration
 {
-    public interface IExcelConfiguration
+    public interface IExcelConfiguration<T>
     {
         bool HasHeaderRow { get; set; }
 
@@ -17,12 +16,12 @@ namespace EPPlus.Core.Extensions.Configuration
 
         bool SkipValidationErrors { get; set; }
 
-        Action<ExcelRange, T> CellConfiguration { get; set; }
+        Action<ExcelRange, T> ConfigureCell { get; set; }
 
-        Action<ExcelColumn> ColumnConfiguration { get; set; }
+        Action<ExcelColumn> ConfigureColumn { get; set; }
 
-        Action<ExcelRange> HeaderConfiguration { get; set; }
+        Action<ExcelRange> ConfigureHeader { get; set; }
 
-        Action<ExcelRange> HeaderRowConfiguration { get; set; }
+        Action<ExcelRange> ConfigureHeaderRow { get; set; }
     }
 }

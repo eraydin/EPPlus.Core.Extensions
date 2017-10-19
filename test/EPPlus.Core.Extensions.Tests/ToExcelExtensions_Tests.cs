@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 
 using FluentAssertions;
 
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 using Xunit;
 
@@ -268,9 +270,63 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package = pre50
-                .ToWorksheet("< 1950")
+                .ToWorksheet("< 1950", configuration =>
+                {
+                    configuration.ConfigureColumn = x => { x.Style.Font.Color.SetColor(Color.Purple); };
+
+                    configuration.ConfigureHeader = x =>
+                    {
+                        x.Style.Font.Bold = true;
+                        x.Style.Font.Size = 13;
+                        x.Style.Font.Color.SetColor(Color.White);
+                        x.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        x.Style.Fill.BackgroundColor.SetColor(Color.Black);
+                    };
+
+                    configuration.ConfigureHeaderRow = x =>
+                    {
+                        x.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        x.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        x.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        x.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        x.Style.Font.Name = "Verdana";
+                    };
+
+                    configuration.ConfigureCell = (x, y) =>
+                    {
+                        x.Style.Font.Name = "Times New Roman";
+                        y.YearBorn = y.YearBorn % 2 == 0 ? y.YearBorn : 1990;
+                    };
+                })
                 .WithTitle("< 1950")
-                .NextWorksheet(post50, "> 1950")
+                .NextWorksheet(post50, "> 1950", configuration =>
+                {
+                    configuration.ConfigureColumn = x => { x.Style.Font.Color.SetColor(Color.Black); };
+
+                    configuration.ConfigureHeader = x =>
+                    {
+                        x.Style.Font.Bold = true;
+                        x.Style.Font.Size = 11;
+                        x.Style.Font.Color.SetColor(Color.White);
+                        x.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        x.Style.Fill.BackgroundColor.SetColor(Color.Black);
+                    };
+
+                    configuration.ConfigureHeaderRow = x =>
+                    {
+                        x.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        x.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        x.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        x.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        x.Style.Font.Name = "Verdana";
+                    };
+
+                    configuration.ConfigureCell = (x, y) =>
+                    {
+                        x.Style.Font.Name = "Times New Roman";
+                        y.YearBorn = y.YearBorn % 2 != 0 ? y.YearBorn : 1990;
+                    };
+                })
                 .WithoutHeader()
                 .WithTitle("> 1950")
                 .ToExcelPackage();

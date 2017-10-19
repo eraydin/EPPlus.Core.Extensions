@@ -119,9 +119,9 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelConfiguration configuration = new DefaultExcelConfiguration();
+            IExcelConfiguration<T> configuration = new DefaultExcelConfiguration<T>();
             configurationAction?.Invoke(configuration);
 
             return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable<T>(configurationAction);
@@ -134,7 +134,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IList<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
             return worksheet.AsEnumerable<T>(configurationAction).ToList();
         }

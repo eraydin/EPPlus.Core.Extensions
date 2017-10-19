@@ -89,9 +89,9 @@ namespace EPPlus.Core.Extensions
         /// <param name="table">Table object to fetch</param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelConfiguration configuration = new DefaultExcelConfiguration();
+            IExcelConfiguration<T> configuration = new DefaultExcelConfiguration<T>();
             configurationAction?.Invoke(configuration);
 
             IList mapping = PrepareMappings<T>(table);
@@ -156,7 +156,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="table">Table object to fetch</param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IList<T> ToList<T>(this ExcelTable table, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
             return AsEnumerable<T>(table, configurationAction).ToList();
         }
