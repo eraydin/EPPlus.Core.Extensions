@@ -91,12 +91,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             IList<DateMap> list;
-            IExcelConfiguration configuration = new ExcelConfiguration();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<DateMap>(configuration);
+            list = excelPackage.ToList<DateMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -112,16 +111,15 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             IList<StocksNullable> list;
-            IExcelConfiguration configuration = new ExcelConfiguration
-                                                {
-                                                    HasHeaderRow = false,
-                                                    SkipCastingErrors = true
-                                                };
-
+         
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<StocksNullable>(configuration, 6);
+            list = excelPackage.ToList<StocksNullable>(6, configuration =>
+            {
+                configuration.HasHeaderRow = false;
+                configuration.SkipCastingErrors = true;
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

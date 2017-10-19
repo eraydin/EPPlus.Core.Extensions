@@ -8,7 +8,7 @@ namespace EPPlus.Core.Extensions.Configuration
     /// <summary>
     ///     Default configurations
     /// </summary>
-    public class ExcelConfiguration : IExcelConfiguration
+    public class DefaultExcelConfiguration : IExcelConfiguration
     {
         public bool HasHeaderRow { get; set; } = true;
 

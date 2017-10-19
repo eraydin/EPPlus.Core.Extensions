@@ -77,12 +77,12 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="excelPackage"></param>
-        /// <param name="configuration"></param>
+        /// <param name="configurationAction"></param>
         /// <param name="worksheetIndex"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage excelPackage, IExcelConfiguration configuration, int worksheetIndex = 1) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage excelPackage, int worksheetIndex = 1, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
         {
-            return excelPackage.Workbook.Worksheets[worksheetIndex].AsEnumerable<T>(configuration);
+            return excelPackage.Workbook.Worksheets[worksheetIndex].AsEnumerable<T>(configurationAction);
         }
 
         /// <summary>
@@ -90,12 +90,12 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="excelPackage"></param>
-        /// <param name="configuration"></param>
         /// <param name="worksheetIndex"></param>
+        /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IList<T> ToList<T>(this ExcelPackage excelPackage, IExcelConfiguration configuration, int worksheetIndex = 1) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelPackage excelPackage, int worksheetIndex = 1, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
         {
-            return excelPackage.AsEnumerable<T>(configuration, worksheetIndex).ToList();
+            return excelPackage.AsEnumerable<T>(worksheetIndex, configurationAction).ToList();
         }
     }
 }

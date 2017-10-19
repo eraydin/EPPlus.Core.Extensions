@@ -50,11 +50,11 @@ namespace EPPlus.Core.Extensions
         public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
             // Table names should be unique
-            string tableName = $"{worksheet.Name}-{new Random(Guid.NewGuid().GetHashCode()).Next(9999)}";
+            string tableName = $"Table{new Random(Guid.NewGuid().GetHashCode()).Next(99999)}";
             return worksheet.AsExcelTable(tableName, hasHeaderRow);
         }
 
-        public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, string tableName, bool hasHeaderRow = true)
+        public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, string tableName, bool hasHeaderRow)
         {
             if (worksheet.Tables.Any())
             {
@@ -93,7 +93,7 @@ namespace EPPlus.Core.Extensions
         {
             ExcelAddress dataBounds = worksheet.GetDataBounds(hasHeaderRow);
 
-            IEnumerable<DataColumn> columns = worksheet.AsExcelTable(!hasHeaderRow).Columns.Select(x => new DataColumn(!hasHeaderRow ? "Column" + x.Id : x.Name));
+            IEnumerable<DataColumn> columns = worksheet.AsExcelTable(hasHeaderRow).Columns.Select(x => new DataColumn(!hasHeaderRow ? "Column" + x.Id : x.Name));
 
             var dataTable = new DataTable(worksheet.Name);
             dataTable.Columns.AddRange(columns.ToArray());
@@ -117,11 +117,14 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
-        /// <param name="configuration"></param>
+        /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, IExcelConfiguration configuration) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
         {
-            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable<T>(configuration);
+            IExcelConfiguration configuration = new DefaultExcelConfiguration();
+            configurationAction?.Invoke(configuration);
+
+            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable<T>(configurationAction);
         }
 
         /// <summary>
@@ -129,11 +132,11 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
-        /// <param name="configuration"></param>
+        /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IList<T> ToList<T>(this ExcelWorksheet worksheet, IExcelConfiguration configuration) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
         {
-            return worksheet.AsEnumerable<T>(configuration).ToList();
+            return worksheet.AsEnumerable<T>(configurationAction).ToList();
         }
 
         /// <summary>

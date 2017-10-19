@@ -63,13 +63,13 @@ namespace EPPlus.Core.Extensions
                     catch
                     {
                         result.AddLast(new ExcelTableExceptionArgs
-                                       {
-                                           ColumnName = table.Columns[map.Key].Name,
-                                           ExpectedType = property.PropertyType,
-                                           PropertyName = property.Name,
-                                           CellValue = cell,
-                                           CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                                       });
+                        {
+                            ColumnName = table.Columns[map.Key].Name,
+                            ExpectedType = property.PropertyType,
+                            PropertyName = property.Name,
+                            CellValue = cell,
+                            CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                        });
                     }
                 }
             }
@@ -87,10 +87,13 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="configuration"></param>
+        /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, IExcelConfiguration configuration) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
         {
+            IExcelConfiguration configuration = new DefaultExcelConfiguration();
+            configurationAction?.Invoke(configuration);
+
             IList mapping = PrepareMappings<T>(table);
 
             ExcelAddress bounds = table.GetDataBounds();
@@ -115,13 +118,13 @@ namespace EPPlus.Core.Extensions
                         if (!configuration.SkipCastingErrors)
                         {
                             var exceptionArgs = new ExcelTableExceptionArgs
-                                                {
-                                                    ColumnName = table.Columns[map.Key].Name,
-                                                    ExpectedType = property.PropertyType,
-                                                    PropertyName = property.Name,
-                                                    CellValue = cell,
-                                                    CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                                                };
+                            {
+                                ColumnName = table.Columns[map.Key].Name,
+                                ExpectedType = property.PropertyType,
+                                PropertyName = property.Name,
+                                CellValue = cell,
+                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                            };
 
                             throw new ExcelTableConvertException($"The expected type of '{exceptionArgs.PropertyName}' property is '{exceptionArgs.ExpectedType.Name}', but the cell [{exceptionArgs.CellAddress.Address}] contains an invalid value.",
                                 ex, exceptionArgs
@@ -151,11 +154,11 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="configuration"></param>
+        /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IList<T> ToList<T>(this ExcelTable table, IExcelConfiguration configuration) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelTable table, Action<IExcelConfiguration> configurationAction = null) where T : class, new()
         {
-            return AsEnumerable<T>(table, configuration).ToList();
+            return AsEnumerable<T>(table, configurationAction).ToList();
         }
 
         /// <summary>
