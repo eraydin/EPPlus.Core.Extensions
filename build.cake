@@ -1,7 +1,11 @@
 #addin "nuget:?package=Cake.ExtendedNuGet"
 #addin "nuget:?package=NuGet.Core"
+#addin "nuget:?package=Cake.Codecov"
+#addin "nuget:?package=Cake.Figlet"
 
-#tool "nuget:?package=xunit.runner.console&version=2.3.0-beta5-build3769"
+#tool "nuget:?package=xunit.runner.console"
+#tool "nuget:?package=OpenCover"
+#tool "nuget:?package=Codecov"
 
 #l "common.cake"
 
@@ -13,14 +17,13 @@ using NuGet;
 
 var projectName = "EPPlus.Core.Extensions";
 var solution = "./" + projectName + ".sln";
+var testProject = GetFiles($"./test/**/*{projectName}.Tests.csproj").First();
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var toolpath = Argument("toolpath", @"tools");
 var branch = Argument("branch", EnvironmentVariable("APPVEYOR_REPO_BRANCH"));
-var nugetApiKey = EnvironmentVariable("nugetApiKey");
-
-var testProject = new Tuple<string, string[]>($"{projectName}.Tests", new[] { "netcoreapp2.0" });                      
+var nugetApiKey = EnvironmentVariable("nugetApiKey");            
 
 var nupkgPath = "nupkg";
 var nupkgRegex = $"**/{projectName}*.nupkg";
@@ -37,6 +40,11 @@ var NUGET_PUSH_SETTINGS = new NuGetPushSettings
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
+
+Setup(context =>
+{
+	Information(Figlet(projectName));
+});
 
 Task("Clean")
     .Does(() =>
@@ -58,32 +66,34 @@ Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
     {
-        MSBuild(solution, new MSBuildSettings(){Configuration = configuration}
-                                               .WithProperty("SourceLinkCreate","true"));
+        DotNetCoreBuild(solution, new DotNetCoreBuildSettings{Configuration = configuration});
     });
 
 Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
-    {   
-        foreach (string targetFramework in testProject.Item2)
-            {
-                 if(targetFramework == "net461")
-                 {                    
-                    var testFile = GetFiles($"**/bin/{configuration}/{targetFramework}/{testProject.Item1}*.dll").First();
-                    Information(testFile);
-					XUnit2(testFile.ToString(), new XUnit2Settings { });
-                 }
-                 else
-                 {
-                    var testProj = GetFiles($"./test/**/*{testProject.Item1}.csproj").First();
-                    DotNetCoreTest(testProj.FullPath, new DotNetCoreTestSettings { Configuration = "Release", Framework = targetFramework });
-                 }             
-            }
+    {           
+		OpenCover(tool =>
+					tool.DotNetCoreTest(testProject.FullPath, new DotNetCoreTestSettings { Configuration = configuration }), 
+				    new FilePath("./coverage.xml"),
+				    new OpenCoverSettings{ OldStyle = true }
+					.WithFilter($"+[EPPlus.Core.Extensions]*")
+					);	   								
     });
-    
+
+Task("Upload-Coverage")
+	.IsDependentOn("Run-Unit-Tests")
+    .Does(() =>
+	{
+		Codecov(new CodecovSettings {
+						Files = new[] { "./coverage.xml" },						
+						Token = EnvironmentVariable("COVERALLS_REPO_TOKEN"),
+						Branch = branch
+			});
+	});
+
 Task("Pack")
-    .IsDependentOn("Run-Unit-Tests")
+    .IsDependentOn("Upload-Coverage")
     .Does(() =>
     {
         var nupkgFiles = GetFiles(nupkgRegex);
