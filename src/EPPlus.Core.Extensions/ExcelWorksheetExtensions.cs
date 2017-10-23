@@ -317,7 +317,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Check and throw if column value is wrong on specified index
+        ///     Checks and throws if column value is wrong on specified index
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="rowIndex"></param>
