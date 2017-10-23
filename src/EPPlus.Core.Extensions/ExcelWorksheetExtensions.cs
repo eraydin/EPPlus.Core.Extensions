@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 
 using EPPlus.Core.Extensions.Configuration;
+using EPPlus.Core.Extensions.Validation;
 
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -124,7 +125,7 @@ namespace EPPlus.Core.Extensions
             IExcelConfiguration<T> configuration = new DefaultExcelConfiguration<T>();
             configurationAction?.Invoke(configuration);
 
-            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable<T>(configurationAction);
+            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(configurationAction);
         }
 
         /// <summary>
@@ -136,7 +137,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static IList<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return worksheet.AsEnumerable<T>(configurationAction).ToList();
+            return worksheet.AsEnumerable(configurationAction).ToList();
         }
 
         /// <summary>
@@ -316,6 +317,27 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
+        ///     Check and throw if column value is wrong on specified index
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="expectedValue"></param>
+        /// <param name="exceptionMessage">The {columnIndex}. column of worksheet should be '{expectedValue}'.</param>
+        public static void CheckAndThrowColumn(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, string expectedValue, string exceptionMessage = null)
+        {
+            if (!worksheet.GetColumns(rowIndex).Any(x => x.Value == expectedValue && x.Key == columnIndex))
+            {
+                if (!string.IsNullOrEmpty(exceptionMessage))
+                {
+                    throw new ExcelTableValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
+                }
+
+                throw new ExcelTableValidationException($"The {columnIndex}. column of worksheet should be '{expectedValue}'.");
+            }
+        }
+
+        /// <summary>
         ///     Checks whether given worksheet address has a value or not
         /// </summary>
         /// <param name="worksheet"></param>
@@ -325,7 +347,7 @@ namespace EPPlus.Core.Extensions
         public static bool CheckColumnValueIsNullOrEmpty(this ExcelWorksheet worksheet, int rowIndex, int columnIndex)
         {
             object value = worksheet.Cells[rowIndex, columnIndex, rowIndex, columnIndex].Value;
-            return value == null || string.IsNullOrWhiteSpace(value.ToString());
+            return string.IsNullOrWhiteSpace(value?.ToString());
         }
 
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)

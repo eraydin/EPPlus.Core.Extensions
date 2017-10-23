@@ -8,6 +8,10 @@ namespace EPPlus.Core.Extensions.Validation
     {
         protected ExcelTableValidationException() { }
 
+        public ExcelTableValidationException(string message) : base(message)
+        {
+        }
+
         public ExcelTableValidationException(string message, IEnumerable<ValidationResult> validationResults) : base(message)
         {
             ValidationErrors = validationResults;
