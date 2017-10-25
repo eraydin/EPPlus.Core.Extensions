@@ -169,47 +169,47 @@ namespace EPPlus.Core.Extensions
         /// <returns>A list of mappings from column index to property</returns>
         private static IList PrepareMappings<T>(ExcelTable table)
         {
+            IEnumerable<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyExcelColumnAttributeList = (from p in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                                                                                                   let attr = p.GetCustomAttributes(typeof(ExcelTableColumnAttribute), false)
+                                                                                                                   where attr.Length == 1
+                                                                                                                   select new KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>(p, attr.First() as ExcelTableColumnAttribute)).ToList();
             IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
 
-            PropertyInfo[] propInfo = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
             // Build property-table column mapping
-            foreach (PropertyInfo property in propInfo)
+            foreach (KeyValuePair<PropertyInfo, ExcelTableColumnAttribute> propertyExcelColumnAttribute in propertyExcelColumnAttributeList)
             {
-                var mappingAttribute = (ExcelTableColumnAttribute)property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault();
-                if (mappingAttribute != null)
+                var mappingAttribute = propertyExcelColumnAttribute.Value;
+
+                int col = -1;
+
+                // There is no case when both column name and index is specified since this is excluded by the attribute
+                // Neither index, nor column name is specified, use property name
+                if (mappingAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
                 {
-                    int col = -1;
-
-                    // There is no case when both column name and index is specified since this is excluded by the attribute
-                    // Neither index, nor column name is specified, use property name
-                    if (mappingAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
-                    {
-                        col = table.Columns[property.Name].Position;
-                    }
-
-                    // Column index was specified
-                    if (mappingAttribute.ColumnIndex > 0)
-                    {
-                        col = table.Columns[mappingAttribute.ColumnIndex - 1].Position;
-                    }
-
-                    // Column name was specified
-                    if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
-                    {
-                        if (table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null)
-                        {
-                            col = table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)).Position;
-                        }
-                    }
-
-                    if (col == -1)
-                    {
-                        throw new ArgumentException($"{mappingAttribute.ColumnName} column could not found on the worksheet");
-                    }
-
-                    mapping.Add(new KeyValuePair<int, PropertyInfo>(col, property));
+                    col = table.Columns[propertyExcelColumnAttribute.Key.Name].Position;
                 }
+
+                // Column index was specified
+                else if (mappingAttribute.ColumnIndex > 0)
+                {
+                    col = table.Columns[mappingAttribute.ColumnIndex - 1].Position;
+                }
+
+                // Column name was specified
+                else if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
+                {
+                    if (table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null)
+                    {
+                        col = table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)).Position;
+                    }
+                }
+
+                if (col == -1)
+                {
+                    throw new ArgumentException($"{mappingAttribute.ColumnName} column could not found on the worksheet");
+                }
+
+                mapping.Add(new KeyValuePair<int, PropertyInfo>(col, propertyExcelColumnAttribute.Key));
             }
 
             return mapping;
