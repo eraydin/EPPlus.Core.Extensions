@@ -172,7 +172,8 @@ namespace EPPlus.Core.Extensions
             IEnumerable<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyExcelColumnAttributeList = (from p in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                                                                                                    let attr = p.GetCustomAttributes(typeof(ExcelTableColumnAttribute), false)
                                                                                                                    where attr.Length == 1
-                                                                                                                   select new KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>(p, attr.First() as ExcelTableColumnAttribute)).ToList();
+                                                                                                                   select new KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>(p, attr.First() as ExcelTableColumnAttribute))
+                                                                                                                   .ToList();
             IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
 
             // Build property-table column mapping
