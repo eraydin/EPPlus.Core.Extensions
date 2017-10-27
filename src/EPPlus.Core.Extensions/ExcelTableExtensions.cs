@@ -169,18 +169,17 @@ namespace EPPlus.Core.Extensions
         /// <returns>A list of mappings from column index to property</returns>
         private static IList PrepareMappings<T>(ExcelTable table)
         {
-            IEnumerable<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyExcelColumnAttributeList = (from p in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                                                                                                   let attr = p.GetCustomAttributes(typeof(ExcelTableColumnAttribute), false)
-                                                                                                                   where attr.Length == 1
-                                                                                                                   select new KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>(p, attr.First() as ExcelTableColumnAttribute))
+            // Get only the properties with ExcelTableColumnAttributes.
+            IEnumerable<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyExcelColumnAttributeList = (typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                                                                                                   .Select(p => new { p, attr = p.GetCustomAttributes(typeof(ExcelTableColumnAttribute), false) })
+                                                                                                                   .Where(t => t.attr.Length == 1)
+                                                                                                                   .Select(t => new KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>(t.p, t.attr.First() as ExcelTableColumnAttribute)))
                                                                                                                    .ToList();
             IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
-
             // Build property-table column mapping
             foreach (KeyValuePair<PropertyInfo, ExcelTableColumnAttribute> propertyExcelColumnAttribute in propertyExcelColumnAttributeList)
             {
-                var mappingAttribute = propertyExcelColumnAttribute.Value;
-
+                ExcelTableColumnAttribute mappingAttribute = propertyExcelColumnAttribute.Value;
                 int col = -1;
 
                 // There is no case when both column name and index is specified since this is excluded by the attribute
@@ -197,7 +196,7 @@ namespace EPPlus.Core.Extensions
                 }
 
                 // Column name was specified
-                else if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
+                if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
                 {
                     if (table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null)
                     {
