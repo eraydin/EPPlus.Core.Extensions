@@ -109,6 +109,8 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn("Birth date")]
         public DateTime BirthDate { get; set; }
+
+        public int NotMappedProperty { get; set; }
     }
 
     internal class EnumFailMap
@@ -154,6 +156,8 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn(3)]
         public DateTime UpdatedDate { get; set; }
+
+        public string NotMappedProperty { get; set; }
     }
 
     internal enum Manufacturers2

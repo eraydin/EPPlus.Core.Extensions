@@ -63,13 +63,13 @@ namespace EPPlus.Core.Extensions
                     catch
                     {
                         result.AddLast(new ExcelTableExceptionArgs
-                        {
-                            ColumnName = table.Columns[map.Key].Name,
-                            ExpectedType = property.PropertyType,
-                            PropertyName = property.Name,
-                            CellValue = cell,
-                            CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                        });
+                                       {
+                                           ColumnName = table.Columns[map.Key].Name,
+                                           ExpectedType = property.PropertyType,
+                                           PropertyName = property.Name,
+                                           CellValue = cell,
+                                           CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                       });
                     }
                 }
             }
@@ -118,13 +118,13 @@ namespace EPPlus.Core.Extensions
                         if (!configuration.SkipCastingErrors)
                         {
                             var exceptionArgs = new ExcelTableExceptionArgs
-                            {
-                                ColumnName = table.Columns[map.Key].Name,
-                                ExpectedType = property.PropertyType,
-                                PropertyName = property.Name,
-                                CellValue = cell,
-                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                            };
+                                                {
+                                                    ColumnName = table.Columns[map.Key].Name,
+                                                    ExpectedType = property.PropertyType,
+                                                    PropertyName = property.Name,
+                                                    CellValue = cell,
+                                                    CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                                };
 
                             throw new ExcelTableConvertException($"The expected type of '{exceptionArgs.PropertyName}' property is '{exceptionArgs.ExpectedType.Name}', but the cell [{exceptionArgs.CellAddress.Address}] contains an invalid value.",
                                 ex, exceptionArgs
@@ -158,7 +158,7 @@ namespace EPPlus.Core.Extensions
         /// <returns>An enumerable of the generating type</returns>
         public static IList<T> ToList<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return AsEnumerable<T>(table, configurationAction).ToList();
+            return AsEnumerable(table, configurationAction).ToList();
         }
 
         /// <summary>
@@ -171,45 +171,41 @@ namespace EPPlus.Core.Extensions
         {
             IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
 
-            PropertyInfo[] propInfo = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            // Get only the properties that have ExcelTableColumnAttribute
+            var propertyAttributePairs = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                                  .Select(property => new { property, attribute = property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute })
+                                                  .Where(p => p.attribute != null)
+                                                  .ToList();
 
             // Build property-table column mapping
-            foreach (PropertyInfo property in propInfo)
+            foreach (var propertyAttributePair in propertyAttributePairs)
             {
-                var mappingAttribute = (ExcelTableColumnAttribute)property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault();
-                if (mappingAttribute != null)
+                ExcelTableColumnAttribute mappingAttribute = propertyAttributePair.attribute;
+                PropertyInfo property = propertyAttributePair.property;
+
+                int col = -1;
+
+                // There is no case when both column name and index is specified since this is excluded by the attribute
+                // Neither index, nor column name is specified, use property name
+                if (mappingAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
                 {
-                    int col = -1;
-
-                    // There is no case when both column name and index is specified since this is excluded by the attribute
-                    // Neither index, nor column name is specified, use property name
-                    if (mappingAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
-                    {
-                        col = table.Columns[property.Name].Position;
-                    }
-
-                    // Column index was specified
-                    if (mappingAttribute.ColumnIndex > 0)
-                    {
-                        col = table.Columns[mappingAttribute.ColumnIndex - 1].Position;
-                    }
-
-                    // Column name was specified
-                    if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
-                    {
-                        if (table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null)
-                        {
-                            col = table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)).Position;
-                        }
-                    }
-
-                    if (col == -1)
-                    {
-                        throw new ArgumentException($"{mappingAttribute.ColumnName} column could not found on the worksheet");
-                    }
-
-                    mapping.Add(new KeyValuePair<int, PropertyInfo>(col, property));
+                    col = table.Columns[property.Name].Position;
                 }
+                else if (mappingAttribute.ColumnIndex > 0) // Column index was specified
+                {
+                    col = table.Columns[mappingAttribute.ColumnIndex - 1].Position;
+                }
+                else if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName) && table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null) // Column name was specified
+                {
+                    col = table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)).Position;
+                }
+
+                if (col == -1)
+                {
+                    throw new ArgumentException($"{mappingAttribute.ColumnName} column could not found on the worksheet");
+                }
+
+                mapping.Add(new KeyValuePair<int, PropertyInfo>(col, property));
             }
 
             return mapping;
