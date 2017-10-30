@@ -76,7 +76,7 @@ Task("Run-Unit-Tests")
 		DotCoverAnalyse(tool =>
 					tool.DotNetCoreTest(testProject.FullPath, new DotNetCoreTestSettings { Configuration = configuration }), 
 				    new FilePath("./coverage.xml"),
-				    new DotCoverAnalyseSettings { ReportType = DotCoverReportType.XML }
+				    new DotCoverAnalyseSettings { ReportType = DotCoverReportType.DetailedXML }
 					 .WithFilter("+:EPPlus.Core.Extensions")
 					 .WithFilter("-:EPPlus.Core.Extensions.Tests")					
 					);	   								
