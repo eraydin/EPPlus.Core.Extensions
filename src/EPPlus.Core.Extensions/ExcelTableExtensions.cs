@@ -172,16 +172,14 @@ namespace EPPlus.Core.Extensions
             IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
 
             // Get only the properties that have ExcelTableColumnAttribute
-            var propertyAttributePairs = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                                  .Select(property => new { property, attribute = property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute })
-                                                  .Where(p => p.attribute != null)
-                                                  .ToList();
+            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes<T>();
 
             // Build property-table column mapping
-            foreach (var propertyAttributePair in propertyAttributePairs)
+            foreach (KeyValuePair<PropertyInfo, ExcelTableColumnAttribute> propertyAttributePair in propertyAttributePairs)
             {
-                ExcelTableColumnAttribute mappingAttribute = propertyAttributePair.attribute;
-                PropertyInfo property = propertyAttributePair.property;
+                PropertyInfo property = propertyAttributePair.Key;
+
+                ExcelTableColumnAttribute mappingAttribute = propertyAttributePair.Value;
 
                 int col = -1;
 

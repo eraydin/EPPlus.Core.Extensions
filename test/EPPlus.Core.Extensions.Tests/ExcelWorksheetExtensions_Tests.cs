@@ -404,7 +404,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             Action action1 = () =>
             {
-                worksheet.CheckAndThrowColumn(1, 3, "Barcode");
+                worksheet.CheckAndThrowColumn(1, 3, "Barcode", "Barcode column is missing");
             };
 
             Action action2 = () =>
@@ -412,11 +412,17 @@ namespace EPPlus.Core.Extensions.Tests
                 worksheet.CheckAndThrowColumn(1, 1, "Barcode");
             };
 
+            Action action3 = () =>
+            {
+                worksheet.CheckAndThrowColumn(2, 14, "Barcode");
+            };
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.ShouldThrow<ExcelTableValidationException>();
+            action1.ShouldThrow<ExcelTableValidationException>().And.Message.Should().Be("Barcode column is missing");
             action2.ShouldNotThrow();
+            action3.ShouldThrow<ExcelTableValidationException>();
         }
 
         [Fact]
@@ -462,6 +468,103 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             action.ShouldThrow<ExcelTableValidationException>();
+        }
+
+        [Fact]
+        public void Should_change_font_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.First();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetFont(new Font("Arial", 15));
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.Font.Name.Should().Be("Arial");
+            worksheet.Cells.Style.Font.Size.Should().Be(15);
+        }
+
+        [Fact]
+        public void Should_change_font_color_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[3];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetFontColor(Color.BlueViolet);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
+        }
+
+        [Fact]
+        public void Should_change_background_color_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[2];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetBackgroundColor(Color.Brown, ExcelFillStyle.DarkTrellis);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
+            worksheet.Cells.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
+        }
+
+        [Fact]
+        public void Should_set_horizontal_alignment_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[4];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetHorizontalAlignment(ExcelHorizontalAlignment.Distributed);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.HorizontalAlignment.Should().Be(ExcelHorizontalAlignment.Distributed);
+        }
+
+        [Fact]
+        public void Should_set_vertical_alignment_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Last();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetVerticalAlignment(ExcelVerticalAlignment.Justify);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.VerticalAlignment.Should().Be(ExcelVerticalAlignment.Justify);
         }
     }
 }

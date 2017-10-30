@@ -350,33 +350,74 @@ namespace EPPlus.Core.Extensions
             return string.IsNullOrWhiteSpace(value?.ToString());
         }
 
+        /// <summary>
+        ///     Sets the font of ExcelWorksheet cells from a Font object
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="font"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)
         {
             return worksheet.SetFont(worksheet.Cells, font);
         }
 
+        /// <summary>
+        ///     Sets the font of given cell range from a Font object
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="cellRange"></param>
+        /// <param name="font"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelRange cellRange, Font font)
         {
             worksheet.Cells[cellRange.Address].Style.Font.SetFromFont(font);
             return worksheet;
         }
 
+        /// <summary>
+        ///     Sets the font color of ExcelWorksheet cells from a Color object
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="fontColor"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, Color fontColor)
         {
             return worksheet.SetFontColor(worksheet.Cells, fontColor);
         }
 
+        /// <summary>
+        ///     Sets the font color of given cell range from a Color object
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="cellRange"></param>
+        /// <param name="fontColor"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color fontColor)
         {
             worksheet.Cells[cellRange.Address].Style.Font.Color.SetColor(fontColor);
             return worksheet;
         }
 
+        /// <summary>
+        ///     Sets the background color of ExcelWorksheet cells from a Color object
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="backgroundColor"></param>
+        /// <param name="fillStyle"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
             return worksheet.SetBackgroundColor(worksheet.Cells, backgroundColor, fillStyle);
         }
 
+        /// <summary>
+        ///     Sets the background color of given cell range from a Color object
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="cellRange"></param>
+        /// <param name="backgroundColor"></param>
+        /// <param name="fillStyle"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
             worksheet.Cells[cellRange.Address].Style.Fill.PatternType = fillStyle;
@@ -384,22 +425,48 @@ namespace EPPlus.Core.Extensions
             return worksheet;
         }
 
+        /// <summary>
+        ///     Sets the horizontal alignment of ExcelWorksheet cells
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="horizontalAlignment"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelHorizontalAlignment horizontalAlignment)
         {
             return worksheet.SetHorizontalAlignment(worksheet.Cells, horizontalAlignment);
         }
 
+        /// <summary>
+        ///     Sets the horizontal alignment of given cell range
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="cellRange"></param>
+        /// <param name="horizontalAlignment"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelRange cellRange, ExcelHorizontalAlignment horizontalAlignment)
         {
             worksheet.Cells[cellRange.Address].Style.HorizontalAlignment = horizontalAlignment;
             return worksheet;
         }
 
+        /// <summary>
+        ///     Sets the vertical alignment of ExcelWorksheet cells
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="verticalAlignment"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelVerticalAlignment verticalAlignment)
         {
             return worksheet.SetVerticalAlignment(worksheet.Cells, verticalAlignment);
         }
 
+        /// <summary>
+        ///     Sets the vertical alignment of given cell range
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="cellRange"></param>
+        /// <param name="verticalAlignment"></param>
+        /// <returns></returns>
         public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelRange cellRange, ExcelVerticalAlignment verticalAlignment)
         {
             worksheet.Cells[cellRange.Address].Style.VerticalAlignment = verticalAlignment;
