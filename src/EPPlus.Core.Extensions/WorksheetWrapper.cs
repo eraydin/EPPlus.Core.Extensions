@@ -39,27 +39,28 @@ namespace EPPlus.Core.Extensions
         {
             var columns = new List<WorksheetColumn<T>>();
 
-            Type type = typeof(T);
-            PropertyInfo[] properties = type.GetProperties();
+            var propertyAttributePairs = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                                  .Select(property => new { property, attribute = property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute })
+                                                  .Where(p => p.attribute != null)
+                                                  .ToList();
 
-            foreach (PropertyInfo property in properties)
+            foreach (var propertyAttributePair in propertyAttributePairs)
             {
-                var mappingAttribute = (ExcelTableColumnAttribute)property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault();
+                ExcelTableColumnAttribute mappingAttribute = propertyAttributePair.attribute;
+                PropertyInfo property = propertyAttributePair.property;
+
                 bool isNullableProperty = property.PropertyType.IsNullable();
 
-                if (mappingAttribute != null)
-                {
-                    string header = !string.IsNullOrEmpty(mappingAttribute.ColumnName) ? mappingAttribute.ColumnName : Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
+                string header = !string.IsNullOrEmpty(mappingAttribute.ColumnName) ? mappingAttribute.ColumnName : Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
 
-                    var column = new WorksheetColumn<T>
-                                 {
-                                     Header = header,
-                                     Map = GetGetter<T>(property.Name),
-                                     ConfigureColumn = c => c.AutoFit(),
-                                     ConfigureHeader = c => { c.Style.Font.Bold = !isNullableProperty; }
-                                 };
-                    columns.Add(column);
-                }
+                var column = new WorksheetColumn<T>
+                {
+                    Header = header,
+                    Map = GetGetter<T>(property.Name),
+                    ConfigureColumn = c => c.AutoFit(),
+                    ConfigureHeader = c => { c.Style.Font.Bold = !isNullableProperty; }
+                };
+                columns.Add(column);
             }
 
             return columns;
