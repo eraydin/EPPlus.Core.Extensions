@@ -4,7 +4,7 @@
 #addin "nuget:?package=Cake.Figlet"
 
 #tool "nuget:?package=xunit.runner.console"
-#tool "nuget:?package=OpenCover"
+#tool "nuget:?package=JetBrains.dotCover.CommandLineTools"
 #tool "nuget:?package=Codecov"
 
 #l "common.cake"
@@ -73,11 +73,12 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
     {           
-		OpenCover(tool =>
+		DotCoverAnalyse(tool =>
 					tool.DotNetCoreTest(testProject.FullPath, new DotNetCoreTestSettings { Configuration = configuration }), 
 				    new FilePath("./coverage.xml"),
-				    new OpenCoverSettings{ OldStyle = true }
-					.WithFilter($"+[EPPlus.Core.Extensions]*")
+				    new DotCoverAnalyseSettings { ReportType = DotCoverReportType.XML }
+					 .WithFilter("+:EPPlus.Core.Extensions")
+					 .WithFilter("-:EPPlus.Core.Extensions.Tests")					
 					);	   								
     });
 
