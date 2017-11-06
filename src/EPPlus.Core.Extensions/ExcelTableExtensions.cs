@@ -91,7 +91,7 @@ namespace EPPlus.Core.Extensions
         /// <returns>An enumerable of the generating type</returns>
         public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelConfiguration<T> configuration = new DefaultExcelConfiguration<T>();
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             IList mapping = PrepareMappings<T>(table);

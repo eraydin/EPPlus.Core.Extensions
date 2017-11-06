@@ -122,7 +122,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelConfiguration<T> configuration = new DefaultExcelConfiguration<T>();
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(configurationAction);

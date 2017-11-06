@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static WorksheetWrapper<T> ToWorksheet<T>(this IEnumerable<T> rows, string name, Action<IExcelConfiguration<T>> configurationAction = null)
         {
-            IExcelConfiguration<T> configuration = new DefaultExcelConfiguration<T>();
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             var worksheet = new WorksheetWrapper<T>
@@ -51,7 +51,7 @@ namespace EPPlus.Core.Extensions
         {
             previousSheet.AppendWorksheet();
 
-            IExcelConfiguration<T> configuration = new DefaultExcelConfiguration<T>();
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             var worksheet = new WorksheetWrapper<T>
@@ -80,7 +80,7 @@ namespace EPPlus.Core.Extensions
         public static WorksheetWrapper<T> WithColumn<T>(this WorksheetWrapper<T> worksheet, Func<T, object> map,
             string columnHeader, Action<IExcelConfiguration<T>> configurationAction = null)
         {
-            IExcelConfiguration<T> configuration = new DefaultExcelConfiguration<T>();
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             worksheet.Columns.Add(new WorksheetColumn<T>
