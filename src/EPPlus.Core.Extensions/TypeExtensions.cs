@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("EPPlus.Core.Extensions.Tests")]
@@ -52,6 +55,22 @@ namespace EPPlus.Core.Extensions
         public static object GetPropertyValue(this object obj, string propertyName)
         {
             return obj.GetType().GetProperty(propertyName).GetValue(obj, null);
+        }
+
+        /// <summary>
+        ///     Returns PropertyInfo and ExcelTableColumnAttribute pairs of given type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> GetExcelTableColumnAttributes<T>(this Type type)
+        {
+            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                                                                                     .Select(property => new KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>(property, property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))
+                                                                                                     .Where(p => p.Value != null)
+                                                                                                     .ToList();
+
+            return propertyAttributePairs;
         }
     }
 }

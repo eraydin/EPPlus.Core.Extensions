@@ -5,7 +5,7 @@ namespace EPPlus.Core.Extensions.Validation
 {
     internal static class DataAnnotationsValidator
     {
-        public static void Validate<T>(this T thisObject)
+        public static void Validate<T>(this T thisObject, int rowIndex)
         {
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(thisObject, null, null);
@@ -13,7 +13,7 @@ namespace EPPlus.Core.Extensions.Validation
 
             if (!isValid)
             {
-                throw new ExcelTableValidationException("Validation failed for one or more objects. See 'ValidationErrors' property for more details.", validationResults);
+                throw new ExcelTableValidationException($"Validation failed on the {rowIndex}. row of ExcelTable. See 'ValidationErrors' property for more details.", validationResults);
             }
         }
     }

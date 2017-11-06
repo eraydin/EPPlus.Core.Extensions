@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using EPPlus.Core.Extensions.Configuration;
+
 using OfficeOpenXml;
 
 namespace EPPlus.Core.Extensions
@@ -14,23 +16,23 @@ namespace EPPlus.Core.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
         /// <param name="name"></param>
-        /// <param name="configureColumn"></param>
-        /// <param name="configureHeader"></param>
-        /// <param name="configureHeaderRow"></param>
-        /// <param name="configureCell"></param>
+        /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static WorksheetWrapper<T> ToWorksheet<T>(this IEnumerable<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
+        public static WorksheetWrapper<T> ToWorksheet<T>(this IEnumerable<T> rows, string name, Action<IExcelConfiguration<T>> configurationAction = null)
         {
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
+            configurationAction?.Invoke(configuration);
+
             var worksheet = new WorksheetWrapper<T>
             {
                 Name = name,
                 Package = new ExcelPackage(),
                 Rows = rows,
                 Columns = new List<WorksheetColumn<T>>(),
-                ConfigureHeader = configureHeader,
-                ConfigureColumn = configureColumn,
-                ConfigureHeaderRow = configureHeaderRow,
-                ConfigureCell = configureCell
+                ConfigureHeader = configuration.ConfigureHeader,
+                ConfigureColumn = configuration.ConfigureColumn,
+                ConfigureHeaderRow = configuration.ConfigureHeaderRow,
+                ConfigureCell = configuration.ConfigureCell
             };
             return worksheet;
         }
@@ -43,24 +45,25 @@ namespace EPPlus.Core.Extensions
         /// <param name="previousSheet"></param>
         /// <param name="rows"></param>
         /// <param name="name"></param>
-        /// <param name="configureColumn"></param>
-        /// <param name="configureHeader"></param>
-        /// <param name="configureHeaderRow"></param>
-        /// <param name="configureCell"></param>
+        /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IEnumerable<T> rows, string name, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange> configureHeaderRow = null, Action<ExcelRange, T> configureCell = null)
+        public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IEnumerable<T> rows, string name, Action<IExcelConfiguration<T>> configurationAction = null)
         {
             previousSheet.AppendWorksheet();
+
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
+            configurationAction?.Invoke(configuration);
+
             var worksheet = new WorksheetWrapper<T>
             {
                 Name = name,
                 Package = previousSheet.Package,
                 Rows = rows,
                 Columns = new List<WorksheetColumn<T>>(),
-                ConfigureHeader = configureHeader ?? previousSheet.ConfigureHeader,
-                ConfigureColumn = configureColumn ?? previousSheet.ConfigureColumn,
-                ConfigureHeaderRow = configureHeaderRow ?? previousSheet.ConfigureHeaderRow,
-                ConfigureCell = configureCell
+                ConfigureHeader = configuration.ConfigureHeader ?? previousSheet.ConfigureHeader,
+                ConfigureColumn = configuration.ConfigureColumn ?? previousSheet.ConfigureColumn,
+                ConfigureHeaderRow = configuration.ConfigureHeaderRow ?? previousSheet.ConfigureHeaderRow,
+                ConfigureCell = configuration.ConfigureCell
             };
             return worksheet;
         }
@@ -72,20 +75,21 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="map"></param>
         /// <param name="columnHeader"></param>
-        /// <param name="configureColumn"></param>
-        /// <param name="configureHeader"></param>
-        /// <param name="configureCell"></param>
+        /// <param name="configurationAction"></param>
         /// <returns></returns>
         public static WorksheetWrapper<T> WithColumn<T>(this WorksheetWrapper<T> worksheet, Func<T, object> map,
-            string columnHeader, Action<ExcelColumn> configureColumn = null, Action<ExcelRange> configureHeader = null, Action<ExcelRange, T> configureCell = null)
+            string columnHeader, Action<IExcelConfiguration<T>> configurationAction = null)
         {
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
+            configurationAction?.Invoke(configuration);
+
             worksheet.Columns.Add(new WorksheetColumn<T>
             {
                 Map = map,
-                ConfigureHeader = configureHeader,
-                ConfigureColumn = configureColumn,
+                ConfigureHeader = configuration.ConfigureHeader,
+                ConfigureColumn = configuration.ConfigureColumn,
                 Header = columnHeader,
-                ConfigureCell = configureCell
+                ConfigureCell = configuration.ConfigureCell
             });
             return worksheet;
         }

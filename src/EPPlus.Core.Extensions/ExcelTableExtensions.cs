@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Validation;
 
 using OfficeOpenXml;
@@ -86,13 +87,13 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="skipCastErrors">
-        ///     Determines how the method should handle exceptions when casting cell value to property type.
-        ///     If this is true, invalid casts are silently skipped, otherwise any error will cause method to fail with exception.
-        /// </param>
+        /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, bool skipCastErrors = false) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
+            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
+            configurationAction?.Invoke(configuration);
+
             IList mapping = PrepareMappings<T>(table);
 
             ExcelAddress bounds = table.GetDataBounds();
@@ -111,36 +112,32 @@ namespace EPPlus.Core.Extensions
                     try
                     {
                         TrySetProperty(item, property, cell);
-
-                        // TODO:
-                        // Validate parsed object according to data annotations
-                        item.Validate();
                     }
                     catch (Exception ex)
                     {
-                        var exceptionArgs = new ExcelTableExceptionArgs
-                                            {
-                                                ColumnName = table.Columns[map.Key].Name,
-                                                ExpectedType = property.PropertyType,
-                                                PropertyName = property.Name,
-                                                CellValue = cell,
-                                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                                            };
-
-                        // TODO:
-                        if (ex is ExcelTableValidationException validationException)
+                        if (!configuration.SkipCastingErrors)
                         {
-                            validationException.AddExceptionArguments(exceptionArgs);
-                            throw validationException;
-                        }
+                            var exceptionArgs = new ExcelTableExceptionArgs
+                                                {
+                                                    ColumnName = table.Columns[map.Key].Name,
+                                                    ExpectedType = property.PropertyType,
+                                                    PropertyName = property.Name,
+                                                    CellValue = cell,
+                                                    CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                                };
 
-                        if (!skipCastErrors)
-                        {
                             throw new ExcelTableConvertException($"The expected type of '{exceptionArgs.PropertyName}' property is '{exceptionArgs.ExpectedType.Name}', but the cell [{exceptionArgs.CellAddress.Address}] contains an invalid value.",
                                 ex, exceptionArgs
                             );
                         }
                     }
+                }
+
+                // TODO:
+                if (!configuration.SkipValidationErrors)
+                {
+                    // Validate parsed object according to data annotations
+                    item.Validate(row);
                 }
 
                 yield return item;
@@ -157,14 +154,11 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="skipCastErrors">
-        ///     Determines how the method should handle exceptions when casting cell value to property type.
-        ///     If this is true, invlaid casts are silently skipped, otherwise any error will cause method to fail with exception.
-        /// </param>
+        /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IList<T> ToList<T>(this ExcelTable table, bool skipCastErrors = false) where T : class, new()
+        public static IList<T> ToList<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return AsEnumerable<T>(table, skipCastErrors).ToList();
+            return AsEnumerable(table, configurationAction).ToList();
         }
 
         /// <summary>
@@ -177,45 +171,39 @@ namespace EPPlus.Core.Extensions
         {
             IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
 
-            PropertyInfo[] propInfo = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            // Get only the properties that have ExcelTableColumnAttribute
+            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes<T>();
 
             // Build property-table column mapping
-            foreach (PropertyInfo property in propInfo)
+            foreach (KeyValuePair<PropertyInfo, ExcelTableColumnAttribute> propertyAttributePair in propertyAttributePairs)
             {
-                var mappingAttribute = (ExcelTableColumnAttribute)property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault();
-                if (mappingAttribute != null)
+                PropertyInfo property = propertyAttributePair.Key;
+
+                ExcelTableColumnAttribute mappingAttribute = propertyAttributePair.Value;
+
+                int col = -1;
+
+                // There is no case when both column name and index is specified since this is excluded by the attribute
+                // Neither index, nor column name is specified, use property name
+                if (mappingAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
                 {
-                    int col = -1;
-
-                    // There is no case when both column name and index is specified since this is excluded by the attribute
-                    // Neither index, nor column name is specified, use property name
-                    if (mappingAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
-                    {
-                        col = table.Columns[property.Name].Position;
-                    }
-
-                    // Column index was specified
-                    if (mappingAttribute.ColumnIndex > 0)
-                    {
-                        col = table.Columns[mappingAttribute.ColumnIndex - 1].Position;
-                    }
-
-                    // Column name was specified
-                    if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName))
-                    {
-                        if (table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null)
-                        {
-                            col = table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)).Position;
-                        }
-                    }
-
-                    if (col == -1)
-                    {
-                        throw new ArgumentException($"{mappingAttribute.ColumnName} column could not found on the worksheet");
-                    }
-
-                    mapping.Add(new KeyValuePair<int, PropertyInfo>(col, property));
+                    col = table.Columns[property.Name].Position;
                 }
+                else if (mappingAttribute.ColumnIndex > 0) // Column index was specified
+                {
+                    col = table.Columns[mappingAttribute.ColumnIndex - 1].Position;
+                }
+                else if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName) && table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null) // Column name was specified
+                {
+                    col = table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)).Position;
+                }
+
+                if (col == -1)
+                {
+                    throw new ArgumentException($"{mappingAttribute.ColumnName} column could not found on the worksheet");
+                }
+
+                mapping.Add(new KeyValuePair<int, PropertyInfo>(col, property));
             }
 
             return mapping;

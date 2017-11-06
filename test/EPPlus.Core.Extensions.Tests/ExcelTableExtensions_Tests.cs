@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Configuration;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
@@ -259,12 +261,14 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
-            ;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<EnumFailMap> list = table.ToList<EnumFailMap>(true);
+            IList<EnumFailMap> list = table.ToList<EnumFailMap>(configuration =>
+            {
+                configuration.SkipCastingErrors = true;
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -305,7 +309,10 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<StocksNullable> list = table.ToList<StocksNullable>(true);
+            IList<StocksNullable> list = table.ToList<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = true;
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

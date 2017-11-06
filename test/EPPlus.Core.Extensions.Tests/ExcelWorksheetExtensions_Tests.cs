@@ -4,6 +4,9 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Configuration;
+using EPPlus.Core.Extensions.Validation;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
@@ -63,7 +66,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets["TEST5"];
-
+          
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
@@ -94,7 +97,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(true);
+            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = true;
+            });
             listOfStocks.Count.Should().Be(4);
         }
 
@@ -146,12 +152,20 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST4"];
             ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST5"];
-
+           
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(true);
-            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(true, false);
+            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = true;
+                configuration.HasHeaderRow = true;
+            });
+            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = true;
+                configuration.HasHeaderRow = false;
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -168,12 +182,20 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST4"];
             ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST5"];
-
+     
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(true);
-            IEnumerable<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(true, false);
+            IEnumerable<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = true;
+                configuration.HasHeaderRow = true;
+            });
+            IEnumerable<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = true;
+                configuration.HasHeaderRow = false;
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -189,6 +211,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+
             var stocks = new List<StocksNullable>
                          {
                              new StocksNullable
@@ -203,7 +226,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, _ => _.Barcode, _ => _.Quantity, _ => _.UpdatedDate);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = false;
+                configuration.HasHeaderRow = true;
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -246,6 +273,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+
             var stocks = new List<StocksNullable>
                          {
                              new StocksNullable
@@ -260,7 +288,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, 3);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = true;
+                configuration.HasHeaderRow = true;
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -280,7 +312,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddLine(5, "barcode123", 5, DateTime.UtcNow);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(true);
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
+            {
+                configuration.SkipCastingErrors = false;
+                configuration.HasHeaderRow = true;
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -356,7 +392,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Test_CheckIfColumnValueIfNullOrEmpty()
+        public void Test_CheckAndThrowColumn()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -366,14 +402,169 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            bool result1 = worksheet.CheckIfColumnValueIfNullOrEmpty(3, 4);
-            bool result2 = worksheet.CheckIfColumnValueIfNullOrEmpty(2, 1);
+            Action action1 = () =>
+            {
+                worksheet.CheckAndThrowColumn(1, 3, "Barcode", "Barcode column is missing");
+            };
+
+            Action action2 = () =>
+            {
+                worksheet.CheckAndThrowColumn(1, 1, "Barcode");
+            };
+
+            Action action3 = () =>
+            {
+                worksheet.CheckAndThrowColumn(2, 14, "Barcode");
+            };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action1.ShouldThrow<ExcelTableValidationException>().And.Message.Should().Be("Barcode column is missing");
+            action2.ShouldNotThrow();
+            action3.ShouldThrow<ExcelTableValidationException>();
+        }
+
+        [Fact]
+        public void Test_CheckColumnValueIsNullOrEmpty()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST6"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            bool result1 = worksheet.CheckColumnValueIsNullOrEmpty(3, 4);
+            bool result2 = worksheet.CheckColumnValueIsNullOrEmpty(2, 1);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             result1.Should().BeTrue();
             result2.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Test_StocksValidation()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            IList<StocksValidation> list;
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () => { list = worksheet.ToList<StocksValidation>(configuration =>
+            {
+                configuration.SkipCastingErrors = false;
+                configuration.HasHeaderRow = true;
+            }); };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.ShouldThrow<ExcelTableValidationException>();
+        }
+
+        [Fact]
+        public void Should_change_font_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.First();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetFont(new Font("Arial", 15));
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.Font.Name.Should().Be("Arial");
+            worksheet.Cells.Style.Font.Size.Should().Be(15);
+        }
+
+        [Fact]
+        public void Should_change_font_color_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[3];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetFontColor(Color.BlueViolet);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
+        }
+
+        [Fact]
+        public void Should_change_background_color_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[2];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetBackgroundColor(Color.Brown, ExcelFillStyle.DarkTrellis);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
+            worksheet.Cells.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
+        }
+
+        [Fact]
+        public void Should_set_horizontal_alignment_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[4];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetHorizontalAlignment(ExcelHorizontalAlignment.Distributed);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.HorizontalAlignment.Should().Be(ExcelHorizontalAlignment.Distributed);
+        }
+
+        [Fact]
+        public void Should_set_vertical_alignment_of_the_worksheet()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Last();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.SetVerticalAlignment(ExcelVerticalAlignment.Justify);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.Cells.Style.VerticalAlignment.Should().Be(ExcelVerticalAlignment.Justify);
         }
     }
 }

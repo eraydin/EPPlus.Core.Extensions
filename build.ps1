@@ -31,15 +31,15 @@ Param(
     [string[]]$ScriptArgs
 )
 
-$CakeVersion = "0.22.2"
+$CakeVersion = "0.23.0"
 $DotNetChannel = "LTS";
-$DotNetVersion = "2.0.0";
+$DotNetVersion = "2.0.2";
 $DotNetInstallerUri = "https://dot.net/v1/dotnet-install.ps1";
 $NugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 
 # Temporarily skip verification and opt-in to new in-proc NuGet
-# $ENV:CAKE_SETTINGS_SKIPVERIFICATION='true'
-# $ENV:CAKE_NUGET_USEINPROCESSCLIENT='true'
+$ENV:CAKE_SETTINGS_SKIPVERIFICATION='true'
+$ENV:CAKE_NUGET_USEINPROCESSCLIENT='true'
 
 # Make sure tools folder exists
 $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
@@ -86,9 +86,10 @@ if($FoundDotNetCliVersion -ne $DotNetVersion) {
 
     Remove-PathVariable "$InstallPath"
     $env:PATH = "$InstallPath;$env:PATH"
-    $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
-    $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
 }
+
+$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+$env:DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 ###########################################################################
 # INSTALL NUGET
@@ -111,7 +112,7 @@ if (!(Test-Path $CakePath)) {
     Write-Host "Installing Cake..."
     Invoke-Expression "&`"$NugetPath`" install Cake -Version $CakeVersion -OutputDirectory `"$ToolPath`"" | Out-Null;
     if ($LASTEXITCODE -ne 0) {
-        Throw "An error occured while restoring Cake from NuGet."
+        Throw "An error occurred while restoring Cake from NuGet."
     }
 }
 

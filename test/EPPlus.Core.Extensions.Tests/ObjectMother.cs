@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 
+using EPPlus.Core.Extensions.Configuration;
+
 namespace EPPlus.Core.Extensions.Tests
 {
     internal enum Manufacturers
@@ -107,6 +109,8 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn("Birth date")]
         public DateTime BirthDate { get; set; }
+
+        public int NotMappedProperty { get; set; }
     }
 
     internal class EnumFailMap
@@ -137,6 +141,23 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn(3)]
         public DateTime? UpdatedDate { get; set; }
+    }
+
+    internal class StocksValidation
+    {
+        [ExcelTableColumn(1)]
+        [MinLength(1)]
+        [MaxLength(255)]
+        public string Barcode { get; set; }
+
+        [ExcelTableColumn(2)]
+        [Range(10, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
+        public int Quantity { get; set; }
+
+        [ExcelTableColumn(3)]
+        public DateTime UpdatedDate { get; set; }
+
+        public string NotMappedProperty { get; set; }
     }
 
     internal enum Manufacturers2

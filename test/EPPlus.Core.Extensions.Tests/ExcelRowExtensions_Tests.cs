@@ -1,131 +1,112 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Drawing;
 using System.Linq;
-
-using EPPlus.Core.Extensions.Configuration;
 
 using FluentAssertions;
 
 using OfficeOpenXml;
-using OfficeOpenXml.Table;
+using OfficeOpenXml.Style;
 
 using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ExcelPackageExtensions_Tests : TestBase
+    public class ExcelRowExtensions_Tests : TestBase
     {
         [Fact]
-        public void Should_extract_all_excelTables_from_an_excelPackage()
+        public void Should_change_font_of_the_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<ExcelTable> tables;
+            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            tables = excelPackage.GetTables();
+            row.SetFont(new Font("Arial", 15));
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            tables.Should().NotBeNull("We have 4 tables");
-            tables.Count().Should().Be(4, "We have 4 tables");
-
-            excelPackage.HasTable("TEST2").Should().BeTrue("We have TEST2 table");
-            excelPackage.HasTable("test2").Should().BeTrue("Table names are case insensitive");
-
-            excelPackage.Workbook.Worksheets["TEST2"].Tables["TEST2"].ShouldBeEquivalentTo(excelPackage.GetTable("TEST2"), "We are accessing the same objects");
-
-            excelPackage.HasTable("NOTABLE").Should().BeFalse("We don't have NOTABLE table");
-            excelPackage.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
+            row.Style.Font.Name.Should().Be("Arial");
+            row.Style.Font.Size.Should().Be(15);
         }
 
         [Fact]
-        public void Should_convert_an_excelPackage_into_a_dataSet()
+        public void Should_change_font_color_of_the_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            DataSet dataset;
+            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            dataset = excelPackage.ToDataSet();
+            row.SetFontColor(Color.BlueViolet);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            dataset.Should().NotBeNull("We have 6 tables");
-            dataset.Tables.Count.Should().Be(6, "We have 6 tables");
+            row.Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
         }
 
         [Fact]
-        public void Should_convert_a_byte_array_into_an_excelPackage()
+        public void Should_change_background_color_of_the_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage.GetAsByteArray();
+            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            ExcelPackage package = buffer.GetAsExcelPackage();
+            row.SetBackgroundColor(Color.Brown, ExcelFillStyle.DarkTrellis);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.ShouldBeEquivalentTo(excelPackage.Workbook.Worksheets.Count);
-            package.GetTables().Count().ShouldBeEquivalentTo(excelPackage.GetTables().Count());
+            row.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
+            row.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
         }
 
         [Fact]
-        public void Should_convert_given_ExcelPackage_to_list_of_objects()
+        public void Should_set_horizontal_alignment_of_the_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            IList<DateMap> list;
+            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(8);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<DateMap>();
+            row.SetHorizontalAlignment(ExcelHorizontalAlignment.Distributed);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            list.Any().Should().BeTrue();
-            list.Count.Should().Be(5);
+            row.Style.HorizontalAlignment.Should().Be(ExcelHorizontalAlignment.Distributed);
         }
 
         [Fact]
-        public void Should_convert_given_ExcelPackage_to_list_of_objects_with_worksheet_index()
+        public void Should_set_vertical_alignment_of_the_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            IList<StocksNullable> list;
-         
+            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(5);
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<StocksNullable>(6, configuration =>
-            {
-                configuration.HasHeaderRow = false;
-                configuration.SkipCastingErrors = true;
-            });
+            row.SetVerticalAlignment(ExcelVerticalAlignment.Justify);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            list.Any().Should().BeTrue();
-            list.Count.Should().Be(4);
+            row.Style.VerticalAlignment.Should().Be(ExcelVerticalAlignment.Justify);
         }
     }
 }
