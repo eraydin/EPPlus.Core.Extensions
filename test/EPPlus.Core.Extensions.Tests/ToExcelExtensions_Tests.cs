@@ -272,15 +272,13 @@ namespace EPPlus.Core.Extensions.Tests
             ExcelPackage package = pre50
                 .ToWorksheet("< 1950", configuration =>
                 {
-                    configuration.ConfigureColumn = x => { x.Style.Font.Color.SetColor(Color.Purple); };
+                    configuration.ConfigureColumn = x => { x.SetFontColor(Color.Purple); };
 
                     configuration.ConfigureHeader = x =>
                     {
-                        x.Style.Font.Bold = true;
-                        x.Style.Font.Size = 13;
-                        x.Style.Font.Color.SetColor(Color.White);
-                        x.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        x.Style.Fill.BackgroundColor.SetColor(Color.Black);
+                        x.SetFont(new Font("Arial", 13, FontStyle.Bold));
+                        x.SetFontColor(Color.White);
+                        x.SetBackgroundColor(Color.Black);
                     };
 
                     configuration.ConfigureHeaderRow = x =>
@@ -294,7 +292,7 @@ namespace EPPlus.Core.Extensions.Tests
 
                     configuration.ConfigureCell = (x, y) =>
                     {
-                        x.Style.Font.Name = "Times New Roman";
+                        x.SetFont(new Font("Times New Roman", 13));
                         y.YearBorn = y.YearBorn % 2 == 0 ? y.YearBorn : 1990;
                     };
                 })
