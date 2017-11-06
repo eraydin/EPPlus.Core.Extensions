@@ -9,7 +9,7 @@ namespace EPPlus.Core.Extensions.Configuration
     /// </summary>
     internal class DefaultExcelConfiguration<T> : IExcelConfiguration<T>
     {
-        public static DefaultExcelConfiguration<T> Instance { get; } = new DefaultExcelConfiguration<T>();
+        public static IExcelConfiguration<T> Instance => new DefaultExcelConfiguration<T>();
 
         public bool HasHeaderRow { get; set; } = true;
 
