@@ -4,7 +4,6 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 
-using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Validation;
 
 using FluentAssertions;
@@ -66,7 +65,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets["TEST5"];
-          
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
@@ -97,10 +96,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-            });
+            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration => { configuration.SkipCastingErrors = true; });
             listOfStocks.Count.Should().Be(4);
         }
 
@@ -152,7 +148,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST4"];
             ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST5"];
-           
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
@@ -182,7 +178,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST4"];
             ExcelWorksheet worksheet2 = excelPackage.Workbook.Worksheets["TEST5"];
-     
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
@@ -213,14 +209,14 @@ namespace EPPlus.Core.Extensions.Tests
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
 
             var stocks = new List<StocksNullable>
-                         {
-                             new StocksNullable
-                             {
-                                 Barcode = "barcode123",
-                                 Quantity = 5,
-                                 UpdatedDate = DateTime.MaxValue
-                             }
-                         };
+            {
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = DateTime.MaxValue
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -246,14 +242,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
             var stocks = new List<StocksNullable>
-                         {
-                             new StocksNullable
-                             {
-                                 Barcode = "barcode123",
-                                 Quantity = 5,
-                                 UpdatedDate = DateTime.MaxValue
-                             }
-                         };
+            {
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = DateTime.MaxValue
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -275,14 +271,14 @@ namespace EPPlus.Core.Extensions.Tests
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
 
             var stocks = new List<StocksNullable>
-                         {
-                             new StocksNullable
-                             {
-                                 Barcode = "barcode123",
-                                 Quantity = 5,
-                                 UpdatedDate = DateTime.MaxValue
-                             }
-                         };
+            {
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = DateTime.MaxValue
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -402,20 +398,11 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () =>
-            {
-                worksheet.CheckAndThrowColumn(1, 3, "Barcode", "Barcode column is missing");
-            };
+            Action action1 = () => { worksheet.CheckAndThrowColumn(1, 3, "Barcode", "Barcode column is missing"); };
 
-            Action action2 = () =>
-            {
-                worksheet.CheckAndThrowColumn(1, 1, "Barcode");
-            };
+            Action action2 = () => { worksheet.CheckAndThrowColumn(1, 1, "Barcode"); };
 
-            Action action3 = () =>
-            {
-                worksheet.CheckAndThrowColumn(2, 14, "Barcode");
-            };
+            Action action3 = () => { worksheet.CheckAndThrowColumn(2, 14, "Barcode"); };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -458,11 +445,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = worksheet.ToList<StocksValidation>(configuration =>
+            Action action = () =>
             {
-                configuration.SkipCastingErrors = false;
-                configuration.HasHeaderRow = true;
-            }); };
+                list = worksheet.ToList<StocksValidation>(configuration =>
+                {
+                    configuration.SkipCastingErrors = false;
+                    configuration.HasHeaderRow = true;
+                });
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -565,6 +555,29 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             worksheet.Cells.Style.VerticalAlignment.Should().Be(ExcelVerticalAlignment.Justify);
+        }
+
+        [Fact]
+        public void Should_valued_dimension_be_E9G13()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST4"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            valuedDimension.Address.Should().Be("E9:G13");
+            valuedDimension.Start.Column.Should().Be(5);
+            valuedDimension.Start.Row.Should().Be(9);
+            valuedDimension.End.Column.Should().Be(7);
+            valuedDimension.End.Row.Should().Be(13);
         }
     }
 }

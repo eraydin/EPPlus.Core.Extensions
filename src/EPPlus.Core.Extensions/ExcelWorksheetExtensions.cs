@@ -23,11 +23,13 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelAddress GetDataBounds(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
+            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
+
             return new ExcelAddress(
-                worksheet.Dimension.Start.Row + (hasHeaderRow ? 1 : 0),
-                worksheet.Dimension.Start.Column,
-                worksheet.Dimension.End.Row,
-                worksheet.Dimension.End.Column
+                valuedDimension.Start.Row + (hasHeaderRow ? 1 : 0),
+                valuedDimension.Start.Column,
+                valuedDimension.End.Row,
+                valuedDimension.End.Column
             );
         }
 
@@ -348,6 +350,53 @@ namespace EPPlus.Core.Extensions
         {
             object value = worksheet.Cells[rowIndex, columnIndex, rowIndex, columnIndex].Value;
             return string.IsNullOrWhiteSpace(value?.ToString());
+        }
+
+        /// <summary>
+        ///     Gets valued dimensions of worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <returns></returns>
+        public static ExcelAddressBase GetValuedDimension(this ExcelWorksheet worksheet)
+        {
+            ExcelAddressBase dimension = worksheet.Dimension;
+
+            if (dimension == null)
+            {
+                return null;
+            }
+
+            ExcelRange cells = worksheet.Cells[dimension.Address];
+            int minRow = 0, minCol = 0, maxRow = 0, maxCol = 0;
+            var hasValue = false;
+            foreach (ExcelRangeBase cell in cells.Where(cell => cell.Value != null))
+            {
+                if (!hasValue)
+                {
+                    minRow = cell.Start.Row;
+                    minCol = cell.Start.Column;
+                    maxRow = cell.End.Row;
+                    maxCol = cell.End.Column;
+                    hasValue = true;
+                }
+                else
+                {
+                    if (cell.Start.Column < minCol)
+                    {
+                        minCol = cell.Start.Column;
+                    }
+                    if (cell.End.Row > maxRow)
+                    {
+                        maxRow = cell.End.Row;
+                    }
+                    if (cell.End.Column > maxCol)
+                    {
+                        maxCol = cell.End.Column;
+                    }
+                }
+            }
+
+            return hasValue ? new ExcelAddressBase(minRow, minCol, maxRow, maxCol) : null;
         }
 
         /// <summary>
