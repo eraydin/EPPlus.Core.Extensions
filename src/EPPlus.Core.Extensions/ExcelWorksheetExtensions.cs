@@ -341,6 +341,26 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
+        ///     Deletes columns from worksheet by using given header text
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="headerText"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet DeleteColumns(this ExcelWorksheet worksheet, string headerText)
+        {
+            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
+
+            int count = worksheet.Cells[valuedDimension.Start.Row, valuedDimension.Start.Column, valuedDimension.Start.Row, valuedDimension.End.Column].Count(x => x.Text.Equals(headerText, StringComparison.InvariantCultureIgnoreCase));
+
+            for (var i = 0; i < count; i++)
+            {
+                worksheet.DeleteColumn(headerText);
+            }
+
+            return worksheet;
+        }
+
+        /// <summary>
         ///     Checks and throws if column value is wrong on specified index
         /// </summary>
         /// <param name="worksheet"></param>

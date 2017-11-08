@@ -622,5 +622,31 @@ namespace EPPlus.Core.Extensions.Tests
             worksheet.GetValuedDimension().End.Column.Should().Be(2);
             worksheet.Cells[1, 2, 1, 2].Text.Should().Be("UpdatedDate");
         }
+
+        [Fact]
+        public void Should_delete_columns_by_given_header_text()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST6"];
+
+            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
+
+            worksheet.ChangeCellValue(1, valuedDimension.End.Column + 1, "Quantity");
+            worksheet.ChangeCellValue(1, valuedDimension.End.Column + 2, "Quantity");
+            worksheet.ChangeCellValue(1, valuedDimension.End.Column + 3, "Quantity");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.DeleteColumns("Quantity");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            worksheet.GetValuedDimension().End.Column.Should().Be(2);
+            worksheet.Cells[1, 2, 1, 2].Text.Should().Be("UpdatedDate");
+        }
     }
 }
