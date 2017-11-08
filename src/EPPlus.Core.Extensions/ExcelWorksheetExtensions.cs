@@ -312,10 +312,32 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static IEnumerable<KeyValuePair<int, string>> GetColumns(this ExcelWorksheet worksheet, int rowIndex)
         {
-            for (int i = worksheet.Dimension.Start.Column; i <= worksheet.Dimension.End.Column; i++)
+            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
+
+            for (int i = valuedDimension.Start.Column; i <= valuedDimension.End.Column; i++)
             {
                 yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Value.ToString());
             }
+        }
+
+        /// <summary>
+        ///     Deletes a column from worksheet by using column header text
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="headerText"></param>
+        /// <returns></returns>
+        public static ExcelWorksheet DeleteColumn(this ExcelWorksheet worksheet, string headerText)
+        {
+            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
+
+            ExcelRangeBase headerColumn = worksheet.Cells[valuedDimension.Start.Row, valuedDimension.Start.Column, valuedDimension.Start.Row, valuedDimension.End.Column].FirstOrDefault(x => x.Text.Equals(headerText, StringComparison.InvariantCultureIgnoreCase));
+
+            if (headerColumn != null)
+            {
+                worksheet.DeleteColumn(headerColumn.Start.Column);
+            }
+
+            return worksheet;
         }
 
         /// <summary>

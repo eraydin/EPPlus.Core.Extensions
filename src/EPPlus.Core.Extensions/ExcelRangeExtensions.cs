@@ -8,7 +8,7 @@ namespace EPPlus.Core.Extensions
     public static class ExcelRangeExtensions
     {
         /// <summary>
-        ///     Sets the font of ExcelRangeBase from a Font object
+        ///     Sets the font of given range from a Font object
         /// </summary>
         /// <param name="range"></param>
         /// <param name="font"></param>
@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Sets the font color of ExcelRangeBase from a Color object
+        ///     Sets the font color of given range from a Color object
         /// </summary>
         /// <param name="range"></param>
         /// <param name="fontColor"></param>
@@ -32,7 +32,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Sets the background color of ExcelRangeBase from a Color object
+        ///     Sets the background color of given range from a Color object
         /// </summary>
         /// <param name="range"></param>
         /// <param name="backgroundColor"></param>
@@ -46,7 +46,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Sets the horizontal alignment of ExcelRangeBase
+        ///     Sets the horizontal alignment of given range
         /// </summary>
         /// <param name="range"></param>
         /// <param name="horizontalAlignment"></param>
@@ -58,7 +58,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Sets the vertical alignment of ExcelRangeBase
+        ///     Sets the vertical alignment of given range
         /// </summary>
         /// <param name="range"></param>
         /// <param name="verticalAlignment"></param>
@@ -66,6 +66,51 @@ namespace EPPlus.Core.Extensions
         public static ExcelRangeBase SetVerticalAlignment(this ExcelRangeBase range, ExcelVerticalAlignment verticalAlignment)
         {
             range.Style.VerticalAlignment = verticalAlignment;
+            return range;
+        }
+
+        /// <summary>
+        ///     Sets the border style of given range
+        /// </summary>
+        /// <param name="range"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        public static ExcelRangeBase BorderAround(this ExcelRangeBase range, ExcelBorderStyle style)
+        {
+            range.BorderAround(style, Color.Black);
+            return range;
+        }
+
+        /// <summary>
+        ///     Sets the border color of given range
+        /// </summary>
+        /// <param name="range"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static ExcelRangeBase SetBorderColor(this ExcelRangeBase range, Color color)
+        {
+            range.BorderAround(ExcelBorderStyle.Thin, color);
+            return range;
+        }
+
+        /// <summary>
+        ///     Sets the border style and color of given range
+        /// </summary>
+        /// <param name="range"></param>
+        /// <param name="style"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static ExcelRangeBase BorderAround(this ExcelRangeBase range, ExcelBorderStyle style, Color color)
+        {
+            range.Style.Border.Right.Style = style;
+            range.Style.Border.Left.Style = style;
+            range.Style.Border.Bottom.Style = style;
+            range.Style.Border.Top.Style = style;
+
+            range.Style.Border.Right.Color.SetColor(color);
+            range.Style.Border.Left.Color.SetColor(color);
+            range.Style.Border.Bottom.Color.SetColor(color);
+            range.Style.Border.Top.Color.SetColor(color);
             return range;
         }
     }

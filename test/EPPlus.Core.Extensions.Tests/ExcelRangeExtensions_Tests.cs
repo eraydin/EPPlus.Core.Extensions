@@ -18,7 +18,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1,4];
+            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -38,7 +38,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1,4];
+            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -57,7 +57,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1,4];
+            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -77,7 +77,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1,4];
+            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -96,7 +96,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1,4];
+            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -107,6 +107,79 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             forthColumn.Style.VerticalAlignment.Should().Be(ExcelVerticalAlignment.Justify);
+        }
+
+        [Fact]
+        public void Should_change_set_border_style_of_given_cell_range()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            forthColumn.BorderAround(ExcelBorderStyle.Dotted);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            forthColumn.Style.Border.Left.Style.Should().Be(ExcelBorderStyle.Dotted);
+            forthColumn.Style.Border.Right.Style.Should().Be(ExcelBorderStyle.Dotted);
+            forthColumn.Style.Border.Top.Style.Should().Be(ExcelBorderStyle.Dotted);
+            forthColumn.Style.Border.Bottom.Style.Should().Be(ExcelBorderStyle.Dotted);
+        }
+
+        [Fact]
+        public void Should_change_border_color_of_given_cell_range()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            forthColumn.SetBorderColor(Color.Purple);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            forthColumn.Style.Border.Left.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Left.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Right.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Top.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Bottom.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
+        }
+
+        [Fact]
+        public void Should_change_both_border_style_and_border_color_of_given_cell_range()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            forthColumn.BorderAround(ExcelBorderStyle.Dashed, Color.Red);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            forthColumn.Style.Border.Left.Style.Should().Be(ExcelBorderStyle.Dashed);
+            forthColumn.Style.Border.Right.Style.Should().Be(ExcelBorderStyle.Dashed);
+            forthColumn.Style.Border.Top.Style.Should().Be(ExcelBorderStyle.Dashed);
+            forthColumn.Style.Border.Bottom.Style.Should().Be(ExcelBorderStyle.Dashed);
+
+            forthColumn.Style.Border.Left.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Left.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Right.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Top.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Bottom.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
         }
     }
 }
