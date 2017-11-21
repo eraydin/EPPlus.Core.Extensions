@@ -23,7 +23,7 @@ var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var toolpath = Argument("toolpath", @"tools");
 var branch = Argument("branch", EnvironmentVariable("APPVEYOR_REPO_BRANCH"));
-var isPullRequest = EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER") != string.Empty;
+var isPullRequest = EnvironmentVariable("APPVEYOR_PULL_REQUEST_TITLE") != string.Empty;
 
 var nugetApiKey = EnvironmentVariable("nugetApiKey");            
 
@@ -98,6 +98,7 @@ Task("Upload-Coverage")
 
 Task("Pack")
     .IsDependentOn("Upload-Coverage")
+	.WithCriteria(() => branch == "master" && !isPullRequest)
     .Does(() =>
     {
         var nupkgFiles = GetFiles(nupkgRegex);
