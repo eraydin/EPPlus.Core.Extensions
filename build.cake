@@ -46,6 +46,18 @@ var NUGET_PUSH_SETTINGS = new NuGetPushSettings
 Setup(context =>
 {
 	Information(Figlet(projectName));
+	Information("--------------");
+	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_TITLE"));
+	Information("--------------");
+	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER"));
+	Information("--------------");
+	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_REPO_NAME"));
+	Information("--------------");
+	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH"));
+	Information("--------------");
+	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_COMMIT"));
+	Information("--------------");
+	Information(EnvironmentVariable("APPVEYOR_ACCOUNT_NAME"));
 });
 
 Task("Clean")
