@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using OfficeOpenXml;
 
@@ -31,6 +32,9 @@ namespace EPPlus.Core.Extensions
 
         internal Action<ExcelRange, T> ConfigureCell { get; set; }
 
+        private readonly object _syncRoot = new object();
+
+    
         /// <summary>
         ///     Generates columns for all public properties on the type
         /// </summary>
@@ -134,19 +138,22 @@ namespace EPPlus.Core.Extensions
             //render data
             if (Rows != null)
             {
-                for (var r = 0; r < Rows.Count(); r++)
+                Parallel.For(0, Rows.Count(), r =>
                 {
                     for (var c = 0; c < Columns.Count(); c++)
                     {
-                        worksheet.Cells[r + rowOffset + 1, c + 1].Value = Columns[c].Map(Rows.ElementAt(r));
-
-                        ConfigureCell?.Invoke(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
-                        if (Columns[c].ConfigureCell != null)
+                        lock (_syncRoot)
                         {
-                            Columns[c].ConfigureCell(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
+                            worksheet.Cells[r + rowOffset + 1, c + 1].Value = Columns[c].Map(Rows.ElementAt(r));
+
+                            ConfigureCell?.Invoke(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
+                            if (Columns[c].ConfigureCell != null)
+                            {
+                                Columns[c].ConfigureCell(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
+                            }
                         }
                     }
-                }
+                });
             }
 
             //configure columns
