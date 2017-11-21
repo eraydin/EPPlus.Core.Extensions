@@ -23,7 +23,6 @@ var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var toolpath = Argument("toolpath", @"tools");
 var branch = Argument("branch", EnvironmentVariable("APPVEYOR_REPO_BRANCH"));
-var isPullRequest = EnvironmentVariable("APPVEYOR_PULL_REQUEST_TITLE") != string.Empty;
 
 var nugetApiKey = EnvironmentVariable("nugetApiKey");            
 
@@ -45,19 +44,7 @@ var NUGET_PUSH_SETTINGS = new NuGetPushSettings
 
 Setup(context =>
 {
-	Information(Figlet(projectName));
-	Information("--------------");
-	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_TITLE"));
-	Information("--------------");
-	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER"));
-	Information("--------------");
-	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_REPO_NAME"));
-	Information("--------------");
-	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH"));
-	Information("--------------");
-	Information(EnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_COMMIT"));
-	Information("--------------");
-	Information(EnvironmentVariable("APPVEYOR_ACCOUNT_NAME"));
+	Information(Figlet(projectName));	
 });
 
 Task("Clean")
@@ -98,7 +85,7 @@ Task("Run-Unit-Tests")
 
 Task("Upload-Coverage")
 	.IsDependentOn("Run-Unit-Tests")
-	.WithCriteria(() => !isPullRequest)
+	.WithCriteria(() => !AppVeyor.Environment.PullRequest.IsPullRequest)
     .Does(() =>
 	{
 		Codecov(new CodecovSettings {
@@ -110,7 +97,7 @@ Task("Upload-Coverage")
 
 Task("Pack")
     .IsDependentOn("Upload-Coverage")
-	.WithCriteria(() => branch == "master" && !isPullRequest)
+	.WithCriteria(() => branch == "master" && !AppVeyor.Environment.PullRequest.IsPullRequest)
     .Does(() =>
     {
         var nupkgFiles = GetFiles(nupkgRegex);
@@ -119,7 +106,7 @@ Task("Pack")
 
 Task("NugetPublish")
     .IsDependentOn("Pack")
-    .WithCriteria(() => branch == "master" && !isPullRequest)
+    .WithCriteria(() => branch == "master" && !AppVeyor.Environment.PullRequest.IsPullRequest)
     .Does(()=>
     {
         foreach(var nupkgFile in GetFiles(nupkgRegex))
