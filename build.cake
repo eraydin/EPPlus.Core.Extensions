@@ -23,6 +23,8 @@ var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var toolpath = Argument("toolpath", @"tools");
 var branch = Argument("branch", EnvironmentVariable("APPVEYOR_REPO_BRANCH"));
+var isPullRequest = EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER") != string.Empty;
+
 var nugetApiKey = EnvironmentVariable("nugetApiKey");            
 
 var nupkgPath = "nupkg";
@@ -84,6 +86,7 @@ Task("Run-Unit-Tests")
 
 Task("Upload-Coverage")
 	.IsDependentOn("Run-Unit-Tests")
+	.WithCriteria(() => !isPullRequest)
     .Does(() =>
 	{
 		Codecov(new CodecovSettings {
@@ -103,7 +106,7 @@ Task("Pack")
 
 Task("NugetPublish")
     .IsDependentOn("Pack")
-    .WithCriteria(() => branch == "master")
+    .WithCriteria(() => branch == "master" && !isPullRequest)
     .Does(()=>
     {
         foreach(var nupkgFile in GetFiles(nupkgRegex))
