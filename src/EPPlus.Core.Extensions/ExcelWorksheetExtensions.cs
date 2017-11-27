@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 
 using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Validation;
@@ -30,7 +31,7 @@ namespace EPPlus.Core.Extensions
                 valuedDimension.Start.Column,
                 valuedDimension.End.Row,
                 valuedDimension.End.Column
-            );
+                );
         }
 
         /// <summary>
@@ -64,10 +65,7 @@ namespace EPPlus.Core.Extensions
                 // Has any table on same addresses
                 ExcelAddress dataBounds = worksheet.GetDataBounds(false);
                 ExcelTable excelTable = worksheet.Tables.FirstOrDefault(x => x.Address.Address.Equals(dataBounds.Address, StringComparison.InvariantCultureIgnoreCase));
-                if (excelTable != null)
-                {
-                    return excelTable;
-                }
+                if (excelTable != null) return excelTable;
             }
 
             worksheet.Tables.Add(worksheet.GetExcelRange(false), tableName);
@@ -178,10 +176,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, Action<ExcelRange> configureHeader = null, params string[] headerTexts)
         {
-            if (!headerTexts.Any())
-            {
-                return worksheet;
-            }
+            if (!headerTexts.Any()) return worksheet;
 
             worksheet.InsertRow(1, 1);
 
@@ -288,10 +283,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex, Action<ExcelRange> configureCells = null, params Func<T, object>[] propertySelectors)
         {
-            if (propertySelectors == null)
-            {
-                throw new ArgumentException($"{nameof(propertySelectors)} cannot be null");
-            }
+            if (propertySelectors == null) throw new ArgumentException($"{nameof(propertySelectors)} cannot be null");
 
             for (var i = 0; i < items.Count(); i++)
             {
@@ -332,10 +324,7 @@ namespace EPPlus.Core.Extensions
 
             ExcelRangeBase headerColumn = worksheet.Cells[valuedDimension.Start.Row, valuedDimension.Start.Column, valuedDimension.Start.Row, valuedDimension.End.Column].FirstOrDefault(x => x.Text.Equals(headerText, StringComparison.InvariantCultureIgnoreCase));
 
-            if (headerColumn != null)
-            {
-                worksheet.DeleteColumn(headerColumn.Start.Column);
-            }
+            if (headerColumn != null) worksheet.DeleteColumn(headerColumn.Start.Column);
 
             return worksheet;
         }
@@ -372,12 +361,27 @@ namespace EPPlus.Core.Extensions
         {
             if (!worksheet.GetColumns(rowIndex).Any(x => x.Value == expectedValue && x.Key == columnIndex))
             {
-                if (!string.IsNullOrEmpty(exceptionMessage))
-                {
-                    throw new ExcelTableValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
-                }
+                if (!string.IsNullOrEmpty(exceptionMessage)) throw new ExcelTableValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
 
                 throw new ExcelTableValidationException($"The {columnIndex}. column of worksheet should be '{expectedValue}'.");
+            }
+        }
+
+        /// <summary>
+        ///     Checks and throws if header columns does not match with ExcelColumnAttribute
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="worksheet"></param>
+        /// <param name="headerRowIndex"></param>
+        /// <param name="formattedExceptionMessage"></param>
+        public static void CheckHeadersAndThrow<T>(this ExcelWorksheet worksheet, int headerRowIndex, string formattedExceptionMessage = null)
+        {
+            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes<T>();
+
+            for (var i = 0; i < propertyAttributePairs.Count; i++)
+            {
+                string columnName = !string.IsNullOrEmpty(propertyAttributePairs[i].Value.ColumnName) ? propertyAttributePairs[i].Value.ColumnName : propertyAttributePairs[i].Key.Name;
+                worksheet.CheckAndThrowColumn(headerRowIndex, i + 1, columnName, formattedExceptionMessage);
             }
         }
 
@@ -403,10 +407,7 @@ namespace EPPlus.Core.Extensions
         {
             ExcelAddressBase dimension = worksheet.Dimension;
 
-            if (dimension == null)
-            {
-                return null;
-            }
+            if (dimension == null) return null;
 
             ExcelRange cells = worksheet.Cells[dimension.Address];
             int minRow = 0, minCol = 0, maxRow = 0, maxCol = 0;
@@ -423,18 +424,9 @@ namespace EPPlus.Core.Extensions
                 }
                 else
                 {
-                    if (cell.Start.Column < minCol)
-                    {
-                        minCol = cell.Start.Column;
-                    }
-                    if (cell.End.Row > maxRow)
-                    {
-                        maxRow = cell.End.Row;
-                    }
-                    if (cell.End.Column > maxCol)
-                    {
-                        maxCol = cell.End.Column;
-                    }
+                    if (cell.Start.Column < minCol) minCol = cell.Start.Column;
+                    if (cell.End.Row > maxRow) maxRow = cell.End.Row;
+                    if (cell.End.Column > maxCol) maxCol = cell.End.Column;
                 }
             }
 

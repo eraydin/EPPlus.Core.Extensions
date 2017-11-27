@@ -413,6 +413,31 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_throw_an_exception_when_columns_of_worksheet_not_matched_with_ExcelTableAttribute()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST6"];
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action1 = () => { worksheet.CheckHeadersAndThrow<NamedMap>(1, "The {0}.column of worksheet should be '{1}'."); };
+            Action action2 = () => { worksheet.CheckHeadersAndThrow<NamedMap>(1); };
+            Action action3 = () => { worksheet.CheckHeadersAndThrow<StocksNullable>(1); };
+            Action action4 = () => { worksheet.CheckHeadersAndThrow<Car>(1); };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action1.ShouldThrow<ExcelTableValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Name'.");
+            action2.ShouldThrow<ExcelTableValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
+            action3.ShouldNotThrow<ExcelTableValidationException>();
+            action4.ShouldThrow<ArgumentException>();
+        }
+
+        [Fact]
         public void Test_CheckColumnValueIsNullOrEmpty()
         {
             //-----------------------------------------------------------------------------------------------------------
