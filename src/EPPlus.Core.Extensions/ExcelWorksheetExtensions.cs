@@ -441,7 +441,8 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)
         {
-            return worksheet.SetFont(worksheet.Cells, font);
+            worksheet.Cells.Style.Font.SetFromFont(font);
+            return worksheet;
         }
 
         /// <summary>
@@ -465,7 +466,8 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, Color fontColor)
         {
-            return worksheet.SetFontColor(worksheet.Cells, fontColor);
+            worksheet.Cells.Style.Font.Color.SetColor(fontColor);
+            return worksheet;
         }
 
         /// <summary>
@@ -490,7 +492,9 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-            return worksheet.SetBackgroundColor(worksheet.Cells, backgroundColor, fillStyle);
+            worksheet.Cells.Style.Fill.PatternType = fillStyle;
+            worksheet.Cells.Style.Fill.BackgroundColor.SetColor(backgroundColor); 
+            return worksheet;
         }
 
         /// <summary>
