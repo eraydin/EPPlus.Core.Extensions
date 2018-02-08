@@ -7,7 +7,19 @@ namespace EPPlus.Core.Extensions
     public static class ExcelStyleExtensions
     {
         /// <summary>
-        /// 
+        ///     Sets border style around the range.
+        /// </summary>
+        /// <param name="thisStyle"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        public static ExcelStyle BorderAround(this ExcelStyle thisStyle, ExcelBorderStyle style)
+        {
+            thisStyle.BorderAround(style, Color.Black);
+            return thisStyle;
+        }
+
+        /// <summary>
+        ///     Sets border style around the range.
         /// </summary>
         /// <param name="thisStyle"></param>
         /// <param name="borderStyle"></param>
@@ -15,24 +27,24 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelStyle BorderAround(this ExcelStyle thisStyle, ExcelBorderStyle borderStyle, Color color)
         {
-            thisStyle.Border.Bottom.Style = borderStyle;
             thisStyle.Border.Top.Style = borderStyle;
-            thisStyle.Border.Right.Style = borderStyle;
             thisStyle.Border.Left.Style = borderStyle;
+            thisStyle.Border.Bottom.Style = borderStyle;
+            thisStyle.Border.Right.Style = borderStyle;
 
-            thisStyle.Border.Bottom.Color.SetColor(color);
             thisStyle.Border.Top.Color.SetColor(color);
-            thisStyle.Border.Right.Color.SetColor(color);
             thisStyle.Border.Left.Color.SetColor(color);
+            thisStyle.Border.Bottom.Color.SetColor(color);
+            thisStyle.Border.Right.Color.SetColor(color);
             return thisStyle;
         }
 
         /// <summary>
-        /// 
+        ///     Sets background color of Excel style
         /// </summary>
-        /// <param name="thisStyle"></param>
-        /// <param name="color"></param>
-        /// <param name="fillStyle"></param>
+        /// <param name="thisStyle">The Excel style</param>
+        /// <param name="color">The color</param>
+        /// <param name="fillStyle">The fill style of background</param>
         /// <returns></returns>
         public static ExcelStyle SetBackgroundColor(this ExcelStyle thisStyle, Color color, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
@@ -42,10 +54,10 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// 
+        ///     Sets font of Excel style
         /// </summary>
-        /// <param name="thisStyle"></param>
-        /// <param name="font"></param>
+        /// <param name="thisStyle">The Excel style</param>
+        /// <param name="font">The font</param>
         /// <returns></returns>
         public static ExcelStyle SetFont(this ExcelStyle thisStyle, Font font)
         {
@@ -54,11 +66,11 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// 
+        ///     Sets font and color of Excel style
         /// </summary>
-        /// <param name="thisStyle"></param>
-        /// <param name="font"></param>
-        /// <param name="color"></param>
+        /// <param name="thisStyle">The Excel style</param>
+        /// <param name="font">The font</param>
+        /// <param name="color">The color</param>
         /// <returns></returns>
         public static ExcelStyle SetFont(this ExcelStyle thisStyle, Font font, Color color)
         {
@@ -68,7 +80,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// 
+        ///     Sets font color of Excel style
         /// </summary>
         /// <param name="thisStyle"></param>
         /// <param name="color"></param>
@@ -80,9 +92,9 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// 
+        ///     Sets horizontal alignment of Excel style
         /// </summary>
-        /// <param name="thisStyle"></param>
+        /// <param name="thisStyle">The Excel style</param>
         /// <param name="horizontalAlignment"></param>
         /// <returns></returns>
         public static ExcelStyle SetHorizontalAlignment(this ExcelStyle thisStyle, ExcelHorizontalAlignment horizontalAlignment)
@@ -92,9 +104,9 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        /// 
+        ///     Sets vertical alignment of Excel style
         /// </summary>
-        /// <param name="thisStyle"></param>
+        /// <param name="thisStyle">The Excel style</param>
         /// <param name="verticalAlignment"></param>
         /// <returns></returns>
         public static ExcelStyle SetVerticalAlignment(this ExcelStyle thisStyle, ExcelVerticalAlignment verticalAlignment)

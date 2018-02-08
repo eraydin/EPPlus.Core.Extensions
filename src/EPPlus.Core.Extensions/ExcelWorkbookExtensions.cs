@@ -18,7 +18,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorkbook CreateNamedStyle(this ExcelWorkbook workbook, string styleName, Action<ExcelStyle> style)
         {
-            if (workbook.Styles.NamedStyles.All(x => x.Name == styleName))
+            if (workbook.Styles.NamedStyles.Any(x => x.Name == styleName))
             {
                 throw new ArgumentException($"The Excel package already has a style with the name of '{styleName}'");
             }

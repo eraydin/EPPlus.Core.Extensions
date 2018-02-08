@@ -241,16 +241,16 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.ShouldThrow<ExcelTableConvertException>()
+            action.Should().Throw<ExcelTableConvertException>()
                   .And.Args.CellValue.Should().Be("MALE");
 
-            action.ShouldThrow<ExcelTableConvertException>()
+            action.Should().Throw<ExcelTableConvertException>()
                   .And.Args.ExpectedType.Should().Be(typeof(Classes));
 
-            action.ShouldThrow<ExcelTableConvertException>()
+            action.Should().Throw<ExcelTableConvertException>()
                   .And.Args.PropertyName.Should().Be("Gender");
 
-            action.ShouldThrow<ExcelTableConvertException>()
+            action.Should().Throw<ExcelTableConvertException>()
                   .And.Args.ColumnName.Should().Be("Gender");
         }
 
@@ -366,7 +366,7 @@ namespace EPPlus.Core.Extensions.Tests
             list.All(x => x.Manufacturer > 0).Should().BeTrue("All should have manufacturers");
             list.Last().ManufacturingDate.Should().BeNull("The last one's manufacturing date is unknown");
             list.Count(x => x.ManufacturingDate == null).Should().Be(1, "Only one manufacturig date is unknown");
-            list.Single(x => x.LicensePlate == null).ShouldBeEquivalentTo(list.Single(x => !x.Ready), "The one without the license plate is not ready");
+            list.Single(x => x.LicensePlate == null).Should().BeEquivalentTo(list.Single(x => !x.Ready), "The one without the license plate is not ready");
             list.Max(x => x.Price).Should().Be(12000, "Highest price is 12000");
             list.Max(x => x.ManufacturingDate).Should().Be(new DateTime(2015, 3, 10), "Oldest was manufactured on 2015.03.10");
         }

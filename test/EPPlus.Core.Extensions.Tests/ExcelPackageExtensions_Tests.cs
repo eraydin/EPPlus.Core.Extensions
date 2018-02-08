@@ -4,7 +4,6 @@ using System.Linq;
 
 using FluentAssertions;
 
-using OfficeOpenXml;
 using OfficeOpenXml.Table;
 
 using Xunit;
@@ -35,7 +34,7 @@ namespace EPPlus.Core.Extensions.Tests
             excelPackage.HasTable("TEST2").Should().BeTrue("We have TEST2 table");
             excelPackage.HasTable("test2").Should().BeTrue("Table names are case insensitive");
 
-            excelPackage.Workbook.Worksheets["TEST2"].Tables["TEST2"].ShouldBeEquivalentTo(excelPackage.GetTable("TEST2"), "We are accessing the same objects");
+            excelPackage.Workbook.Worksheets["TEST2"].Tables["TEST2"].Should().BeEquivalentTo(excelPackage.GetTable("TEST2"), "We are accessing the same objects");
 
             excelPackage.HasTable("NOTABLE").Should().BeFalse("We don't have NOTABLE table");
             excelPackage.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
@@ -59,27 +58,6 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             dataset.Should().NotBeNull("We have 6 tables");
             dataset.Tables.Count.Should().Be(6, "We have 6 tables");
-        }
-
-        [Fact]
-        public void Should_convert_a_byte_array_into_an_excelPackage()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage.GetAsByteArray();
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelPackage package = buffer.GetAsExcelPackage();
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.ShouldBeEquivalentTo(excelPackage.Workbook.Worksheets.Count);
-            package.GetTables().Count().ShouldBeEquivalentTo(excelPackage.GetTables().Count());
         }
 
         [Fact]
@@ -109,7 +87,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             List<StocksNullable> list;
-         
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------

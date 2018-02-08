@@ -259,7 +259,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.ShouldThrow<ArgumentException>();
+            action.Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -407,9 +407,9 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.ShouldThrow<ExcelTableValidationException>().And.Message.Should().Be("Barcode column is missing");
-            action2.ShouldNotThrow();
-            action3.ShouldThrow<ExcelTableValidationException>();
+            action1.Should().Throw<ExcelTableValidationException>().And.Message.Should().Be("Barcode column is missing");
+            action2.Should().NotThrow();
+            action3.Should().Throw<ExcelTableValidationException>();
         }
 
         [Fact]
@@ -431,10 +431,10 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.ShouldThrow<ExcelTableValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Name'.");
-            action2.ShouldThrow<ExcelTableValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
-            action3.ShouldNotThrow<ExcelTableValidationException>();
-            action4.ShouldThrow<ArgumentException>();
+            action1.Should().Throw<ExcelTableValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Name'.");
+            action2.Should().Throw<ExcelTableValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
+            action3.Should().NotThrow<ExcelTableValidationException>();
+            action4.Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -482,7 +482,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.ShouldThrow<ExcelTableValidationException>();
+            action.Should().Throw<ExcelTableValidationException>();
         }
 
         [Fact]

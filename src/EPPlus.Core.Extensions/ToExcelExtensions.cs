@@ -24,16 +24,16 @@ namespace EPPlus.Core.Extensions
             configurationAction?.Invoke(configuration);
 
             var worksheet = new WorksheetWrapper<T>
-            {
-                Name = name,
-                Package = new ExcelPackage(),
-                Rows = rows,
-                Columns = new List<WorksheetColumn<T>>(),
-                ConfigureHeader = configuration.ConfigureHeader,
-                ConfigureColumn = configuration.ConfigureColumn,
-                ConfigureHeaderRow = configuration.ConfigureHeaderRow,
-                ConfigureCell = configuration.ConfigureCell
-            };
+                            {
+                                Name = name,
+                                Package = new ExcelPackage(),
+                                Rows = rows,
+                                Columns = new List<WorksheetColumn<T>>(),
+                                ConfigureHeader = configuration.ConfigureHeader,
+                                ConfigureColumn = configuration.ConfigureColumn,
+                                ConfigureHeaderRow = configuration.ConfigureHeaderRow,
+                                ConfigureCell = configuration.ConfigureCell
+                            };
             return worksheet;
         }
 
@@ -55,16 +55,16 @@ namespace EPPlus.Core.Extensions
             configurationAction?.Invoke(configuration);
 
             var worksheet = new WorksheetWrapper<T>
-            {
-                Name = name,
-                Package = previousSheet.Package,
-                Rows = rows,
-                Columns = new List<WorksheetColumn<T>>(),
-                ConfigureHeader = configuration.ConfigureHeader ?? previousSheet.ConfigureHeader,
-                ConfigureColumn = configuration.ConfigureColumn ?? previousSheet.ConfigureColumn,
-                ConfigureHeaderRow = configuration.ConfigureHeaderRow ?? previousSheet.ConfigureHeaderRow,
-                ConfigureCell = configuration.ConfigureCell
-            };
+                            {
+                                Name = name,
+                                Package = previousSheet.Package,
+                                Rows = rows,
+                                Columns = new List<WorksheetColumn<T>>(),
+                                ConfigureHeader = configuration.ConfigureHeader ?? previousSheet.ConfigureHeader,
+                                ConfigureColumn = configuration.ConfigureColumn ?? previousSheet.ConfigureColumn,
+                                ConfigureHeaderRow = configuration.ConfigureHeaderRow ?? previousSheet.ConfigureHeaderRow,
+                                ConfigureCell = configuration.ConfigureCell
+                            };
             return worksheet;
         }
 
@@ -78,19 +78,19 @@ namespace EPPlus.Core.Extensions
         /// <param name="configurationAction"></param>
         /// <returns></returns>
         public static WorksheetWrapper<T> WithColumn<T>(this WorksheetWrapper<T> worksheet, Func<T, object> map,
-            string columnHeader, Action<IExcelConfiguration<T>> configurationAction = null)
+                                                        string columnHeader, Action<IExcelConfiguration<T>> configurationAction = null)
         {
             IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             worksheet.Columns.Add(new WorksheetColumn<T>
-            {
-                Map = map,
-                ConfigureHeader = configuration.ConfigureHeader,
-                ConfigureColumn = configuration.ConfigureColumn,
-                Header = columnHeader,
-                ConfigureCell = configuration.ConfigureCell
-            });
+                                  {
+                                      Map = map,
+                                      ConfigureHeader = configuration.ConfigureHeader,
+                                      ConfigureColumn = configuration.ConfigureColumn,
+                                      Header = columnHeader,
+                                      ConfigureCell = configuration.ConfigureCell
+                                  });
             return worksheet;
         }
 
@@ -110,10 +110,10 @@ namespace EPPlus.Core.Extensions
             }
 
             worksheet.Titles.Add(new WorksheetTitleRow
-            {
-                Title = title,
-                ConfigureTitle = configureTitle
-            });
+                                 {
+                                     Title = title,
+                                     ConfigureTitle = configureTitle
+                                 });
 
             return worksheet;
         }
@@ -160,8 +160,8 @@ namespace EPPlus.Core.Extensions
         ///     Creates a new instance of the ExcelPackage class based on a byte array
         /// </summary>
         /// <param name="buffer">The byte array</param>
-        /// <returns>An ExcelPackages</returns>
-        public static ExcelPackage GetAsExcelPackage(this byte[] buffer)
+        /// <returns>Excel package</returns>
+        public static ExcelPackage AsExcelPackage(this byte[] buffer)
         {
             using (var memoryStream = new MemoryStream(buffer))
             {
@@ -174,8 +174,8 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="buffer">The byte array</param>
         /// <param name="password">The password to decrypt the document</param>
-        /// <returns>An ExcelPackages</returns>
-        public static ExcelPackage GetAsExcelPackage(this byte[] buffer, string password)
+        /// <returns>Excel package</returns>
+        public static ExcelPackage AsExcelPackage(this byte[] buffer, string password)
         {
             if (!string.IsNullOrEmpty(password))
             {
@@ -186,6 +186,27 @@ namespace EPPlus.Core.Extensions
             }
 
             return buffer.ToExcelPackage();
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the ExcelPackage class based on a stream
+        /// </summary>
+        /// <param name="stream">The byte array</param>
+        /// <returns>Excel package</returns>
+        public static ExcelPackage AsExcelPackage(this Stream stream)
+        {
+            return new ExcelPackage(stream);
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the ExcelPackage class based on a stream
+        /// </summary>
+        /// <param name="stream">The byte array</param>
+        /// <param name="password">The password to decrypt the document</param>
+        /// <returns>Excel package</returns>
+        public static ExcelPackage AsExcelPackage(this Stream stream, string password)
+        {
+            return new ExcelPackage(stream, Password: password);
         }
 
         /// <summary>
