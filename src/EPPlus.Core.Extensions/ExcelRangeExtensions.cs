@@ -27,7 +27,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRangeBase SetFontColor(this ExcelRangeBase range, Color fontColor)
         {
-            range.Style.Font.Color.SetColor(fontColor);
+            range.Style.SetFontColor(fontColor);
             return range;
         }
 
@@ -40,8 +40,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRangeBase SetBackgroundColor(this ExcelRangeBase range, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-            range.Style.Fill.PatternType = fillStyle;
-            range.Style.Fill.BackgroundColor.SetColor(backgroundColor);
+            range.Style.SetBackgroundColor(backgroundColor, fillStyle);
             return range;
         }
 
@@ -53,7 +52,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRangeBase SetHorizontalAlignment(this ExcelRangeBase range, ExcelHorizontalAlignment horizontalAlignment)
         {
-            range.Style.HorizontalAlignment = horizontalAlignment;
+            range.Style.SetHorizontalAlignment(horizontalAlignment);
             return range;
         }
 
@@ -65,7 +64,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRangeBase SetVerticalAlignment(this ExcelRangeBase range, ExcelVerticalAlignment verticalAlignment)
         {
-            range.Style.VerticalAlignment = verticalAlignment;
+            range.Style.SetVerticalAlignment(verticalAlignment);
             return range;
         }
 
@@ -102,15 +101,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRangeBase BorderAround(this ExcelRangeBase range, ExcelBorderStyle style, Color color)
         {
-            range.Style.Border.Right.Style = style;
-            range.Style.Border.Left.Style = style;
-            range.Style.Border.Bottom.Style = style;
-            range.Style.Border.Top.Style = style;
-
-            range.Style.Border.Right.Color.SetColor(color);
-            range.Style.Border.Left.Color.SetColor(color);
-            range.Style.Border.Bottom.Color.SetColor(color);
-            range.Style.Border.Top.Color.SetColor(color);
+            range.Style.BorderAround(style, color);  
             return range;
         }
     }

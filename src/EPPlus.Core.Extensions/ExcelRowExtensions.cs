@@ -15,7 +15,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRow SetFont(this ExcelRow row, Font font)
         {
-            row.Style.Font.SetFromFont(font);
+            row.Style.SetFont(font);
             return row;
         }
 
@@ -27,7 +27,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRow SetFontColor(this ExcelRow row, Color fontColor)
         {
-            row.Style.Font.Color.SetColor(fontColor);
+            row.Style.SetFontColor(fontColor);
             return row;
         }
 
@@ -40,8 +40,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRow SetBackgroundColor(this ExcelRow row, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-            row.Style.Fill.PatternType = fillStyle;
-            row.Style.Fill.BackgroundColor.SetColor(backgroundColor);
+            row.Style.SetBackgroundColor(backgroundColor, fillStyle);   
             return row;
         }
 
@@ -53,7 +52,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRow SetHorizontalAlignment(this ExcelRow row, ExcelHorizontalAlignment horizontalAlignment)
         {
-            row.Style.HorizontalAlignment = horizontalAlignment;
+            row.Style.SetHorizontalAlignment(horizontalAlignment);
             return row;
         }
 
@@ -65,7 +64,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRow SetVerticalAlignment(this ExcelRow row, ExcelVerticalAlignment verticalAlignment)
         {
-            row.Style.VerticalAlignment = verticalAlignment;
+            row.Style.SetVerticalAlignment(verticalAlignment);
             return row;
         }
     }

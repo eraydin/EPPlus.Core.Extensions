@@ -19,9 +19,9 @@ namespace EPPlus.Core.Extensions
 
         internal IEnumerable<T> Rows { get; set; }
 
-        internal IList<WorksheetColumn<T>> Columns { get; set; }
+        internal List<WorksheetColumn<T>> Columns { get; set; }
 
-        internal IList<WorksheetTitleRow> Titles { get; set; }
+        internal List<WorksheetTitleRow> Titles { get; set; }
 
         internal Action<ExcelColumn> ConfigureColumn { get; set; }
 
@@ -35,7 +35,7 @@ namespace EPPlus.Core.Extensions
         ///     Generates columns for all public properties on the type
         /// </summary>
         /// <returns></returns>
-        internal IList<WorksheetColumn<T>> AutoGenerateColumns()
+        internal List<WorksheetColumn<T>> AutoGenerateColumns()
         {
             var columns = new List<WorksheetColumn<T>>();
 

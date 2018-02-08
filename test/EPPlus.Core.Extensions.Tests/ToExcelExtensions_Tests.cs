@@ -14,7 +14,7 @@ namespace EPPlus.Core.Extensions.Tests
 {
     public class ToExcelExtensions_Tests
     {
-        private readonly IList<Person> _personList;
+        private readonly List<Person> _personList;
 
         public ToExcelExtensions_Tests()
         {

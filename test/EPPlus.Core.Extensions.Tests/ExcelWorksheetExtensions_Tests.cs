@@ -75,7 +75,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>();
+            List<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>();
             listOfStocks.Count.Should().Be(3);
         }
 
@@ -96,7 +96,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            IList<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration => { configuration.SkipCastingErrors = true; });
+            List<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration => { configuration.SkipCastingErrors = true; });
             listOfStocks.Count.Should().Be(4);
         }
 
@@ -465,7 +465,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
-            IList<StocksValidation> list;
+            List<StocksValidation> list;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
