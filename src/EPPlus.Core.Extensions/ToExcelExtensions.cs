@@ -206,7 +206,7 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this Stream stream, string password)
         {
-            return new ExcelPackage(stream, Password: password);
+            return new ExcelPackage(newStream: stream, Password:password);
         }
 
         /// <summary>

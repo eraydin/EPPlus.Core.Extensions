@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security;
 
 using FluentAssertions;
 
@@ -441,6 +443,49 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_convert_a_byte_array_into_an_excelPackage_with_password()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] buffer = excelPackage.GetAsByteArray("Test1234");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelPackage package = buffer.AsExcelPackage("Test1234");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            package.Should().NotBeNull();
+            package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
+            package.GetTables().Count().Should().Be(excelPackage.GetTables().Count());
+        }
+
+        [Fact]
+        public void Should_convert_a_byte_array_into_an_excelPackage_with_wrong_password()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] buffer = excelPackage.GetAsByteArray("Test1234");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () =>
+            {
+                ExcelPackage package = buffer.AsExcelPackage("test12345");
+            };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.Should().Throw<SecurityException>();
+        }
+
+        [Fact]
         public void Should_convert_a_stream_into_an_excelPackage()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -459,6 +504,51 @@ namespace EPPlus.Core.Extensions.Tests
             package.Should().NotBeNull();
             package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
             package.GetTables().Count().Should().Be(excelPackage.GetTables().Count());
+        }
+
+        [Fact]
+        public void Should_convert_a_stream_into_an_excelPackage_with_correct_password()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] buffer = excelPackage.GetAsByteArray("Test1234");
+            var stream = new MemoryStream(buffer);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelPackage package = stream.AsExcelPackage("Test1234");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            package.Should().NotBeNull();
+            package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
+            package.GetTables().Count().Should().Be(excelPackage.GetTables().Count());
+        }
+
+        [Fact]
+        public void Should_not_convert_a_stream_into_an_excelPackage_with_incorrect_password()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] buffer = excelPackage.GetAsByteArray("Test1234");
+            var stream = new MemoryStream(buffer);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () =>
+            {
+                ExcelPackage package = stream.AsExcelPackage("test1234");
+            };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.Should().Throw<SecurityException>();
         }
     }
 }
