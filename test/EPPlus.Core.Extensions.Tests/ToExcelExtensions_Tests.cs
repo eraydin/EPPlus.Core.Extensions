@@ -342,7 +342,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_convert_list_of_objects_to_byte_array_of_xlsx_file()
+        public void Should_convert_list_of_objects_to_byte_array_of_xlsx_file_with_header_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -353,7 +353,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            byte[] result = pre50.ToXlsx();
+            byte[] result = pre50.ToXlsx(true);
             File.WriteAllBytes(tempFile, result);
             var excelPackage = new ExcelPackage(new FileInfo(tempFile));
 
@@ -363,6 +363,34 @@ namespace EPPlus.Core.Extensions.Tests
             excelPackage.Workbook.Worksheets.Any().Should().Be(true);
             excelPackage.Workbook.Worksheets.First().Should().NotBe(null);
             excelPackage.Workbook.Worksheets.First().Dimension.Rows.Should().Be(3);
+            excelPackage.Workbook.Worksheets.First().Cells[1, 1, 1, 1].Text.Should().Be("Last Name");
+            excelPackage.Workbook.Worksheets.First().Cells[1, 2, 1, 2].Text.Should().Be("Year of Birth");
+        }
+
+        [Fact]
+        public void Should_convert_list_of_objects_to_byte_array_of_xlsx_file_without_header_row()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            List<Person> pre50 = _personList.Where(x => x.YearBorn < 1950).ToList();
+            string tempFile = Path.Combine(Path.GetTempPath(), "persons_pre50.xlsx");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] result = pre50.ToXlsx(false);
+            File.WriteAllBytes(tempFile, result);
+            var excelPackage = new ExcelPackage(new FileInfo(tempFile));
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            excelPackage.Workbook.Worksheets.Any().Should().Be(true);
+            excelPackage.Workbook.Worksheets.First().Should().NotBe(null);
+            excelPackage.Workbook.Worksheets.First().Dimension.Rows.Should().Be(2);
+            excelPackage.Workbook.Worksheets.First().Cells[1, 1, 1, 1].Text.Should().Be("Field");
+            excelPackage.Workbook.Worksheets.First().Cells[1, 2, 1, 2].Text.Should().Be("1946");
         }
 
         [Fact]
@@ -443,6 +471,28 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_not_convert_a_byte_array_into_an_excelPackage_with_empty_password()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            byte[] buffer = excelPackage.GetAsByteArray();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () =>
+            {
+                ExcelPackage package = buffer.AsExcelPackage("");
+            };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.Should().Throw<ArgumentException>();
+        }
+
+        [Fact]
         public void Should_convert_a_byte_array_into_an_excelPackage_with_password()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -464,7 +514,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_convert_a_byte_array_into_an_excelPackage_with_wrong_password()
+        public void Should_not_convert_a_byte_array_into_an_excelPackage_with_wrong_password()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
