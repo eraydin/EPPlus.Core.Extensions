@@ -79,7 +79,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<DefaultMap> list = table.ToList<DefaultMap>();
+            List<DefaultMap> list = table.ToList<DefaultMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -100,7 +100,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<NamedMap> list = table.ToList<NamedMap>();
+            List<NamedMap> list = table.ToList<NamedMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -121,7 +121,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<IndexMap> list = table.ToList<IndexMap>();
+            List<IndexMap> list = table.ToList<IndexMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -142,7 +142,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<EnumStringMap> list = table.ToList<EnumStringMap>();
+            List<EnumStringMap> list = table.ToList<EnumStringMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -163,7 +163,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<EnumByteMap> list = table.ToList<EnumByteMap>();
+            List<EnumByteMap> list = table.ToList<EnumByteMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -187,7 +187,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<MultiMap> list = table.ToList<MultiMap>();
+            List<MultiMap> list = table.ToList<MultiMap>();
             MultiMap m = list.First(x => x.Class == Classes.Ten);
             MultiMap n = list.First(x => x.Class == Classes.Nine);
 
@@ -211,7 +211,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<DateMap> list = table.ToList<DateMap>();
+            List<DateMap> list = table.ToList<DateMap>();
             DateMap a = list.FirstOrDefault(x => x.Name == "Adam");
 
             //-----------------------------------------------------------------------------------------------------------
@@ -231,7 +231,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
-            IList<EnumFailMap> list;
+            List<EnumFailMap> list;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -241,16 +241,16 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.ShouldThrow<ExcelTableConvertException>()
+            action.Should().Throw<ExcelTableConvertException>()
                   .And.Args.CellValue.Should().Be("MALE");
 
-            action.ShouldThrow<ExcelTableConvertException>()
+            action.Should().Throw<ExcelTableConvertException>()
                   .And.Args.ExpectedType.Should().Be(typeof(Classes));
 
-            action.ShouldThrow<ExcelTableConvertException>()
+            action.Should().Throw<ExcelTableConvertException>()
                   .And.Args.PropertyName.Should().Be("Gender");
 
-            action.ShouldThrow<ExcelTableConvertException>()
+            action.Should().Throw<ExcelTableConvertException>()
                   .And.Args.ColumnName.Should().Be("Gender");
         }
 
@@ -265,7 +265,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<EnumFailMap> list = table.ToList<EnumFailMap>(configuration =>
+            List<EnumFailMap> list = table.ToList<EnumFailMap>(configuration =>
             {
                 configuration.SkipCastingErrors = true;
             });
@@ -290,7 +290,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<CarNullable> list = table.ToList<CarNullable>();
+            List<CarNullable> list = table.ToList<CarNullable>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -309,7 +309,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<StocksNullable> list = table.ToList<StocksNullable>(configuration =>
+            List<StocksNullable> list = table.ToList<StocksNullable>(configuration =>
             {
                 configuration.SkipCastingErrors = true;
             });
@@ -356,7 +356,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IList<Cars> list = table.ToList<Cars>();
+            List<Cars> list = table.ToList<Cars>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -366,7 +366,7 @@ namespace EPPlus.Core.Extensions.Tests
             list.All(x => x.Manufacturer > 0).Should().BeTrue("All should have manufacturers");
             list.Last().ManufacturingDate.Should().BeNull("The last one's manufacturing date is unknown");
             list.Count(x => x.ManufacturingDate == null).Should().Be(1, "Only one manufacturig date is unknown");
-            list.Single(x => x.LicensePlate == null).ShouldBeEquivalentTo(list.Single(x => !x.Ready), "The one without the license plate is not ready");
+            list.Single(x => x.LicensePlate == null).Should().BeEquivalentTo(list.Single(x => !x.Ready), "The one without the license plate is not ready");
             list.Max(x => x.Price).Should().Be(12000, "Highest price is 12000");
             list.Max(x => x.ManufacturingDate).Should().Be(new DateTime(2015, 3, 10), "Oldest was manufactured on 2015.03.10");
         }

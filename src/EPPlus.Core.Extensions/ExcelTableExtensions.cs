@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -29,7 +28,7 @@ namespace EPPlus.Core.Extensions
                 table.Address.Start.Column,
                 table.Address.End.Row - (table.ShowTotal ? 1 : 0),
                 table.Address.End.Column
-            );
+                );
         }
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace EPPlus.Core.Extensions
         /// <returns>An enumerable of <see cref="ExcelTableExceptionArgs" /> containing </returns>
         public static IEnumerable<ExcelTableExceptionArgs> Validate<T>(this ExcelTable table) where T : class, new()
         {
-            IList mapping = PrepareMappings<T>(table);
+            List<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings<T>(table);
             var result = new LinkedList<ExcelTableExceptionArgs>();
 
             ExcelAddress bounds = table.GetDataBounds();
@@ -63,13 +62,13 @@ namespace EPPlus.Core.Extensions
                     catch
                     {
                         result.AddLast(new ExcelTableExceptionArgs
-                                       {
-                                           ColumnName = table.Columns[map.Key].Name,
-                                           ExpectedType = property.PropertyType,
-                                           PropertyName = property.Name,
-                                           CellValue = cell,
-                                           CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                                       });
+                        {
+                            ColumnName = table.Columns[map.Key].Name,
+                            ExpectedType = property.PropertyType,
+                            PropertyName = property.Name,
+                            CellValue = cell,
+                            CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                        });
                     }
                 }
             }
@@ -94,7 +93,7 @@ namespace EPPlus.Core.Extensions
             IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
-            IList mapping = PrepareMappings<T>(table);
+            List<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings<T>(table);
 
             ExcelAddress bounds = table.GetDataBounds();
 
@@ -118,17 +117,17 @@ namespace EPPlus.Core.Extensions
                         if (!configuration.SkipCastingErrors)
                         {
                             var exceptionArgs = new ExcelTableExceptionArgs
-                                                {
-                                                    ColumnName = table.Columns[map.Key].Name,
-                                                    ExpectedType = property.PropertyType,
-                                                    PropertyName = property.Name,
-                                                    CellValue = cell,
-                                                    CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                                                };
+                            {
+                                ColumnName = table.Columns[map.Key].Name,
+                                ExpectedType = property.PropertyType,
+                                PropertyName = property.Name,
+                                CellValue = cell,
+                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                            };
 
                             throw new ExcelTableConvertException($"The expected type of '{exceptionArgs.PropertyName}' property is '{exceptionArgs.ExpectedType.Name}', but the cell [{exceptionArgs.CellAddress.Address}] contains an invalid value.",
                                 ex, exceptionArgs
-                            );
+                                );
                         }
                     }
                 }
@@ -156,7 +155,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="table">Table object to fetch</param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IList<T> ToList<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static List<T> ToList<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
             return AsEnumerable(table, configurationAction).ToList();
         }
@@ -167,9 +166,9 @@ namespace EPPlus.Core.Extensions
         /// <typeparam name="T">Type to parse</typeparam>
         /// <param name="table">Table to get columns from</param>
         /// <returns>A list of mappings from column index to property</returns>
-        private static IList PrepareMappings<T>(ExcelTable table)
+        private static List<KeyValuePair<int, PropertyInfo>> PrepareMappings<T>(ExcelTable table)
         {
-            IList mapping = new List<KeyValuePair<int, PropertyInfo>>();
+            var mapping = new List<KeyValuePair<int, PropertyInfo>>();
 
             // Get only the properties that have ExcelTableColumnAttribute
             List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes<T>();

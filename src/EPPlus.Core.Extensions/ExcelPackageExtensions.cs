@@ -82,7 +82,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 1, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return package.Workbook.Worksheets[worksheetIndex].AsEnumerable<T>(configurationAction);
+            return package.Workbook.Worksheets[worksheetIndex].AsEnumerable(configurationAction);
         }
 
         /// <summary>
@@ -93,9 +93,9 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheetIndex"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IList<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 1, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 1, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return package.AsEnumerable<T>(worksheetIndex, configurationAction).ToList();
+            return package.AsEnumerable(worksheetIndex, configurationAction).ToList();
         }
     }
 }

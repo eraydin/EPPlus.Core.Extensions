@@ -15,7 +15,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelColumn SetFont(this ExcelColumn column, Font font)
         {
-            column.Style.Font.SetFromFont(font);
+            column.Style.SetFont(font);
             return column;
         }
 
@@ -27,7 +27,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelColumn SetFontColor(this ExcelColumn column, Color fontColor)
         {
-            column.Style.Font.Color.SetColor(fontColor);
+            column.Style.SetFontColor(fontColor);
             return column;
         }
 
@@ -40,8 +40,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelColumn SetBackgroundColor(this ExcelColumn column, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-            column.Style.Fill.PatternType = fillStyle;
-            column.Style.Fill.BackgroundColor.SetColor(backgroundColor);
+            column.Style.SetBackgroundColor(backgroundColor, fillStyle);   
             return column;
         }
 
@@ -53,7 +52,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelColumn SetHorizontalAlignment(this ExcelColumn column, ExcelHorizontalAlignment horizontalAlignment)
         {
-            column.Style.HorizontalAlignment = horizontalAlignment;
+            column.Style.SetHorizontalAlignment(horizontalAlignment);
             return column;
         }
 
@@ -65,7 +64,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelColumn SetVerticalAlignment(this ExcelColumn column, ExcelVerticalAlignment verticalAlignment)
         {
-            column.Style.VerticalAlignment = verticalAlignment;
+            column.Style.SetVerticalAlignment(verticalAlignment);
             return column;
         }
     }

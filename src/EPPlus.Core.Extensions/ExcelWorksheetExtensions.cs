@@ -65,7 +65,10 @@ namespace EPPlus.Core.Extensions
                 // Has any table on same addresses
                 ExcelAddress dataBounds = worksheet.GetDataBounds(false);
                 ExcelTable excelTable = worksheet.Tables.FirstOrDefault(x => x.Address.Address.Equals(dataBounds.Address, StringComparison.InvariantCultureIgnoreCase));
-                if (excelTable != null) return excelTable;
+                if (excelTable != null)
+                {
+                    return excelTable;
+                }
             }
 
             worksheet.Tables.Add(worksheet.GetExcelRange(false), tableName);
@@ -135,7 +138,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IList<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
             return worksheet.AsEnumerable(configurationAction).ToList();
         }
@@ -176,7 +179,10 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, Action<ExcelRange> configureHeader = null, params string[] headerTexts)
         {
-            if (!headerTexts.Any()) return worksheet;
+            if (!headerTexts.Any())
+            {
+                return worksheet;
+            }
 
             worksheet.InsertRow(1, 1);
 
@@ -283,7 +289,10 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex, Action<ExcelRange> configureCells = null, params Func<T, object>[] propertySelectors)
         {
-            if (propertySelectors == null) throw new ArgumentException($"{nameof(propertySelectors)} cannot be null");
+            if (propertySelectors == null)
+            {
+                throw new ArgumentException($"{nameof(propertySelectors)} cannot be null");
+            }
 
             for (var i = 0; i < items.Count(); i++)
             {
@@ -324,7 +333,10 @@ namespace EPPlus.Core.Extensions
 
             ExcelRangeBase headerColumn = worksheet.Cells[valuedDimension.Start.Row, valuedDimension.Start.Column, valuedDimension.Start.Row, valuedDimension.End.Column].FirstOrDefault(x => x.Text.Equals(headerText, StringComparison.InvariantCultureIgnoreCase));
 
-            if (headerColumn != null) worksheet.DeleteColumn(headerColumn.Start.Column);
+            if (headerColumn != null)
+            {
+                worksheet.DeleteColumn(headerColumn.Start.Column);
+            }
 
             return worksheet;
         }
@@ -361,7 +373,10 @@ namespace EPPlus.Core.Extensions
         {
             if (!worksheet.GetColumns(rowIndex).Any(x => x.Value == expectedValue && x.Key == columnIndex))
             {
-                if (!string.IsNullOrEmpty(exceptionMessage)) throw new ExcelTableValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
+                if (!string.IsNullOrEmpty(exceptionMessage))
+                {
+                    throw new ExcelTableValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
+                }
 
                 throw new ExcelTableValidationException($"The {columnIndex}. column of worksheet should be '{expectedValue}'.");
             }
@@ -407,7 +422,10 @@ namespace EPPlus.Core.Extensions
         {
             ExcelAddressBase dimension = worksheet.Dimension;
 
-            if (dimension == null) return null;
+            if (dimension == null)
+            {
+                return null;
+            }
 
             ExcelRange cells = worksheet.Cells[dimension.Address];
             int minRow = 0, minCol = 0, maxRow = 0, maxCol = 0;
@@ -424,9 +442,18 @@ namespace EPPlus.Core.Extensions
                 }
                 else
                 {
-                    if (cell.Start.Column < minCol) minCol = cell.Start.Column;
-                    if (cell.End.Row > maxRow) maxRow = cell.End.Row;
-                    if (cell.End.Column > maxCol) maxCol = cell.End.Column;
+                    if (cell.Start.Column < minCol)
+                    {
+                        minCol = cell.Start.Column;
+                    }
+                    if (cell.End.Row > maxRow)
+                    {
+                        maxRow = cell.End.Row;
+                    }
+                    if (cell.End.Column > maxCol)
+                    {
+                        maxCol = cell.End.Column;
+                    }
                 }
             }
 
@@ -441,7 +468,8 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)
         {
-            return worksheet.SetFont(worksheet.Cells, font);
+            worksheet.Cells.SetFont(font);
+            return worksheet;
         }
 
         /// <summary>
@@ -453,7 +481,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelRange cellRange, Font font)
         {
-            worksheet.Cells[cellRange.Address].Style.Font.SetFromFont(font);
+            worksheet.Cells[cellRange.Address].SetFont(font);
             return worksheet;
         }
 
@@ -465,7 +493,8 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, Color fontColor)
         {
-            return worksheet.SetFontColor(worksheet.Cells, fontColor);
+            worksheet.Cells.SetFontColor(fontColor);
+            return worksheet;
         }
 
         /// <summary>
@@ -477,7 +506,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color fontColor)
         {
-            worksheet.Cells[cellRange.Address].Style.Font.Color.SetColor(fontColor);
+            worksheet.Cells[cellRange.Address].SetFontColor(fontColor);
             return worksheet;
         }
 
@@ -490,7 +519,8 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-            return worksheet.SetBackgroundColor(worksheet.Cells, backgroundColor, fillStyle);
+            worksheet.Cells.SetBackgroundColor(backgroundColor, fillStyle);
+            return worksheet;
         }
 
         /// <summary>
@@ -503,8 +533,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-            worksheet.Cells[cellRange.Address].Style.Fill.PatternType = fillStyle;
-            worksheet.Cells[cellRange.Address].Style.Fill.BackgroundColor.SetColor(backgroundColor);
+            worksheet.Cells[cellRange.Address].SetBackgroundColor(backgroundColor, fillStyle);
             return worksheet;
         }
 
@@ -528,7 +557,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelRange cellRange, ExcelHorizontalAlignment horizontalAlignment)
         {
-            worksheet.Cells[cellRange.Address].Style.HorizontalAlignment = horizontalAlignment;
+            worksheet.Cells[cellRange.Address].SetHorizontalAlignment(horizontalAlignment);
             return worksheet;
         }
 
@@ -552,7 +581,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelRange cellRange, ExcelVerticalAlignment verticalAlignment)
         {
-            worksheet.Cells[cellRange.Address].Style.VerticalAlignment = verticalAlignment;
+            worksheet.Cells[cellRange.Address].SetVerticalAlignment(verticalAlignment);
             return worksheet;
         }
     }
