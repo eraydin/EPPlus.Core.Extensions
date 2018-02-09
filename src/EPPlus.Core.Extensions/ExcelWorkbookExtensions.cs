@@ -10,7 +10,7 @@ namespace EPPlus.Core.Extensions
     public static class ExcelWorkbookExtensions
     {
         /// <summary>
-        ///     Creates a named style on given Excel workbook
+        ///     Creates a named style on the Excel workbook. If the named style is already exists, then throws an argument exception.
         /// </summary>
         /// <param name="workbook">The workbook</param>
         /// <param name="styleName">The name of style</param>
@@ -26,6 +26,23 @@ namespace EPPlus.Core.Extensions
             ExcelNamedStyleXml errorStyle = workbook.Styles.CreateNamedStyle(styleName);
             style.Invoke(errorStyle.Style);
 
+            return workbook;
+        }
+
+        /// <summary>
+        ///     Creates a named style if the given name is not exists on the Excel workbook
+        /// </summary>
+        /// <param name="workbook">The workbook</param>
+        /// <param name="styleName">The name of style</param>
+        /// <param name="style">The style actions will be applied</param>
+        /// <returns></returns>
+        public static ExcelWorkbook CreateNamedStyleIfNotExists(this ExcelWorkbook workbook, string styleName, Action<ExcelStyle> style)
+        {
+            if (workbook.Styles.NamedStyles.All(x => x.Name != styleName))
+            {
+                ExcelNamedStyleXml errorStyle = workbook.Styles.CreateNamedStyle(styleName);
+                style.Invoke(errorStyle.Style);
+            }
             return workbook;
         }
     }
