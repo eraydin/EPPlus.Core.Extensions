@@ -86,9 +86,10 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
+        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
             IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
@@ -132,6 +133,8 @@ namespace EPPlus.Core.Extensions
                     }
                 }
 
+                onCaught?.Invoke(item, row);
+
                 // TODO:
                 if (!configuration.SkipValidationErrors)
                 {
@@ -153,11 +156,12 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
+        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static List<T> ToList<T>(this ExcelTable table, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static List<T> ToList<T>(this ExcelTable table, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return AsEnumerable(table, configurationAction).ToList();
+            return AsEnumerable(table, onCaught, configurationAction).ToList();
         }
 
         /// <summary>

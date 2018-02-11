@@ -265,10 +265,10 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<EnumFailMap> list = table.ToList<EnumFailMap>(configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-            });
+            List<EnumFailMap> list = table.ToList<EnumFailMap>(null, configuration =>
+             {
+                 configuration.SkipCastingErrors = true;
+             });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -309,7 +309,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<StocksNullable> list = table.ToList<StocksNullable>(configuration =>
+            List<StocksNullable> list = table.ToList<StocksNullable>(null,configuration =>
             {
                 configuration.SkipCastingErrors = true;
             });
