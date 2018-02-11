@@ -96,7 +96,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            List<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration => { configuration.SkipCastingErrors = true; });
+            List<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(null, configuration => { configuration.SkipCastingErrors = true; });
             listOfStocks.Count.Should().Be(4);
         }
 
@@ -152,16 +152,16 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = true;
-            });
-            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = false;
-            });
+            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(null, configuration =>
+             {
+                 configuration.SkipCastingErrors = true;
+                 configuration.HasHeaderRow = true;
+             });
+            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(null, configuration =>
+             {
+                 configuration.SkipCastingErrors = true;
+                 configuration.HasHeaderRow = false;
+             });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -182,16 +182,16 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = true;
-            });
-            IEnumerable<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = false;
-            });
+            IEnumerable<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(null, configuration =>
+             {
+                 configuration.SkipCastingErrors = true;
+                 configuration.HasHeaderRow = true;
+             });
+            IEnumerable<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(null, configuration =>
+             {
+                 configuration.SkipCastingErrors = true;
+                 configuration.HasHeaderRow = false;
+             });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -222,11 +222,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, _ => _.Barcode, _ => _.Quantity, _ => _.UpdatedDate);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors = false;
-                configuration.HasHeaderRow = true;
-            });
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(null, configuration =>
+             {
+                 configuration.SkipCastingErrors = false;
+                 configuration.HasHeaderRow = true;
+             });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -284,11 +284,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, 3);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = true;
-            });
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(null, configuration =>
+             {
+                 configuration.SkipCastingErrors = true;
+                 configuration.HasHeaderRow = true;
+             });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -308,11 +308,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddLine(5, "barcode123", 5, DateTime.UtcNow);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors = false;
-                configuration.HasHeaderRow = true;
-            });
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(null, configuration =>
+             {
+                 configuration.SkipCastingErrors = false;
+                 configuration.HasHeaderRow = true;
+             });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -472,11 +472,11 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             Action action = () =>
             {
-                list = worksheet.ToList<StocksValidation>(configuration =>
-                {
-                    configuration.SkipCastingErrors = false;
-                    configuration.HasHeaderRow = true;
-                });
+                list = worksheet.ToList<StocksValidation>(null, configuration =>
+                 {
+                     configuration.SkipCastingErrors = false;
+                     configuration.HasHeaderRow = true;
+                 });
             };
 
             //-----------------------------------------------------------------------------------------------------------

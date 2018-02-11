@@ -121,14 +121,15 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
+        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
             IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
-            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(configurationAction);
+            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(onCaught, configurationAction);
         }
 
         /// <summary>
@@ -136,11 +137,12 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
+        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static List<T> ToList<T>(this ExcelWorksheet worksheet, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return worksheet.AsEnumerable(configurationAction).ToList();
+            return worksheet.AsEnumerable(onCaught, configurationAction).ToList();
         }
 
         /// <summary>
