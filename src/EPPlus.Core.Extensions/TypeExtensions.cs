@@ -54,7 +54,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static object GetPropertyValue(this object obj, string propertyName)
         {
-            return obj.GetType().GetProperty(propertyName).GetValue(obj, null);
+            return obj.GetType().GetProperty(propertyName)?.GetValue(obj, null);
         }
 
         /// <summary>

@@ -105,30 +105,44 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void should_be_interceptable_current_row_when_its_converting_to_a_list()
+        public void Should_be_interceptable_current_row_when_its_converting_to_a_list()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            List<StocksNullable> list;
+            List<StocksNullable> stocksWithNullables;
+            List<StocksValidation> stocksWithoutNullables;
 
-            //-----------------------------------------------------------------------------------------------------------
+                //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<StocksNullable>(6, (current, index) =>
+            stocksWithNullables = excelPackage.ToList<StocksNullable>(6, (current, rowIndex) =>
             {
-                current.Barcode.Should().NotBeNull();
+                current.Barcode = current.Barcode.Insert(0, "_");
+
             }, configuration =>
             {
-                configuration.HasHeaderRow = false;
+                configuration.HasHeaderRow = true;
                 configuration.SkipCastingErrors = true;
+            });
+
+            stocksWithoutNullables = excelPackage.ToList<StocksValidation>(5, (current, rowIndex) =>
+            {
+                current.Quantity += 10 + rowIndex;
+            }, configuration =>
+            {
+                configuration.HasHeaderRow = true;
+                configuration.SkipCastingErrors = false;
             });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            list.Any().Should().BeTrue();
-            list.Count.Should().Be(4);
+            stocksWithNullables.Any().Should().BeTrue();
+            stocksWithNullables.Count.Should().Be(3);
+            stocksWithNullables.All(x => x.Barcode.StartsWith('_')).Should().Be(true);
+
+            stocksWithoutNullables.Min(x => x.Quantity).Should().BeGreaterThan(10);
         }
     }
 }

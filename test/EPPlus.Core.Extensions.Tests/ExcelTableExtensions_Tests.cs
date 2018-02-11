@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using EPPlus.Core.Extensions.Configuration;
-
 using FluentAssertions;
 
 using OfficeOpenXml;

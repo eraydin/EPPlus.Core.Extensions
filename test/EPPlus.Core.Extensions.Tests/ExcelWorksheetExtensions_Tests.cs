@@ -171,7 +171,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Test_Worksheet_ToList()
+        public void Should_convert_worksheet_to_list()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -182,12 +182,12 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(null, configuration =>
+            List<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(null, configuration =>
              {
                  configuration.SkipCastingErrors = true;
                  configuration.HasHeaderRow = true;
              });
-            IEnumerable<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(null, configuration =>
+            List<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(null, configuration =>
              {
                  configuration.SkipCastingErrors = true;
                  configuration.HasHeaderRow = false;
