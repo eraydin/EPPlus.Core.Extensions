@@ -91,7 +91,34 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<StocksNullable>(6, configuration =>
+            list = excelPackage.ToList<StocksNullable>(6, null, configuration =>
+            {
+                configuration.HasHeaderRow = false;
+                configuration.SkipCastingErrors = true;
+            });
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            list.Any().Should().BeTrue();
+            list.Count.Should().Be(4);
+        }
+
+        [Fact]
+        public void should_be_interceptable_current_row_when_its_converting_to_a_list()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            List<StocksNullable> list;
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            list = excelPackage.ToList<StocksNullable>(6, (current, index) =>
+            {
+                current.Barcode.Should().NotBeNull();
+            }, configuration =>
             {
                 configuration.HasHeaderRow = false;
                 configuration.SkipCastingErrors = true;
