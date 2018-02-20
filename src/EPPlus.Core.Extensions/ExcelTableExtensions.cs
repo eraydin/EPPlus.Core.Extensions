@@ -300,12 +300,26 @@ namespace EPPlus.Core.Extensions
 
             if (type.IsNumeric())
             {
-                itemType.InvokeMember(
-                    property.Name,
-                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
-                    null,
-                    item,
-                    new object[] { Convert.ChangeType(cell, type) });
+                if (cell.GetType() == typeof(DateTime))
+                {
+                    double newVal = ((DateTime)cell).ToOADate();
+
+                    itemType.InvokeMember(
+                        property.Name,
+                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
+                        null,
+                        item,
+                        new object[] { newVal });
+                }
+                else
+                {
+                    itemType.InvokeMember(
+                        property.Name,
+                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
+                        null,
+                        item,
+                        new object[] { Convert.ChangeType(cell, type) });
+                }
             }
         }
     }
