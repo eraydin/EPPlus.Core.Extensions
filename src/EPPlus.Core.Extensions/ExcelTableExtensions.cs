@@ -248,14 +248,17 @@ namespace EPPlus.Core.Extensions
 
             if (type == typeof(DateTime))
             {
-                DateTime d = DateTime.Parse(cell.ToString());
+                if (!DateTime.TryParse(cell.ToString(), out DateTime parsedDate))
+                {
+                    parsedDate = DateTime.FromOADate((double)cell);
+                }
 
                 itemType.InvokeMember(
                     property.Name,
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                     null,
                     item,
-                    new object[] { d });
+                    new object[] { parsedDate });
 
                 return;
             }
@@ -300,26 +303,12 @@ namespace EPPlus.Core.Extensions
 
             if (type.IsNumeric())
             {
-                if (cell.GetType() == typeof(DateTime))
-                {
-                    double newVal = ((DateTime)cell).ToOADate();
-
-                    itemType.InvokeMember(
-                        property.Name,
-                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
-                        null,
-                        item,
-                        new object[] { newVal });
-                }
-                else
-                {
-                    itemType.InvokeMember(
-                        property.Name,
-                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
-                        null,
-                        item,
-                        new object[] { Convert.ChangeType(cell, type) });
-                }
+                itemType.InvokeMember(
+                    property.Name,
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
+                    null,
+                    item,
+                    new object[] { Convert.ChangeType(cell, type) });
             }
         }
     }
