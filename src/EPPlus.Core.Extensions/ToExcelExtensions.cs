@@ -163,6 +163,11 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this byte[] buffer)
         {
+            if (buffer == null || buffer.Length <= 0)
+            {
+                throw new ArgumentException($"{nameof(buffer)} cannot be null or empty");
+            }
+
             using (var memoryStream = new MemoryStream(buffer))
             {
                 return new ExcelPackage(memoryStream);
@@ -177,6 +182,11 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this byte[] buffer, string password)
         {
+            if (buffer == null || buffer.Length <= 0)
+            {
+                throw new ArgumentException($"{nameof(buffer)} cannot be null or empty");
+            }
+
             if (string.IsNullOrWhiteSpace(password))
             {
                 throw new ArgumentException($"{nameof(password)} cannot be null or empty");
@@ -195,6 +205,11 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this Stream stream)
         {
+            if (stream == null)
+            {
+                throw new ArgumentException($"{nameof(stream)} cannot be null");
+            }
+
             return new ExcelPackage(stream);
         }
 
@@ -206,6 +221,16 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this Stream stream, string password)
         {
+            if (stream == null)
+            {
+                throw new ArgumentException($"{nameof(stream)} cannot be null");
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException($"{nameof(password)} cannot be null or empty");
+            }
+
             return new ExcelPackage(stream, password);
         }
 

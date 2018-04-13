@@ -231,11 +231,11 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () => { worksheet.CheckAndThrowColumn(1, 3, "Barcode", "Barcode column is missing"); };
+            Action action1 = () => { worksheet.CheckAndThrowColumn(2, 3, "Barcode", "Barcode column is missing"); };
 
-            Action action2 = () => { worksheet.CheckAndThrowColumn(1, 1, "Barcode"); };
+            Action action2 = () => { worksheet.CheckAndThrowColumn(2, 1, "Barcode"); };
 
-            Action action3 = () => { worksheet.CheckAndThrowColumn(2, 14, "Barcode"); };
+            Action action3 = () => { worksheet.CheckAndThrowColumn(3, 14, "Barcode"); };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -353,7 +353,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             worksheet.GetValuedDimension().End.Column.Should().Be(2);
-            worksheet.Cells[1, 2, 1, 2].Text.Should().Be("UpdatedDate");
+            worksheet.Cells[2, 2, 2, 2].Text.Should().Be("UpdatedDate");
         }
 
         [Fact]
@@ -366,9 +366,9 @@ namespace EPPlus.Core.Extensions.Tests
 
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
 
-            worksheet.ChangeCellValue(1, valuedDimension.End.Column + 1, "Quantity");
-            worksheet.ChangeCellValue(1, valuedDimension.End.Column + 2, "Quantity");
-            worksheet.ChangeCellValue(1, valuedDimension.End.Column + 3, "Quantity");
+            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 1, "Quantity");
+            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 2, "Quantity");
+            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 3, "Quantity");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -379,7 +379,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             worksheet.GetValuedDimension().End.Column.Should().Be(2);
-            worksheet.Cells[1, 2, 1, 2].Text.Should().Be("UpdatedDate");
+            worksheet.Cells[2, 2, 2, 2].Text.Should().Be("UpdatedDate");
         }
 
         [Fact]
@@ -398,12 +398,18 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             bool result1 = worksheet1.HasAnyFormula();
             bool result2 = worksheet2.HasAnyFormula();
+            Action action1 = () =>
+                          {
+                              worksheet1.CheckAndThrowIfThereIsAnyFormula("First worksheet has formulas.");
+                          };
+           
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             result1.Should().BeTrue();
             result2.Should().BeFalse();
+            action1.Should().Throw<ExcelTableValidationException>().WithMessage("First worksheet has formulas.");
         }
 
         [Fact]
@@ -459,7 +465,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<KeyValuePair<int, string>> results = worksheet.GetColumns(1).ToList();
+            IEnumerable<KeyValuePair<int, string>> results = worksheet.GetColumns(2).ToList();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -610,10 +616,10 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () => { worksheet.CheckHeadersAndThrow<NamedMap>(1, "The {0}.column of worksheet should be '{1}'."); };
-            Action action2 = () => { worksheet.CheckHeadersAndThrow<NamedMap>(1); };
-            Action action3 = () => { worksheet.CheckHeadersAndThrow<StocksNullable>(1); };
-            Action action4 = () => { worksheet.CheckHeadersAndThrow<Car>(1); };
+            Action action1 = () => { worksheet.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'."); };
+            Action action2 = () => { worksheet.CheckHeadersAndThrow<NamedMap>(2); };
+            Action action3 = () => { worksheet.CheckHeadersAndThrow<StocksNullable>(2); };
+            Action action4 = () => { worksheet.CheckHeadersAndThrow<Car>(2); };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -652,7 +658,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_valued_dimension_be_A1C4()
+        public void Should_valued_dimension_be_A2C5()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -667,11 +673,11 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            valuedDimension.Address.Should().Be("A1:C4");
+            valuedDimension.Address.Should().Be("A2:C5");
             valuedDimension.Start.Column.Should().Be(1);
-            valuedDimension.Start.Row.Should().Be(1);
+            valuedDimension.Start.Row.Should().Be(2);
             valuedDimension.End.Column.Should().Be(3);
-            valuedDimension.End.Row.Should().Be(4);
+            valuedDimension.End.Row.Should().Be(5);
         }
 
         [Fact]
