@@ -10,9 +10,9 @@ namespace EPPlus.Core.Extensions
     [AttributeUsage(AttributeTargets.Property)]
     public class ExcelTableColumnAttribute : Attribute
     {
-        private int columnIndex;
+        private int _columnIndex;
 
-        private string columnName;
+        private string _columnName;
 
         public ExcelTableColumnAttribute() { }
 
@@ -20,29 +20,23 @@ namespace EPPlus.Core.Extensions
         /// <summary>
         ///     Set this property to map by 1-based index
         /// </summary>
-        public ExcelTableColumnAttribute(int columnIndex)
-        {
-            ColumnIndex = columnIndex;
-        }
+        public ExcelTableColumnAttribute(int columnIndex) => ColumnIndex = columnIndex;
 
         /// <inheritdoc />
         /// <summary>
         ///     Set this property to map by name
         /// </summary>
-        public ExcelTableColumnAttribute(string columnName)
-        {
-            ColumnName = columnName;
-        }
+        public ExcelTableColumnAttribute(string columnName) => ColumnName = columnName;
 
         /// <summary>
         ///     Set this property to map by name
         /// </summary>
         public string ColumnName
         {
-            get => columnName;
+            get => _columnName;
             set
             {
-                if (columnIndex > 0)
+                if (_columnIndex > 0)
                 {
                     throw new ArgumentException("Cannot set both ColumnName and ColumnIndex!");
                 }
@@ -51,7 +45,7 @@ namespace EPPlus.Core.Extensions
                     throw new ArgumentException("ColumnName can't be empty!");
                 }
 
-                columnName = value;
+                _columnName = value;
             }
         }
 
@@ -60,10 +54,10 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         public int ColumnIndex
         {
-            get => columnIndex;
+            get => _columnIndex;
             set
             {
-                if (columnName != null)
+                if (_columnName != null)
                 {
                     throw new ArgumentException("Cannot set both ColumnName and ColumnIndex!");
                 }
@@ -72,7 +66,7 @@ namespace EPPlus.Core.Extensions
                     throw new ArgumentException("ColumnIndex can't be zero or negative!");
                 }
 
-                columnIndex = value;
+                _columnIndex = value;
             }
         }
     }

@@ -40,10 +40,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
         /// <returns></returns>
-        public static ExcelRange GetExcelRange(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
-        {
-            return worksheet.Cells[worksheet.GetDataBounds(hasHeaderRow).Address];
-        }
+        public static ExcelRange GetExcelRange(this ExcelWorksheet worksheet, bool hasHeaderRow = true) => worksheet.Cells[worksheet.GetDataBounds(hasHeaderRow).Address];
 
         /// <summary>
         ///     Extracts an ExcelTable from given ExcelWorkSheet
@@ -140,10 +137,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelWorksheet worksheet, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
-        {
-            return worksheet.AsEnumerable(onCaught, configurationAction).ToList();
-        }
+        public static List<T> ToList<T>(this ExcelWorksheet worksheet, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new() => worksheet.AsEnumerable(onCaught, configurationAction).ToList();
 
         /// <summary>
         ///     Changes value of the specified cell
@@ -167,10 +161,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="headerTexts"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, params string[] headerTexts)
-        {
-            return worksheet.AddHeader(null, headerTexts);
-        }
+        public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, params string[] headerTexts) => worksheet.AddHeader(null, headerTexts);
 
         /// <summary>
         ///     Inserts a header line to the top of the Excel worksheet
@@ -204,10 +195,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="rowIndex"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, params object[] values)
-        {
-            return worksheet.AddLine(rowIndex, 1, null, values);
-        }
+        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, params object[] values) => worksheet.AddLine(rowIndex, 1, null, values);
 
         /// <summary>
         ///     Adds a line to the worksheet
@@ -217,10 +205,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="configureCells"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, Action<ExcelRange> configureCells = null, params object[] values)
-        {
-            return worksheet.AddLine(rowIndex, 1, configureCells, values);
-        }
+        public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, Action<ExcelRange> configureCells = null, params object[] values) => worksheet.AddLine(rowIndex, 1, configureCells, values);
 
         /// <summary>
         ///     Adds a line to the worksheet
@@ -273,10 +258,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="startRowIndex"></param>
         /// <param name="propertySelectors"></param>
         /// <returns></returns>
-        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, params Func<T, object>[] propertySelectors)
-        {
-            return worksheet.AddObjects(items, startRowIndex, 1, null, propertySelectors);
-        }
+        public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, params Func<T, object>[] propertySelectors) => worksheet.AddObjects(items, startRowIndex, 1, null, propertySelectors);
 
         /// <summary>
         ///     Adds given list of objects to the worksheet with propery selectors
@@ -319,7 +301,7 @@ namespace EPPlus.Core.Extensions
 
             for (int i = valuedDimension.Start.Column; i <= valuedDimension.End.Column; i++)
             {
-                yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Value.ToString());
+                yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Text);
             }
         }
 
@@ -381,6 +363,19 @@ namespace EPPlus.Core.Extensions
                 }
 
                 throw new ExcelTableValidationException($"The {columnIndex}. column of worksheet should be '{expectedValue}'.");
+            }
+        }
+
+        /// <summary>
+        ///     Checks and throws an exception if the worksheet has any formula
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <param name="withMessage"></param>
+        public static void CheckAndThrowIfThereIsAnyFormula(this ExcelWorksheet sheet, string withMessage)
+        {
+            if (sheet.HasAnyFormula())
+            {
+                throw new ExcelTableValidationException(withMessage);
             }
         }
 
@@ -545,10 +540,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="horizontalAlignment"></param>
         /// <returns></returns>
-        public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelHorizontalAlignment horizontalAlignment)
-        {
-            return worksheet.SetHorizontalAlignment(worksheet.Cells, horizontalAlignment);
-        }
+        public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelHorizontalAlignment horizontalAlignment) => worksheet.SetHorizontalAlignment(worksheet.Cells, horizontalAlignment);
 
         /// <summary>
         ///     Sets the horizontal alignment of given cell range
@@ -569,10 +561,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="verticalAlignment"></param>
         /// <returns></returns>
-        public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelVerticalAlignment verticalAlignment)
-        {
-            return worksheet.SetVerticalAlignment(worksheet.Cells, verticalAlignment);
-        }
+        public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelVerticalAlignment verticalAlignment) => worksheet.SetVerticalAlignment(worksheet.Cells, verticalAlignment);
 
         /// <summary>
         ///     Sets the vertical alignment of given cell range

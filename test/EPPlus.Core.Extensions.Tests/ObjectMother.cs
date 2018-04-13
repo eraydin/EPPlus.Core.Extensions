@@ -44,6 +44,8 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn("Gender")]
         public string Sex { get; set; }
+
+        public string NotMapped { get; set; }
     }
 
     internal class IndexMap

@@ -194,7 +194,7 @@ namespace EPPlus.Core.Extensions.Tests
             package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(1);
             for (var i = 0; i < _personList.Count; i++)
             {
-                package.Workbook.Worksheets[1].Cells[i + 2, 1].Value.ToString().Should().Be(_personList[i].LastName);
+                package.Workbook.Worksheets[1].Cells[i + 2, 1].Text.Should().Be(_personList[i].LastName);
             }
         }
 
