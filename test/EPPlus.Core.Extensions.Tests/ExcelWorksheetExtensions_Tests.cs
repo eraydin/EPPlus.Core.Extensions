@@ -4,7 +4,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 
-using EPPlus.Core.Extensions.Validation;
+using EPPlus.Core.Extensions.Exceptions;
+using EPPlus.Core.Extensions.Style;
 
 using FluentAssertions;
 
@@ -63,10 +64,9 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, _ => _.Barcode, _ => _.Quantity, _ => _.UpdatedDate);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(null, configuration =>
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
             {
-                configuration.SkipCastingErrors = false;
-                configuration.HasHeaderRow = true;
+                configuration.WithHeaderRow();
             });
 
             //-----------------------------------------------------------------------------------------------------------
@@ -97,11 +97,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, 3);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(null, configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = true;
-            });
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
+                                                                                {
+                                                                                    configuration.SkipCastingErrors();
+                                                                                    configuration.WithHeaderRow();
+                                                                                });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -121,10 +121,9 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddLine(5, "barcode123", 5, DateTime.UtcNow);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(null, configuration =>
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration =>
             {
-                configuration.SkipCastingErrors = false;
-                configuration.HasHeaderRow = true;
+                configuration.WithHeaderRow();
             });
 
             //-----------------------------------------------------------------------------------------------------------
@@ -240,9 +239,9 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.Should().Throw<ExcelTableValidationException>().And.Message.Should().Be("Barcode column is missing");
+            action1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("Barcode column is missing");
             action2.Should().NotThrow();
-            action3.Should().Throw<ExcelTableValidationException>();
+            action3.Should().Throw<ExcelValidationException>();
         }
 
         [Fact]
@@ -318,16 +317,17 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(null, configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = true;
-            });
-            List<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(null, configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = false;
-            });
+            List<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(configuration =>
+                                                                           {
+                                                                               configuration.SkipCastingErrors();
+                                                                               configuration.WithoutHeaderRow();
+                                                                           });
+
+            List<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(configuration =>
+                                                                           {
+                                                                               configuration.SkipCastingErrors();
+                                                                               configuration.WithoutHeaderRow();
+                                                                           });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -409,7 +409,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             result1.Should().BeTrue();
             result2.Should().BeFalse();
-            action1.Should().Throw<ExcelTableValidationException>().WithMessage("First worksheet has formulas.");
+            action1.Should().Throw<ExcelValidationException>().WithMessage("First worksheet has formulas.");
         }
 
         [Fact]
@@ -450,7 +450,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            List<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(null, configuration => { configuration.SkipCastingErrors = true; });
+            List<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration => configuration.SkipCastingErrors());
             listOfStocks.Count.Should().Be(4);
         }
 
@@ -526,16 +526,19 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(null, configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = true;
-            });
-            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(null, configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-                configuration.HasHeaderRow = false;
-            });
+            IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(configuration =>
+                                                                                        {
+                                                                                            configuration.SkipCastingErrors();
+                                                                                            configuration.SkipValidationErrors();
+                                                                                            configuration.WithoutHeaderRow();
+                                                                                        });
+
+            IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(configuration =>
+                                                                                        {
+                                                                                            configuration.SkipCastingErrors();
+                                                                                            configuration.SkipValidationErrors(); 
+                                                                                            configuration.WithoutHeaderRow();
+                                                                                        });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -624,14 +627,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.Should().Throw<ExcelTableValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Name'.");
-            action2.Should().Throw<ExcelTableValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
-            action3.Should().NotThrow<ExcelTableValidationException>();
+            action1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Name'.");
+            action2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
+            action3.Should().NotThrow<ExcelValidationException>();
             action4.Should().Throw<ArgumentException>();
         }
 
         [Fact]
-        public void Should_throw_exception_when_occured_casting_error()
+        public void Should_throw_exception_when_occured_validation_error()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -644,17 +647,16 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             Action action = () =>
             {
-                list = worksheet.ToList<StocksValidation>(null, configuration =>
-                {
-                    configuration.SkipCastingErrors = false;
-                    configuration.HasHeaderRow = true;
+                list = worksheet.ToList<StocksValidation>(configuration =>
+                {  
+                    configuration.WithHeaderRow();  
                 });
             };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ExcelTableValidationException>();
+            action.Should().Throw<ExcelValidationException>();
         }
 
         [Fact]

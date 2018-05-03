@@ -3,7 +3,7 @@
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
-namespace EPPlus.Core.Extensions
+namespace EPPlus.Core.Extensions.Style
 {
     public static class ExcelRowExtensions
     {
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelRow SetBackgroundColor(this ExcelRow row, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
         {
-            row.Style.SetBackgroundColor(backgroundColor, fillStyle);   
+            row.Style.SetBackgroundColor(backgroundColor, fillStyle);
             return row;
         }
 

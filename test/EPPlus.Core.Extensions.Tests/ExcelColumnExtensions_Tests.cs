@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Style;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
@@ -13,7 +15,7 @@ namespace EPPlus.Core.Extensions.Tests
     public class ExcelColumnExtensions_Tests : TestBase
     {
         [Fact]
-        public void Should_change_font_of_the_column()
+        public void Should_change_background_color_of_the_column()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -23,13 +25,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            forthColumn.SetFont(new Font("Arial", 15));
+            forthColumn.SetBackgroundColor(Color.Brown, ExcelFillStyle.DarkTrellis);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            forthColumn.Style.Font.Name.Should().Be("Arial");
-            forthColumn.Style.Font.Size.Should().Be(15);
+            forthColumn.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
+            forthColumn.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
         }
 
         [Fact]
@@ -52,7 +54,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_change_background_color_of_the_column()
+        public void Should_change_font_of_the_column()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -62,13 +64,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            forthColumn.SetBackgroundColor(Color.Brown, ExcelFillStyle.DarkTrellis);
+            forthColumn.SetFont(new Font("Arial", 15));
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            forthColumn.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
-            forthColumn.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Font.Name.Should().Be("Arial");
+            forthColumn.Style.Font.Size.Should().Be(15);
         }
 
         [Fact]

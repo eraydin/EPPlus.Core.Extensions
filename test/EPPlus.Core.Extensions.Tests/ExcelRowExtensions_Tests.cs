@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Style;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
@@ -13,7 +15,7 @@ namespace EPPlus.Core.Extensions.Tests
     public class ExcelRowExtensions_Tests : TestBase
     {
         [Fact]
-        public void Should_change_font_of_the_row()
+        public void Should_change_background_color_of_the_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -23,13 +25,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            row.SetFont(new Font("Arial", 15));
+            row.SetBackgroundColor(Color.Brown, ExcelFillStyle.DarkTrellis);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            row.Style.Font.Name.Should().Be("Arial");
-            row.Style.Font.Size.Should().Be(15);
+            row.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
+            row.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
         }
 
         [Fact]
@@ -52,7 +54,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_change_background_color_of_the_row()
+        public void Should_change_font_of_the_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -62,13 +64,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            row.SetBackgroundColor(Color.Brown, ExcelFillStyle.DarkTrellis);
+            row.SetFont(new Font("Arial", 15));
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            row.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
-            row.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
+            row.Style.Font.Name.Should().Be("Arial");
+            row.Style.Font.Size.Should().Be(15);
         }
 
         [Fact]

@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Style;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
@@ -32,18 +34,18 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
 
             workbook.CreateNamedStyle(nameOfStyle1, style =>
-            {
-                style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
-                style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
-                style.BorderAround(ExcelBorderStyle.Double, Color.AliceBlue);
-            });
+                                                    {
+                                                        style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
+                                                        style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
+                                                        style.BorderAround(ExcelBorderStyle.Double, Color.AliceBlue);
+                                                    });
 
             workbook.CreateNamedStyleIfNotExists(nameOfStyle2, style =>
-            {
-                style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
-                style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
-                style.BorderAround(ExcelBorderStyle.Double, Color.AliceBlue);
-            });
+                                                               {
+                                                                   style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
+                                                                   style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
+                                                                   style.BorderAround(ExcelBorderStyle.Double, Color.AliceBlue);
+                                                               });
 
             firstWorksheet.Cells[1, 1, 1, 1].StyleName = nameOfStyle1;
             secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].StyleName = nameOfStyle1;
@@ -82,23 +84,23 @@ namespace EPPlus.Core.Extensions.Tests
             var fontName = "Arial";
 
             workbook.CreateNamedStyle(nameOfStyle, style =>
-            {
-                style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
-                style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
-            });
+                                                   {
+                                                       style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
+                                                       style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
+                                                   });
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
 
             Action action = () =>
-            {
-                workbook.CreateNamedStyle(nameOfStyle, style =>
-                {
-                    style.SetBackgroundColor(Color.Aquamarine, ExcelFillStyle.DarkGrid);
-                    style.SetFont(new Font(fontName, 15, FontStyle.Italic), Color.Beige);
-                });
-            };
+                            {
+                                workbook.CreateNamedStyle(nameOfStyle, style =>
+                                                                       {
+                                                                           style.SetBackgroundColor(Color.Aquamarine, ExcelFillStyle.DarkGrid);
+                                                                           style.SetFont(new Font(fontName, 15, FontStyle.Italic), Color.Beige);
+                                                                       });
+                            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -117,23 +119,23 @@ namespace EPPlus.Core.Extensions.Tests
             var fontName = "Arial";
 
             workbook.CreateNamedStyle(nameOfStyle, style =>
-            {
-                style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
-                style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
-            });
+                                                   {
+                                                       style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
+                                                       style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
+                                                   });
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
 
             Action action = () =>
-            {
-                workbook.CreateNamedStyleIfNotExists(nameOfStyle, style =>
-                {
-                    style.SetBackgroundColor(Color.Aquamarine, ExcelFillStyle.DarkGrid);
-                    style.SetFont(new Font(fontName, 15, FontStyle.Italic), Color.Beige);
-                });
-            };
+                            {
+                                workbook.CreateNamedStyleIfNotExists(nameOfStyle, style =>
+                                                                                  {
+                                                                                      style.SetBackgroundColor(Color.Aquamarine, ExcelFillStyle.DarkGrid);
+                                                                                      style.SetFont(new Font(fontName, 15, FontStyle.Italic), Color.Beige);
+                                                                                  });
+                            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

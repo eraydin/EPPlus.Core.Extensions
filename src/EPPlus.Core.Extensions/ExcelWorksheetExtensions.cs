@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
 using EPPlus.Core.Extensions.Configuration;
-using EPPlus.Core.Extensions.Validation;
+using EPPlus.Core.Extensions.Exceptions;
 
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 
 namespace EPPlus.Core.Extensions
@@ -118,15 +116,14 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
-        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
+            IExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
-            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(onCaught, configurationAction);
+            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(configurationAction);
         }
 
         /// <summary>
@@ -134,10 +131,9 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
-        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelWorksheet worksheet, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new() => worksheet.AsEnumerable(onCaught, configurationAction).ToList();
+        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => worksheet.AsEnumerable(configurationAction).ToList();
 
         /// <summary>
         ///     Changes value of the specified cell
@@ -359,10 +355,10 @@ namespace EPPlus.Core.Extensions
             {
                 if (!string.IsNullOrEmpty(exceptionMessage))
                 {
-                    throw new ExcelTableValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
+                    throw new ExcelValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
                 }
 
-                throw new ExcelTableValidationException($"The {columnIndex}. column of worksheet should be '{expectedValue}'.");
+                throw new ExcelValidationException($"The {columnIndex}. column of worksheet should be '{expectedValue}'.");
             }
         }
 
@@ -375,7 +371,7 @@ namespace EPPlus.Core.Extensions
         {
             if (sheet.HasAnyFormula())
             {
-                throw new ExcelTableValidationException(withMessage);
+                throw new ExcelValidationException(withMessage);
             }
         }
 
@@ -455,125 +451,6 @@ namespace EPPlus.Core.Extensions
             }
 
             return hasValue ? new ExcelAddressBase(minRow, minCol, maxRow, maxCol) : null;
-        }
-
-        /// <summary>
-        ///     Sets the font of ExcelWorksheet cells from a Font object
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="font"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)
-        {
-            worksheet.Cells.SetFont(font);
-            return worksheet;
-        }
-
-        /// <summary>
-        ///     Sets the font of given cell range from a Font object
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="cellRange"></param>
-        /// <param name="font"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelRange cellRange, Font font)
-        {
-            worksheet.Cells[cellRange.Address].SetFont(font);
-            return worksheet;
-        }
-
-        /// <summary>
-        ///     Sets the font color of ExcelWorksheet cells from a Color object
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="fontColor"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, Color fontColor)
-        {
-            worksheet.Cells.SetFontColor(fontColor);
-            return worksheet;
-        }
-
-        /// <summary>
-        ///     Sets the font color of given cell range from a Color object
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="cellRange"></param>
-        /// <param name="fontColor"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetFontColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color fontColor)
-        {
-            worksheet.Cells[cellRange.Address].SetFontColor(fontColor);
-            return worksheet;
-        }
-
-        /// <summary>
-        ///     Sets the background color of ExcelWorksheet cells from a Color object
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="backgroundColor"></param>
-        /// <param name="fillStyle"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
-        {
-            worksheet.Cells.SetBackgroundColor(backgroundColor, fillStyle);
-            return worksheet;
-        }
-
-        /// <summary>
-        ///     Sets the background color of given cell range from a Color object
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="cellRange"></param>
-        /// <param name="backgroundColor"></param>
-        /// <param name="fillStyle"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetBackgroundColor(this ExcelWorksheet worksheet, ExcelRange cellRange, Color backgroundColor, ExcelFillStyle fillStyle = ExcelFillStyle.Solid)
-        {
-            worksheet.Cells[cellRange.Address].SetBackgroundColor(backgroundColor, fillStyle);
-            return worksheet;
-        }
-
-        /// <summary>
-        ///     Sets the horizontal alignment of ExcelWorksheet cells
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="horizontalAlignment"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelHorizontalAlignment horizontalAlignment) => worksheet.SetHorizontalAlignment(worksheet.Cells, horizontalAlignment);
-
-        /// <summary>
-        ///     Sets the horizontal alignment of given cell range
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="cellRange"></param>
-        /// <param name="horizontalAlignment"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetHorizontalAlignment(this ExcelWorksheet worksheet, ExcelRange cellRange, ExcelHorizontalAlignment horizontalAlignment)
-        {
-            worksheet.Cells[cellRange.Address].SetHorizontalAlignment(horizontalAlignment);
-            return worksheet;
-        }
-
-        /// <summary>
-        ///     Sets the vertical alignment of ExcelWorksheet cells
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="verticalAlignment"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelVerticalAlignment verticalAlignment) => worksheet.SetVerticalAlignment(worksheet.Cells, verticalAlignment);
-
-        /// <summary>
-        ///     Sets the vertical alignment of given cell range
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="cellRange"></param>
-        /// <param name="verticalAlignment"></param>
-        /// <returns></returns>
-        public static ExcelWorksheet SetVerticalAlignment(this ExcelWorksheet worksheet, ExcelRange cellRange, ExcelVerticalAlignment verticalAlignment)
-        {
-            worksheet.Cells[cellRange.Address].SetVerticalAlignment(verticalAlignment);
-            return worksheet;
         }
     }
 }

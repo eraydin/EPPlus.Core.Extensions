@@ -2,12 +2,12 @@
 
 using OfficeOpenXml;
 
-namespace EPPlus.Core.Extensions
+namespace EPPlus.Core.Extensions.Exceptions
 {
     /// <summary>
     ///     Class contains exception circumstances
     /// </summary>
-    public class ExcelTableExceptionArgs
+    public class ExcelExceptionArgs
     {
         /// <summary>
         ///     Property that was tried to set

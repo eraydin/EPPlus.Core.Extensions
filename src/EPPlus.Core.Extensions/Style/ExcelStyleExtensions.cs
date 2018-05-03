@@ -2,7 +2,7 @@
 
 using OfficeOpenXml.Style;
 
-namespace EPPlus.Core.Extensions
+namespace EPPlus.Core.Extensions.Style
 {
     public static class ExcelStyleExtensions
     {

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
 using EPPlus.Core.Extensions.Configuration;
-using EPPlus.Core.Extensions.Validation;
+using EPPlus.Core.Extensions.Exceptions;
 
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
@@ -21,26 +22,27 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="table">Extended object</param>
         /// <returns>Address range</returns>
-        public static ExcelAddress GetDataBounds(this ExcelTable table)
-        {
-            return new ExcelAddress(
-                table.Address.Start.Row + (table.ShowHeader ? 1 : 0),
-                table.Address.Start.Column,
-                table.Address.End.Row - (table.ShowTotal ? 1 : 0),
-                table.Address.End.Column
-                );
-        }
+        public static ExcelAddress GetDataBounds(this ExcelTable table) => new ExcelAddress(
+            table.Address.Start.Row + (table.ShowHeader ? 1 : 0),
+            table.Address.Start.Column,
+            table.Address.End.Row - (table.ShowTotal ? 1 : 0),
+            table.Address.End.Column
+            );
 
         /// <summary>
         ///     Validates the excel table against the generating type.
         /// </summary>
         /// <typeparam name="T">Generating class type</typeparam>
         /// <param name="table">Extended object</param>
-        /// <returns>An enumerable of <see cref="ExcelTableExceptionArgs" /> containing </returns>
-        public static IEnumerable<ExcelTableExceptionArgs> Validate<T>(this ExcelTable table) where T : class, new()
+        /// <param name="configurationAction"></param>
+        /// <returns>An enumerable of <see cref="ExcelExceptionArgs" /> containing </returns>
+        public static IEnumerable<ExcelExceptionArgs> Validate<T>(this ExcelTable table, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            List<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings<T>(table);
-            var result = new LinkedList<ExcelTableExceptionArgs>();
+            IExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
+            configurationAction?.Invoke(configuration);
+
+            IEnumerable<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings(table, configuration);
+            var result = new LinkedList<ExcelExceptionArgs>();
 
             ExcelAddress bounds = table.GetDataBounds();
 
@@ -61,14 +63,14 @@ namespace EPPlus.Core.Extensions
                     }
                     catch
                     {
-                        result.AddLast(new ExcelTableExceptionArgs
-                        {
-                            ColumnName = table.Columns[map.Key].Name,
-                            ExpectedType = property.PropertyType,
-                            PropertyName = property.Name,
-                            CellValue = cell,
-                            CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                        });
+                        result.AddLast(new ExcelExceptionArgs
+                                       {
+                                           ColumnName = table.Columns[map.Key].Name,
+                                           ExpectedType = property.PropertyType,
+                                           PropertyName = property.Name,
+                                           CellValue = cell,
+                                           CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                       });
                     }
                 }
             }
@@ -86,15 +88,14 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelConfiguration<T> configuration = DefaultExcelConfiguration<T>.Instance;
+            IExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
-            List<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings<T>(table);
+            IEnumerable<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings(table, configuration);
 
             ExcelAddress bounds = table.GetDataBounds();
 
@@ -111,35 +112,33 @@ namespace EPPlus.Core.Extensions
 
                     try
                     {
-                        TrySetProperty(item, property, cell);
+                        TrySetProperty(item, property, cell); 
                     }
                     catch (Exception ex)
                     {
-                        if (!configuration.SkipCastingErrors)
-                        {
-                            var exceptionArgs = new ExcelTableExceptionArgs
-                            {
-                                ColumnName = table.Columns[map.Key].Name,
-                                ExpectedType = property.PropertyType,
-                                PropertyName = property.Name,
-                                CellValue = cell,
-                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                            };
+                        var exceptionArgs = new ExcelExceptionArgs
+                                            {
+                                                ColumnName = table.Columns[map.Key].Name,
+                                                ExpectedType = property.PropertyType,
+                                                PropertyName = property.Name,
+                                                CellValue = cell,
+                                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                                            };     
 
-                            throw new ExcelTableConvertException($"The expected type of '{exceptionArgs.PropertyName}' property is '{exceptionArgs.ExpectedType.Name}', but the cell [{exceptionArgs.CellAddress.Address}] contains an invalid value.",
-                                ex, exceptionArgs
-                                );
+                        if (configuration.ThrowValidationExceptions && ex is ValidationException)
+                        {
+                            throw new ExcelValidationException(ex.Message, ex)
+                                .WithArguments(exceptionArgs);
+                        }   
+
+                        if (configuration.ThrowCastingExceptions)
+                        {
+                            throw new ExcelException(string.Format(configuration.CastingExceptionMessage, exceptionArgs.PropertyName, exceptionArgs.ExpectedType.Name, exceptionArgs.CellAddress.Address), ex)
+                                .WithArguments(exceptionArgs);
                         }
                     }
-                }
 
-                onCaught?.Invoke(item, row);
-
-                // TODO:
-                if (!configuration.SkipValidationErrors)
-                {
-                    // Validate parsed object according to data annotations
-                    item.Validate(row);
+                    configuration.OnCaught?.Invoke(item, row);
                 }
 
                 yield return item;
@@ -156,24 +155,19 @@ namespace EPPlus.Core.Extensions
         /// </remarks>
         /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
-        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static List<T> ToList<T>(this ExcelTable table, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
-        {
-            return AsEnumerable(table, onCaught, configurationAction).ToList();
-        }
+        public static List<T> ToList<T>(this ExcelTable table, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => AsEnumerable(table, configurationAction).ToList();
 
         /// <summary>
         ///     Prepares mapping using the type and the attributes decorating its properties
         /// </summary>
         /// <typeparam name="T">Type to parse</typeparam>
         /// <param name="table">Table to get columns from</param>
+        /// <param name="configuration"></param>
         /// <returns>A list of mappings from column index to property</returns>
-        private static List<KeyValuePair<int, PropertyInfo>> PrepareMappings<T>(ExcelTable table)
+        private static IEnumerable<KeyValuePair<int, PropertyInfo>> PrepareMappings<T>(ExcelTable table, IExcelReadConfiguration<T> configuration)
         {
-            var mapping = new List<KeyValuePair<int, PropertyInfo>>();
-
             // Get only the properties that have ExcelTableColumnAttribute
             List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes<T>();
 
@@ -203,13 +197,19 @@ namespace EPPlus.Core.Extensions
 
                 if (col == -1)
                 {
-                    throw new ArgumentException($"{mappingAttribute.ColumnName} column could not found on the worksheet");
+                    throw new ExcelValidationException(configuration.ColumnValidationExceptionMessage)
+                        .WithArguments(new ExcelExceptionArgs
+                                           {
+                                               ColumnName = mappingAttribute.ColumnName,
+                                               ExpectedType = property.PropertyType,
+                                               PropertyName = property.Name,
+                                               CellValue = table.WorkSheet.Cells[table.Address.Start.Row, mappingAttribute.ColumnIndex + table.Address.Start.Column].Value,
+                                               CellAddress = new ExcelCellAddress(table.Address.Start.Row, mappingAttribute.ColumnIndex + table.Address.Start.Column)
+                                           });
                 }
 
-                mapping.Add(new KeyValuePair<int, PropertyInfo>(col, property));
+                yield return new KeyValuePair<int, PropertyInfo>(col, property);
             }
-
-            return mapping;
         }
 
         /// <summary>
@@ -224,13 +224,8 @@ namespace EPPlus.Core.Extensions
             Type itemType = item.GetType();
 
             // If type is nullable, get base type instead
-            if (property.PropertyType.IsNullable())
+            if (property.PropertyType.IsNullable() && cell != null)
             {
-                if (cell == null)
-                {
-                    return; // If it is nullable, and we have null we should not waste time
-                }
-
                 type = type.GetGenericArguments()[0];
             }
 
@@ -242,8 +237,6 @@ namespace EPPlus.Core.Extensions
                     null,
                     item,
                     new object[] { cell?.ToString() });
-
-                return;
             }
 
             if (type == typeof(DateTime))
@@ -259,8 +252,6 @@ namespace EPPlus.Core.Extensions
                     null,
                     item,
                     new object[] { parsedDate });
-
-                return;
             }
 
             if (type == typeof(bool))
@@ -271,13 +262,11 @@ namespace EPPlus.Core.Extensions
                     null,
                     item,
                     new object[] { cell });
-
-                return;
             }
 
             if (type.IsEnum)
             {
-                if (cell.GetType() == typeof(string)) // Support Enum conversion from string...
+                if (cell is string) // Support Enum conversion from string...
                 {
                     itemType.InvokeMember(
                         property.Name,
@@ -297,11 +286,9 @@ namespace EPPlus.Core.Extensions
                         item,
                         new object[] { Enum.ToObject(type, Convert.ChangeType(cell, underType)) });
                 }
-
-                return;
             }
 
-            if (type.IsNumeric())
+            if (!type.IsEnum && type.IsNumeric())
             {
                 itemType.InvokeMember(
                     property.Name,
@@ -310,6 +297,9 @@ namespace EPPlus.Core.Extensions
                     item,
                     new object[] { Convert.ChangeType(cell, type) });
             }
+
+            // Validate parsed object according to data annotations
+            Validator.ValidateObject(item, new ValidationContext(item), true);
         }
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Exceptions;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
@@ -13,37 +15,8 @@ namespace EPPlus.Core.Extensions.Tests
 {
     public class ExcelTableExtensions_Tests : TestBase
     {
-        /// <summary>
-        ///     Test existence of test objects in the embedded workbook
-        /// </summary>
-        [Fact]
-        public void WarmUp()
-        {
-            excelPackage.Should().NotBeNull("Excel package is null");
-
-            // TEST1
-            ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets["TEST1"];
-            workSheet.Should().NotBeNull("Worksheet TEST1 missing");
-
-            ExcelTable table = workSheet.Tables["TEST1"];
-            table.Should().NotBeNull("Table TEST1 missing");
-
-            table.Address.Columns.Should().Be(5, "Table1 is not as expected");
-            table.Address.Rows.Should().BeGreaterThan(2, "Table1 has missing rows");
-
-            // TEST2
-            workSheet = excelPackage.Workbook.Worksheets["TEST2"];
-            workSheet.Should().NotBeNull("Worksheet TEST2 missing");
-
-            table = workSheet.Tables["TEST2"];
-            table.Should().NotBeNull("Table TEST2 missing");
-
-            table.Address.Columns.Should().Be(2, "Table2 is not as expected");
-            table.Address.Rows.Should().BeGreaterThan(2, "Table2 has missing rows");
-        }
-
-        [Fact]
-        public void Test_TableValidation()
+       [Fact]
+        public void Should_validate_Excel_table_for_convert_errors()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -53,7 +26,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<ExcelTableExceptionArgs> validation = table.Validate<WrongCars>().ToList();
+            List<ExcelExceptionArgs> validation = table.Validate<WrongCars>().ToList();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -223,7 +196,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Test_MapFail()
+        public void Should_throw_exception_if_mapping_failed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -234,26 +207,29 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = table.ToList<EnumFailMap>(); };
+            Action action = () =>
+                            {
+                                list = table.ToList<EnumFailMap>();
+                            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ExcelTableConvertException>()
+            action.Should().Throw<ExcelException>()
                   .And.Args.CellValue.Should().Be("MALE");
 
-            action.Should().Throw<ExcelTableConvertException>()
+            action.Should().Throw<ExcelException>()
                   .And.Args.ExpectedType.Should().Be(typeof(Classes));
 
-            action.Should().Throw<ExcelTableConvertException>()
+            action.Should().Throw<ExcelException>()
                   .And.Args.PropertyName.Should().Be("Gender");
 
-            action.Should().Throw<ExcelTableConvertException>()
+            action.Should().Throw<ExcelException>()
                   .And.Args.ColumnName.Should().Be("Gender");
         }
 
         [Fact]
-        public void Test_MapSilentFail()
+        public void Should_not_throw_exception_if_casting_failed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -263,10 +239,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<EnumFailMap> list = table.ToList<EnumFailMap>(null, configuration =>
-             {
-                 configuration.SkipCastingErrors = true;
-             });
+            List<EnumFailMap> list = table.ToList<EnumFailMap>(configuration => configuration.SkipCastingErrors());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -297,7 +270,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Test_Nullable_With_SkipCastErrors()
+        public void Should_not_throw_exception_if_casting_error_occured_with_nullable()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -307,10 +280,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<StocksNullable> list = table.ToList<StocksNullable>(null,configuration =>
-            {
-                configuration.SkipCastingErrors = true;
-            });
+            List<StocksNullable> list = table.ToList<StocksNullable>(configuration => configuration.SkipCastingErrors());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

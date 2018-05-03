@@ -11,9 +11,5 @@ namespace EPPlus.Core.Extensions
         internal string Header { get; set; }
 
         internal Action<ExcelColumn> ConfigureColumn { get; set; }
-
-        internal Action<ExcelRange> ConfigureHeader { get; set; }
-
-        internal Action<ExcelRange, T> ConfigureCell { get; set; }
     }
 }

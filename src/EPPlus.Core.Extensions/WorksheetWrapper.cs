@@ -5,6 +5,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+using EPPlus.Core.Extensions.Configuration;
+
 using OfficeOpenXml;
 
 namespace EPPlus.Core.Extensions
@@ -23,13 +25,7 @@ namespace EPPlus.Core.Extensions
 
         internal List<WorksheetTitleRow> Titles { get; set; }
 
-        internal Action<ExcelColumn> ConfigureColumn { get; set; }
-
-        internal Action<ExcelRange> ConfigureHeader { get; set; }
-
-        internal Action<ExcelRange> ConfigureHeaderRow { get; set; }
-
-        internal Action<ExcelRange, T> ConfigureCell { get; set; }
+        internal IExcelCreateConfiguration<T> Configuration { get; } = DefaultExcelCreateConfiguration<T>.Instance;
 
         /// <summary>
         ///     Generates columns for all public properties on the type
@@ -46,16 +42,12 @@ namespace EPPlus.Core.Extensions
                 PropertyInfo property = propertyAttributePair.Key;
                 ExcelTableColumnAttribute mappingAttribute = propertyAttributePair.Value;
 
-                bool isNullableProperty = property.PropertyType.IsNullable();
-
                 string header = !string.IsNullOrEmpty(mappingAttribute.ColumnName) ? mappingAttribute.ColumnName : Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
 
                 var column = new WorksheetColumn<T>
                              {
                                  Header = header,
-                                 Map = GetGetter<T>(property.Name),
-                                 ConfigureColumn = c => c.AutoFit(),
-                                 ConfigureHeader = c => { c.Style.Font.Bold = !isNullableProperty; }
+                                 Map = GetGetter<T>(property.Name)
                              };
                 columns.Add(column);
             }
@@ -91,10 +83,9 @@ namespace EPPlus.Core.Extensions
                     ExcelRange range = worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count];
                     range.Merge = true;
                     range.Value = Titles[i].Title;
-                    if (Titles[i].ConfigureTitle != null)
-                    {
-                        Titles[i].ConfigureTitle(range);
-                    }
+
+                    Configuration.ConfigureTitle?.Invoke(range);
+                    Titles[i].ConfigureTitle?.Invoke(range);  
                 }
 
                 rowOffset = rowOffset + Titles.Count;
@@ -105,23 +96,14 @@ namespace EPPlus.Core.Extensions
             {
                 for (var i = 0; i < Columns.Count; i++)
                 {
-                    worksheet.Cells[rowOffset + 1, i + 1].Value = Columns[i].Header;
-
-                    if (ConfigureHeader != null)
-                    {
-                        ConfigureHeader(worksheet.Cells[rowOffset + 1, i + 1]);
-                    }
-
-                    if (Columns[i].ConfigureHeader != null)
-                    {
-                        Columns[i].ConfigureHeader(worksheet.Cells[rowOffset + 1, i + 1]);
-                    }
+                    worksheet.Cells[rowOffset + 1, i + 1].Value = Columns[i].Header;  
+                    Configuration.ConfigureHeader?.Invoke(worksheet.Cells[rowOffset + 1, i + 1]);     
                 }
 
                 //configure the header row
-                if (ConfigureHeaderRow != null)
+                if (Configuration.ConfigureHeaderRow != null)
                 {
-                    ConfigureHeaderRow(worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count]);
+                    Configuration.ConfigureHeaderRow.Invoke(worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count]);
                 }
                 else
                 {
@@ -140,11 +122,7 @@ namespace EPPlus.Core.Extensions
                     {
                         worksheet.Cells[r + rowOffset + 1, c + 1].Value = Columns[c].Map(Rows.ElementAt(r));
 
-                        ConfigureCell?.Invoke(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
-                        if (Columns[c].ConfigureCell != null)
-                        {
-                            Columns[c].ConfigureCell(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
-                        }
+                        Configuration.ConfigureCell?.Invoke(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
                     }
                 }
             }
@@ -152,11 +130,8 @@ namespace EPPlus.Core.Extensions
             //configure columns
             for (var i = 0; i < Columns.Count; i++)
             {
-                ConfigureColumn?.Invoke(worksheet.Column(i + 1));
-                if (Columns[i].ConfigureColumn != null)
-                {
-                    Columns[i].ConfigureColumn(worksheet.Column(i + 1));
-                }
+                Configuration.ConfigureColumn?.Invoke(worksheet.Column(i + 1));    
+                Columns[i].ConfigureColumn?.Invoke(worksheet.Column(i + 1));
             }
         }
 

@@ -77,13 +77,12 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="package"></param>
-        /// <param name="onCaught">Gets created list item and current row index</param>
         /// <param name="configurationAction"></param>
         /// <param name="worksheetIndex"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 1, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 1, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return package.Workbook.Worksheets[worksheetIndex].AsEnumerable(onCaught, configurationAction);
+            return package.Workbook.Worksheets[worksheetIndex].AsEnumerable(configurationAction);
         }
 
         /// <summary>
@@ -92,12 +91,11 @@ namespace EPPlus.Core.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="package"></param>
         /// <param name="worksheetIndex"></param>
-        /// <param name="onCaught"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 1, OnCaught<T> onCaught = null, Action<IExcelConfiguration<T>> configurationAction = null) where T : class, new()
+        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 1, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            return package.AsEnumerable(worksheetIndex, onCaught, configurationAction).ToList();
+            return package.AsEnumerable(worksheetIndex, configurationAction).ToList();
         }
     }
 }

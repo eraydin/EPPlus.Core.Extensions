@@ -13,7 +13,7 @@ namespace EPPlus.Core.Extensions.Tests
     public class ExcelPackageExtensions_Tests : TestBase
     {
         [Fact]
-        public void Should_extract_all_excelTables_from_an_excelPackage()
+        public void Should_extract_all_tables_from_an_Excel_package()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -41,7 +41,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_convert_an_excelPackage_into_a_dataSet()
+        public void Should_convert_an_Excel_package_into_a_DataSet()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -61,7 +61,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_convert_given_ExcelPackage_to_list_of_objects()
+        public void Should_convert_given_Excel_package_to_list_of_objects()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -91,11 +91,11 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<StocksNullable>(6, null, configuration =>
-            {
-                configuration.HasHeaderRow = false;
-                configuration.SkipCastingErrors = true;
-            });
+            list = excelPackage.ToList<StocksNullable>(6, configuration =>
+                                                          {
+                                                              configuration.SkipCastingErrors();
+                                                              configuration.WithoutHeaderRow();
+                                                          });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -113,27 +113,30 @@ namespace EPPlus.Core.Extensions.Tests
             List<StocksNullable> stocksWithNullables;
             List<StocksValidation> stocksWithoutNullables;
 
-                //-----------------------------------------------------------------------------------------------------------
+            //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            stocksWithNullables = excelPackage.ToList<StocksNullable>(6, (current, rowIndex) =>
-            {
-                current.Barcode = current.Barcode.Insert(0, "_");
+            stocksWithNullables = excelPackage.ToList<StocksNullable>(6, configuration =>
+                                                                         {
+                                                                             configuration.SkipCastingErrors();
+                                                                             configuration.SkipValidationErrors();
+                                                                             configuration.WithHeaderRow();
+                                                                             configuration.Intercept((current, rowIndex) =>
+                                                                                                     {
+                                                                                                         current.Barcode = current.Barcode.Insert(0, "_");
+                                                                                                     });
+                                                                         });
 
-            }, configuration =>
-            {
-                configuration.HasHeaderRow = true;
-                configuration.SkipCastingErrors = true;
-            });
-
-            stocksWithoutNullables = excelPackage.ToList<StocksValidation>(5, (current, rowIndex) =>
-            {
-                current.Quantity += 10 + rowIndex;
-            }, configuration =>
-            {
-                configuration.HasHeaderRow = true;
-                configuration.SkipCastingErrors = false;
-            });
+            stocksWithoutNullables = excelPackage.ToList<StocksValidation>(5, configuration =>
+                                                                              {
+                                                                                  configuration.SkipCastingErrors();
+                                                                                  configuration.SkipValidationErrors();
+                                                                                  configuration.WithHeaderRow();
+                                                                                  configuration.Intercept((current, rowIndex) =>
+                                                                                                          {
+                                                                                                              current.Quantity += 10 + rowIndex;
+                                                                                                          });
+                                                                              });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
