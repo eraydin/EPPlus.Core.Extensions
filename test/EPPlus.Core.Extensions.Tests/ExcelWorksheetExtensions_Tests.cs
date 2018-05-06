@@ -26,20 +26,26 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            Color color = Color.AntiqueWhite;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddHeader(x =>
-            {
-                x.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                x.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(170, 170, 170));
-            }, "Barcode", "Quantity", "UpdatedDate");
+                                {
+                                    x.SetBackgroundColor(color);
+                                }, "NewBarcode", "NewQuantity", "NewUpdatedDate");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             worksheet.Dimension.End.Row.Should().Be(5);
+            worksheet.Cells[1, 1, 1, 1].Value.Should().Be("NewBarcode");
+            worksheet.Cells[1, 2, 1, 2].Value.Should().Be("NewQuantity");
+            worksheet.Cells[1, 3, 1, 3].Value.Should().Be("NewUpdatedDate");  
+
+            worksheet.Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", color.ToArgb() & 0xFFFFFFFF));  
+            worksheet.Cells[2, 1, 2, 1].Value.Should().Be("Barcode");
         }
 
         [Fact]
@@ -49,6 +55,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST5"];
+            DateTime dateTime = DateTime.MaxValue;
 
             var stocks = new List<StocksNullable>
             {
@@ -56,7 +63,7 @@ namespace EPPlus.Core.Extensions.Tests
                 {
                     Barcode = "barcode123",
                     Quantity = 5,
-                    UpdatedDate = DateTime.MaxValue
+                    UpdatedDate = dateTime
                 }
             };
 
@@ -73,6 +80,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             list.Count().Should().Be(4);
+            list.Last().Barcode.Should().Be("barcode123");
+            list.Last().Quantity.Should().Be(5);
+            list.Last().UpdatedDate.Value.Date.Should().Be(dateTime.Date);
+            list.Last().UpdatedDate.Value.Hour.Should().Be(dateTime.Hour);
         }
 
         [Fact]

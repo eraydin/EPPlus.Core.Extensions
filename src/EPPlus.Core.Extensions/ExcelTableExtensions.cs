@@ -136,10 +136,10 @@ namespace EPPlus.Core.Extensions
                             throw new ExcelException(string.Format(configuration.CastingExceptionMessage, exceptionArgs.PropertyName, exceptionArgs.ExpectedType.Name, exceptionArgs.CellAddress.Address), ex)
                                 .WithArguments(exceptionArgs);
                         }
-                    }
-
-                    configuration.OnCaught?.Invoke(item, row);
+                    }  
                 }
+
+                configuration.OnCaught?.Invoke(item, row);  
 
                 yield return item;
             }
@@ -298,8 +298,7 @@ namespace EPPlus.Core.Extensions
                     new object[] { Convert.ChangeType(cell, type) });
             }
 
-            // Validate parsed object according to data annotations
-            Validator.ValidateObject(item, new ValidationContext(item), true);
+            Validator.ValidateProperty(property.GetValue(item), new ValidationContext(item) { MemberName = property.Name});
         }
     }
 }

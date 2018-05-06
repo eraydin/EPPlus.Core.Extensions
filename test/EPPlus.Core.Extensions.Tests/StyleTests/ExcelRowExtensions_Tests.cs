@@ -10,7 +10,7 @@ using OfficeOpenXml.Style;
 
 using Xunit;
 
-namespace EPPlus.Core.Extensions.Tests
+namespace EPPlus.Core.Extensions.Tests.StyleTests
 {
     public class ExcelRowExtensions_Tests : TestBase
     {

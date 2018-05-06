@@ -9,7 +9,7 @@ namespace EPPlus.Core.Extensions.Tests
     public class ExcelTableColumnAttribute_Tests
     {
         [Fact]
-        public void Test_MappingIndexBase()
+        public void Should_cannot_set_both_column_index_and_name()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -19,16 +19,27 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { excelTableColumnAttribute.ColumnIndex = 0; };
+            Action action1 = () =>
+                             {
+                                 excelTableColumnAttribute.ColumnIndex = 100;
+                                 excelTableColumnAttribute.ColumnName = "TEST";
+                             };
+
+            Action action2 = () =>
+                             {
+                                 excelTableColumnAttribute.ColumnName = "TEST";
+                                 excelTableColumnAttribute.ColumnIndex = 100;
+                             };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ArgumentException>();
+            action1.Should().Throw<ArgumentException>().WithMessage($"Cannot set both {nameof(excelTableColumnAttribute.ColumnName)} and {nameof(excelTableColumnAttribute.ColumnIndex)}!");
+            action2.Should().Throw<ArgumentException>().WithMessage($"Cannot set both {nameof(excelTableColumnAttribute.ColumnName)} and {nameof(excelTableColumnAttribute.ColumnIndex)}!");
         }
 
         [Fact]
-        public void Test_MappingName()
+        public void Should_column_index_cannot_be_equal_or_less_than_zero()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -38,16 +49,18 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { excelTableColumnAttribute.ColumnName = "   "; };
+            Action action1 = () => { excelTableColumnAttribute.ColumnIndex = 0; };
+            Action action2 = () => { excelTableColumnAttribute.ColumnIndex = -10; };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ArgumentException>();
+            action1.Should().Throw<ArgumentException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnIndex)} cannot be zero or negative!");
+            action2.Should().Throw<ArgumentException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnIndex)} cannot be zero or negative!");
         }
 
         [Fact]
-        public void Test_MappingUnambiguity()
+        public void Should_column_name_cannot_be_null_or_empty()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -57,16 +70,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () =>
-            {
-                excelTableColumnAttribute.ColumnIndex = 100;
-                excelTableColumnAttribute.ColumnName = "TEST";
-            };
+            Action action1 = () => { excelTableColumnAttribute.ColumnName = "   "; };
+            Action action2 = () => { excelTableColumnAttribute.ColumnName = null; };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ArgumentException>();
+            action1.Should().Throw<ArgumentException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnName)} cannot be null or empty!");
+            action2.Should().Throw<ArgumentException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnName)} cannot be null or empty!");
         }
     }
 }

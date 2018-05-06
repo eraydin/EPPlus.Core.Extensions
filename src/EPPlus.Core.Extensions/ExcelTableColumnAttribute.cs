@@ -14,7 +14,9 @@ namespace EPPlus.Core.Extensions
 
         private string _columnName;
 
-        public ExcelTableColumnAttribute() { }
+        public ExcelTableColumnAttribute()
+        {
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -38,11 +40,12 @@ namespace EPPlus.Core.Extensions
             {
                 if (_columnIndex > 0)
                 {
-                    throw new ArgumentException("Cannot set both ColumnName and ColumnIndex!");
+                    throw new ArgumentException($"Cannot set both {nameof(ColumnName)} and {nameof(ColumnIndex)}!");
                 }
+
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("ColumnName can't be empty!");
+                    throw new ArgumentException($"{nameof(ColumnName)} cannot be null or empty!");
                 }
 
                 _columnName = value;
@@ -59,11 +62,11 @@ namespace EPPlus.Core.Extensions
             {
                 if (_columnName != null)
                 {
-                    throw new ArgumentException("Cannot set both ColumnName and ColumnIndex!");
+                    throw new ArgumentException($"Cannot set both {nameof(ColumnName)} and {nameof(ColumnIndex)}!");
                 }
                 if (value <= 0)
                 {
-                    throw new ArgumentException("ColumnIndex can't be zero or negative!");
+                    throw new ArgumentException($"{nameof(ColumnIndex)} cannot be zero or negative!");
                 }
 
                 _columnIndex = value;

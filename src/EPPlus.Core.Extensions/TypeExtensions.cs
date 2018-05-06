@@ -70,7 +70,7 @@ namespace EPPlus.Core.Extensions
                                                                                                      .Where(p => p.Value != null)
                                                                                                      .ToList();
 
-            if (!propertyAttributePairs.Any()) throw new ArgumentException("Given type does not have ExcelTableColumnAttribute");
+            if (!propertyAttributePairs.Any()) throw new ArgumentException($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
 
             return propertyAttributePairs;
         }

@@ -214,4 +214,24 @@ namespace EPPlus.Core.Extensions.Tests
         [ExcelTableColumn("Year of Birth")]
         public int YearBorn { get; set; }
     }
+
+    public class ObjectWithoutExcelTableAttributes
+    {
+        public string FirstName { get; set; }   
+       
+        public string LastName { get; set; }   
+        
+        public int YearBorn { get; set; }
+    }
+
+    public class ObjectWithWrongAttributeMappings
+    {
+        [ExcelTableColumn(5)]
+        public string FirstName { get; set; }
+
+        [ExcelTableColumn("Firstname")]
+        public string LastName { get; set; }
+
+        public int YearBorn { get; set; }
+    }
 }
