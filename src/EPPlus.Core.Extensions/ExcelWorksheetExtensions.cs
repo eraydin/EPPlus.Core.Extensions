@@ -25,7 +25,7 @@ namespace EPPlus.Core.Extensions
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
 
             return new ExcelAddress(
-                valuedDimension.Start.Row + (hasHeaderRow ? 1 : 0),
+                valuedDimension.Start.Row + (hasHeaderRow && valuedDimension.Start.Row != valuedDimension.End.Row ? 1 : 0),
                 valuedDimension.Start.Column,
                 valuedDimension.End.Row,
                 valuedDimension.End.Column
@@ -53,6 +53,13 @@ namespace EPPlus.Core.Extensions
             return worksheet.AsExcelTable(tableName, hasHeaderRow);
         }
 
+        /// <summary>
+        ///     Converts given worksheet into ExcelTable
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="tableName"></param>
+        /// <param name="hasHeaderRow"></param>
+        /// <returns></returns>
         public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, string tableName, bool hasHeaderRow)
         {
             if (worksheet.Tables.Any())

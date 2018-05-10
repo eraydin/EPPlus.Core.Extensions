@@ -22,13 +22,18 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="table">Extended object</param>
         /// <returns>Address range</returns>
-        public static ExcelAddress GetDataBounds(this ExcelTable table) => new ExcelAddress(
-            table.Address.Start.Row + (table.ShowHeader ? 1 : 0),
-            table.Address.Start.Column,
-            table.Address.End.Row - (table.ShowTotal ? 1 : 0),
-            table.Address.End.Column
-            );
+        public static ExcelAddress GetDataBounds(this ExcelTable table)
+        {  
+            var dataBounds = new ExcelAddress(
+                table.Address.Start.Row + (table.ShowHeader && !table.Address.IsEmptyRange(table.ShowHeader) ? 1 : 0),
+                table.Address.Start.Column,
+                table.Address.End.Row - (table.ShowTotal ? 1 : 0),
+                table.Address.End.Column
+                );
 
+            return dataBounds;
+        }
+        
         /// <summary>
         ///     Validates the excel table against the generating type.
         /// </summary>
@@ -41,7 +46,7 @@ namespace EPPlus.Core.Extensions
             IExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
-            IEnumerable<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings(table, configuration);
+            List<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings(table, configuration).ToList();
             var result = new LinkedList<ExcelExceptionArgs>();
 
             ExcelAddress bounds = table.GetDataBounds();
@@ -95,54 +100,56 @@ namespace EPPlus.Core.Extensions
             IExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
-            IEnumerable<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings(table, configuration);
-
-            ExcelAddress bounds = table.GetDataBounds();
-
-            // Parse table
-            for (int row = bounds.Start.Row; row <= bounds.End.Row; row++)
+            if (!table.IsEmpty(configuration.HasHeaderRow))
             {
-                var item = (T)Activator.CreateInstance(typeof(T));
+                List<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings(table, configuration).ToList();
 
-                foreach (KeyValuePair<int, PropertyInfo> map in mapping)
+                ExcelAddress bounds = table.GetDataBounds();
+
+                // Parse table
+                for (int row = bounds.Start.Row; row <= bounds.End.Row; row++)
                 {
-                    object cell = table.WorkSheet.Cells[row, map.Key + table.Address.Start.Column].Value;
+                    var item = (T)Activator.CreateInstance(typeof(T));
 
-                    PropertyInfo property = map.Value;
-
-                    try
+                    foreach (KeyValuePair<int, PropertyInfo> map in mapping)
                     {
-                        TrySetProperty(item, property, cell); 
-                    }
-                    catch (Exception ex)
-                    {
-                        var exceptionArgs = new ExcelExceptionArgs
-                                            {
-                                                ColumnName = table.Columns[map.Key].Name,
-                                                ExpectedType = property.PropertyType,
-                                                PropertyName = property.Name,
-                                                CellValue = cell,
-                                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
-                                            };     
+                        object cell = table.WorkSheet.Cells[row, map.Key + table.Address.Start.Column].Value;
 
-                        if (configuration.ThrowValidationExceptions && ex is ValidationException)
-                        {
-                            throw new ExcelValidationException(ex.Message, ex)
-                                .WithArguments(exceptionArgs);
-                        }   
+                        PropertyInfo property = map.Value;
 
-                        if (configuration.ThrowCastingExceptions)
+                        try
                         {
-                            throw new ExcelException(string.Format(configuration.CastingExceptionMessage, exceptionArgs.PropertyName, exceptionArgs.ExpectedType.Name, exceptionArgs.CellAddress.Address), ex)
-                                .WithArguments(exceptionArgs);
+                            TrySetProperty(item, property, cell);
                         }
-                    }  
+                        catch (Exception ex)
+                        {
+                            var exceptionArgs = new ExcelExceptionArgs
+                            {
+                                ColumnName = table.Columns[map.Key].Name,
+                                ExpectedType = property.PropertyType,
+                                PropertyName = property.Name,
+                                CellValue = cell,
+                                CellAddress = new ExcelCellAddress(row, map.Key + table.Address.Start.Column)
+                            };
+
+                            if (configuration.ThrowValidationExceptions && ex is ValidationException)
+                            {
+                                throw new ExcelValidationException(ex.Message, ex)
+                                    .WithArguments(exceptionArgs);
+                            }
+
+                            if (configuration.ThrowCastingExceptions)
+                            {
+                                throw new ExcelException(string.Format(configuration.CastingExceptionMessage, exceptionArgs.PropertyName, exceptionArgs.ExpectedType.Name, exceptionArgs.CellAddress.Address), ex)
+                                    .WithArguments(exceptionArgs);
+                            }
+                        }
+                    }
+
+                    configuration.OnCaught?.Invoke(item, row);  
+                    yield return item;
                 }
-
-                configuration.OnCaught?.Invoke(item, row);  
-
-                yield return item;
-            }
+            } 
         }
 
         /// <summary>
@@ -158,6 +165,17 @@ namespace EPPlus.Core.Extensions
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
         public static List<T> ToList<T>(this ExcelTable table, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => AsEnumerable(table, configurationAction).ToList();
+
+        /// <summary>
+        ///     Checks whether given Excel table empty or not
+        /// </summary>
+        /// <param name="table">Excel table</param>
+        /// <param name="hasHeader">'true' as default</param>
+        /// <returns>'true' or 'false'</returns>
+        public static bool IsEmpty(this ExcelTable table, bool hasHeader = true)
+        {
+            return table.Address.IsEmptyRange(hasHeader);
+        }
 
         /// <summary>
         ///     Prepares mapping using the type and the attributes decorating its properties
@@ -190,14 +208,14 @@ namespace EPPlus.Core.Extensions
                 {
                     col = table.Columns[mappingAttribute.ColumnIndex - 1].Position;
                 }
-                else if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName) && table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null) // Column name was specified
+                else if (!string.IsNullOrWhiteSpace(mappingAttribute.ColumnName) && table.Columns.FirstOrDefault(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)) != null) // Column name was specified
                 {
                     col = table.Columns.First(x => x.Name.Equals(mappingAttribute.ColumnName, StringComparison.InvariantCultureIgnoreCase)).Position;
                 }
 
                 if (col == -1)
                 {
-                    throw new ExcelValidationException(configuration.ColumnValidationExceptionMessage)
+                    throw new ExcelValidationException(string.Format(configuration.ColumnValidationExceptionMessage, mappingAttribute.ColumnName))
                         .WithArguments(new ExcelExceptionArgs
                                            {
                                                ColumnName = mappingAttribute.ColumnName,

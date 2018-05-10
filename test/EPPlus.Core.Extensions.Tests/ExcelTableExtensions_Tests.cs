@@ -16,89 +16,6 @@ namespace EPPlus.Core.Extensions.Tests
     public class ExcelTableExtensions_Tests : TestBase
     {
         [Fact]
-        public void Should_get_databounds_of_Excel_table_including_header_row()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelTable tableWithoutHeaderRow = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable(false);  
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelAddress dataBoundsIncludingHeader = tableWithoutHeaderRow.GetDataBounds();
-              
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //----------------------------------------------------------------------------------------------------------- 
-            dataBoundsIncludingHeader.Start.Row.Should().Be(2);
-            dataBoundsIncludingHeader.End.Row.Should().Be(5);
-            dataBoundsIncludingHeader.Address.Should().Be("A2:C5");
-        }
-
-        [Fact]
-        public void Should_get_databounds_of_Excel_table_without_header_row()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelTable tableWithHeaderRow = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable();        
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelAddress dataBoundsWithoutHeader = tableWithHeaderRow.GetDataBounds();
-                                  
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            dataBoundsWithoutHeader.Start.Row.Should().Be(3);
-            dataBoundsWithoutHeader.End.Row.Should().Be(5);
-            dataBoundsWithoutHeader.Address.Should().Be("A3:C5");
-        }
-
-        [Fact]
-        public void Should_get_ExcelTable_as_enumerable()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelTable tableWithoutHeaderRow = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable(false);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<StocksNullable> result = tableWithoutHeaderRow.AsEnumerable<StocksNullable>(c => c.SkipCastingErrors());
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //----------------------------------------------------------------------------------------------------------- 
-            result.Count().Should().Be(4);
-        }
-
-        [Fact]
-        public void Should_throw_an_exception_when_trying_to_get_an_excel_table_if_casting_error_occurred()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelTable tableWithoutHeaderRow = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable(false);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------    
-            Action act = () =>
-                         {
-                             List<StocksNullable> result = tableWithoutHeaderRow.AsEnumerable<StocksNullable>(c => c.WithCastingExceptionMessage("Casting error occured on '{2}'")).ToList();
-                         };
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //----------------------------------------------------------------------------------------------------------- 
-            act.Should().Throw<ExcelException>().WithMessage("Casting error occured on 'B2'"); 
-        }     
-
-        [Fact]
         public void Should_automatically_map_if_column_name_and_index_not_specified()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -186,7 +103,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<DateMap> list = table.ToList<DateMap>();   
+            List<DateMap> list = table.ToList<DateMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -196,6 +113,67 @@ namespace EPPlus.Core.Extensions.Tests
             list.First(x => x.Name == "Adam").BirthDate.Should().Be(new DateTime(1981, 4, 2), "Adam' birthday is 1981.04.02");
 
             list.Min(x => x.BirthDate).Should().Be(new DateTime(1979, 12, 1), "Oldest one was born on 1979.12.01");
+        }
+
+        [Fact]
+        public void Should_get_databounds_of_Excel_table_including_header_row()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable tableWithoutHeaderRow = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable(false);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelAddress dataBoundsIncludingHeader = tableWithoutHeaderRow.GetDataBounds();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //----------------------------------------------------------------------------------------------------------- 
+            dataBoundsIncludingHeader.Start.Row.Should().Be(2);
+            dataBoundsIncludingHeader.End.Row.Should().Be(5);
+            dataBoundsIncludingHeader.Address.Should().Be("A2:C5");
+        }
+
+        [Fact]
+        public void Should_get_databounds_of_Excel_table_without_header_row()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable tableWithHeaderRow = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelAddress dataBoundsWithoutHeader = tableWithHeaderRow.GetDataBounds();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            dataBoundsWithoutHeader.Start.Row.Should().Be(3);
+            dataBoundsWithoutHeader.End.Row.Should().Be(5);
+            dataBoundsWithoutHeader.Address.Should().Be("A3:C5");
+        }
+
+        [Fact]
+        public void Should_get_ExcelTable_as_enumerable()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable tableWithoutHeaderRow = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable(false);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            IEnumerable<StocksNullable> result = tableWithoutHeaderRow.AsEnumerable<StocksNullable>(c => c.SkipCastingErrors());
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //----------------------------------------------------------------------------------------------------------- 
+            result.Count().Should().Be(4);
         }
 
         /// <summary>
@@ -354,6 +332,86 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_table_be_empty()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST7"].AsExcelTable();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            bool result = table.IsEmpty();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_table_not_be_empty()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            bool result = table.IsEmpty();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_throw_an_exception_when_trying_to_get_an_excel_table_if_casting_error_occurred()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable tableWithoutHeaderRow = excelPackage.Workbook.Worksheets["TEST6"].AsExcelTable(false);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------    
+            Action act = () =>
+                         {
+                             List<StocksNullable> result = tableWithoutHeaderRow.AsEnumerable<StocksNullable>(c => c.WithCastingExceptionMessage("Casting error occured on '{2}'")).ToList();
+                         };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //----------------------------------------------------------------------------------------------------------- 
+            act.Should().Throw<ExcelException>().WithMessage("Casting error occured on 'B2'");
+        }
+
+        [Fact]
+        public void Should_throw_argument_exception_if_there_is_no_mapped_property_object()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
+            List<ObjectWithoutExcelTableAttributes> list;
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () => { list = table.ToList<ObjectWithoutExcelTableAttributes>(); };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.Should().Throw<ArgumentException>().WithMessage($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
+        }
+
+        [Fact]
         public void Should_throw_exception_if_casting_failed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -384,26 +442,6 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_throw_argument_exception_if_there_is_no_mapped_property_object()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage.Workbook.Worksheets["TEST1"].Tables["TEST1"];
-            List<ObjectWithoutExcelTableAttributes> list;
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = table.ToList<ObjectWithoutExcelTableAttributes>(); };
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ArgumentException>().WithMessage($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");   
-        }
-
-        //[Fact]
         public void Should_throw_exception_if_object_properties_not_mapped_correctly()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -415,12 +453,18 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = table.ToList<ObjectWithWrongAttributeMappings>(); };
+            Action action1 = () => { list = table.ToList<ObjectWithWrongAttributeMappings>(); };
+            Action action2 = () =>
+                             {
+                                 list = table.ToList<ObjectWithWrongAttributeMappings>(
+                                     configuration => configuration.WithHeaderValidationExceptionMessage("'{0}' column not found."));
+                             };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ArgumentException>().WithMessage($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
+            action1.Should().Throw<ExcelValidationException>().WithMessage("'Firstname' column could not found on the worksheet.");
+            action2.Should().Throw<ExcelValidationException>().WithMessage("'Firstname' column not found.");
         }
 
         [Fact]

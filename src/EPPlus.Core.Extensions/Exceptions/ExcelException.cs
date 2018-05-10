@@ -37,8 +37,16 @@ namespace EPPlus.Core.Extensions.Exceptions
         {
         }
 
+        /// <summary>
+        ///     Exception arguments
+        /// </summary>
         public ExcelExceptionArgs Args { get; protected set; }
 
+        /// <summary>
+        ///     Sets exception arguments
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public ExcelException WithArguments(ExcelExceptionArgs args)
         {
             Args = args;

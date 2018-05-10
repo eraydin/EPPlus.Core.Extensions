@@ -1,25 +1,43 @@
 ﻿namespace EPPlus.Core.Extensions.Configuration
 {
+    /// <summary>
+    ///     Configurations to read Excel file
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IExcelReadConfiguration<T>
     {
-        bool HasHeaderRow { get; }       
-     
+        bool HasHeaderRow { get; }
+
         bool ThrowValidationExceptions { get; }
 
         bool ThrowCastingExceptions { get; }
 
-        string CastingExceptionMessage { get; }     
+        string CastingExceptionMessage { get; }
 
         string ColumnValidationExceptionMessage { get; }
 
         OnCaught<T> OnCaught { get; }
 
-        IExcelReadConfiguration<T> WithCastingExceptionMessage(string message);    
+        /// <summary>
+        ///     Sets custom casting exception message as formatted string.
+        ///     String format arguments: PropertyName, ExpectedType, CellAddress
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        IExcelReadConfiguration<T> WithCastingExceptionMessage(string message);
 
         IExcelReadConfiguration<T> WithHeaderValidationExceptionMessage(string message);
 
+        /// <summary>
+        ///     Skips validation exceptions
+        /// </summary>
+        /// <returns></returns>
         IExcelReadConfiguration<T> SkipValidationErrors();
 
+        /// <summary>
+        ///     Skips casting exceptions
+        /// </summary>
+        /// <returns></returns>
         IExcelReadConfiguration<T> SkipCastingErrors();
 
         IExcelReadConfiguration<T> WithHeaderRow();
@@ -36,9 +54,9 @@
     {
         public static IExcelReadConfiguration<T> Instance => new DefaultExcelReadConfiguration<T>();
 
-        public string CastingExceptionMessage { get; protected set; } = $"The expected type of '{0}' property is '{1}', but the cell [{2}] contains an invalid value.";
-              
-        public string ColumnValidationExceptionMessage { get; protected set; } = $"{0} column could not found on the worksheet";
+        public string CastingExceptionMessage { get; protected set; } = "The expected type of '{0}' property is '{1}', but the cell [{2}] contains an invalid value.";
+
+        public string ColumnValidationExceptionMessage { get; protected set; } = "'{0}' column could not found on the worksheet.";
 
         public bool HasHeaderRow { get; protected set; } = true;
 
@@ -52,14 +70,14 @@
         {
             CastingExceptionMessage = message;
             return this;
-        }  
+        }
 
         public IExcelReadConfiguration<T> WithHeaderValidationExceptionMessage(string message)
         {
             ColumnValidationExceptionMessage = message;
             return this;
         }
-      
+
         public IExcelReadConfiguration<T> SkipValidationErrors()
         {
             ThrowValidationExceptions = false;

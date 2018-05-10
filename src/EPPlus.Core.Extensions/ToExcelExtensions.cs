@@ -109,9 +109,16 @@ namespace EPPlus.Core.Extensions
             return worksheet;
         }
 
+        /// <summary>
+        ///     Sets configurations of output Excel
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="worksheet"></param>
+        /// <param name="configurationAction"></param>
+        /// <returns></returns>
         public static WorksheetWrapper<T> WithConfiguration<T>(this WorksheetWrapper<T> worksheet, Action<IExcelCreateConfiguration<T>> configurationAction)
-        { 
-            configurationAction?.Invoke(worksheet.Configuration);  
+        {
+            configurationAction?.Invoke(worksheet.Configuration);
             return worksheet;
         }
 
@@ -135,6 +142,12 @@ namespace EPPlus.Core.Extensions
             return worksheet.ToExcelPackage();
         }
 
+        /// <summary>
+        ///     Returns wrapped worksheets as ExcelPackage
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lastWorksheet"></param>
+        /// <returns>ExcelPackage</returns>
         public static ExcelPackage ToExcelPackage<T>(this WorksheetWrapper<T> lastWorksheet)
         {
             lastWorksheet.AppendWorksheet();

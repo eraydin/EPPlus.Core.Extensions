@@ -4,6 +4,10 @@ using OfficeOpenXml;
 
 namespace EPPlus.Core.Extensions.Configuration
 {
+    /// <summary>
+    ///     Configurations for Excel package creation
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IExcelCreateConfiguration<T>
     {
         Action<ExcelRange> ConfigureTitle { get; }

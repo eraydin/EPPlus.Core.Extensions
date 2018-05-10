@@ -13,31 +13,41 @@ namespace EPPlus.Core.Extensions.Tests
     public class ExcelPackageExtensions_Tests : TestBase
     {
         [Fact]
-        public void Should_extract_all_tables_from_an_Excel_package()
+        public void Should_be_interceptable_current_row_when_its_converting_to_a_list()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            IEnumerable<ExcelTable> tables;
+            List<StocksNullable> stocksWithNullables;
+            List<StocksValidation> stocksWithoutNullables;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            tables = excelPackage.GetTables();
+            stocksWithNullables = excelPackage.ToList<StocksNullable>(6, configuration =>
+                                                                         {
+                                                                             configuration.SkipCastingErrors();
+                                                                             configuration.SkipValidationErrors();
+                                                                             configuration.WithHeaderRow();
+                                                                             configuration.Intercept((current, rowIndex) => { current.Barcode = current.Barcode.Insert(0, "_"); });
+                                                                         });
+
+            stocksWithoutNullables = excelPackage.ToList<StocksValidation>(5, configuration =>
+                                                                              {
+                                                                                  configuration.SkipCastingErrors();
+                                                                                  configuration.SkipValidationErrors();
+                                                                                  configuration.WithHeaderRow();
+                                                                                  configuration.Intercept((current, rowIndex) => { current.Quantity += 10 + rowIndex; });
+                                                                              });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            tables.Should().NotBeNull("We have 4 tables");
-            tables.Count().Should().Be(4, "We have 4 tables");
+            stocksWithNullables.Any().Should().BeTrue();
+            stocksWithNullables.Count.Should().Be(3);
+            stocksWithNullables.All(x => x.Barcode.StartsWith('_')).Should().Be(true);
 
-            excelPackage.HasTable("TEST2").Should().BeTrue("We have TEST2 table");
-            excelPackage.HasTable("test2").Should().BeTrue("Table names are case insensitive");
-
-            excelPackage.Workbook.Worksheets["TEST2"].Tables["TEST2"].Should().BeEquivalentTo(excelPackage.GetTable("TEST2"), "We are accessing the same objects");
-
-            excelPackage.HasTable("NOTABLE").Should().BeFalse("We don't have NOTABLE table");
-            excelPackage.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
+            stocksWithoutNullables.Min(x => x.Quantity).Should().BeGreaterThan(10);
         }
 
         [Fact]
@@ -56,8 +66,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            dataset.Should().NotBeNull("We have 6 tables");
-            dataset.Tables.Count.Should().Be(6, "We have 6 tables");
+            dataset.Should().NotBeNull("We have 7 tables");
+            dataset.Tables.Count.Should().Be(7, "We have 7 tables");
         }
 
         [Fact]
@@ -105,47 +115,31 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_be_interceptable_current_row_when_its_converting_to_a_list()
+        public void Should_extract_all_tables_from_an_Excel_package()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            List<StocksNullable> stocksWithNullables;
-            List<StocksValidation> stocksWithoutNullables;
+            IEnumerable<ExcelTable> tables;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            stocksWithNullables = excelPackage.ToList<StocksNullable>(6, configuration =>
-                                                                         {
-                                                                             configuration.SkipCastingErrors();
-                                                                             configuration.SkipValidationErrors();
-                                                                             configuration.WithHeaderRow();
-                                                                             configuration.Intercept((current, rowIndex) =>
-                                                                                                     {
-                                                                                                         current.Barcode = current.Barcode.Insert(0, "_");
-                                                                                                     });
-                                                                         });
-
-            stocksWithoutNullables = excelPackage.ToList<StocksValidation>(5, configuration =>
-                                                                              {
-                                                                                  configuration.SkipCastingErrors();
-                                                                                  configuration.SkipValidationErrors();
-                                                                                  configuration.WithHeaderRow();
-                                                                                  configuration.Intercept((current, rowIndex) =>
-                                                                                                          {
-                                                                                                              current.Quantity += 10 + rowIndex;
-                                                                                                          });
-                                                                              });
+            tables = excelPackage.GetTables();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            stocksWithNullables.Any().Should().BeTrue();
-            stocksWithNullables.Count.Should().Be(3);
-            stocksWithNullables.All(x => x.Barcode.StartsWith('_')).Should().Be(true);
+            tables.Should().NotBeNull("We have 4 tables");
+            tables.Count().Should().Be(4, "We have 4 tables");
 
-            stocksWithoutNullables.Min(x => x.Quantity).Should().BeGreaterThan(10);
+            excelPackage.HasTable("TEST2").Should().BeTrue("We have TEST2 table");
+            excelPackage.HasTable("test2").Should().BeTrue("Table names are case insensitive");
+
+            excelPackage.Workbook.Worksheets["TEST2"].Tables["TEST2"].Should().BeEquivalentTo(excelPackage.GetTable("TEST2"), "We are accessing the same objects");
+
+            excelPackage.HasTable("NOTABLE").Should().BeFalse("We don't have NOTABLE table");
+            excelPackage.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
         }
     }
 }
