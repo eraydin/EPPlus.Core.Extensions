@@ -382,7 +382,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------    
             Action act = () =>
                          {
-                             List<StocksNullable> result = tableWithoutHeaderRow.AsEnumerable<StocksNullable>(c => c.WithCastingExceptionMessage("Casting error occured on '{2}'")).ToList();
+                             List<StocksNullable> result = tableWithoutHeaderRow.AsEnumerable<StocksNullable>(c => c.WithCastingExceptionMessage("Casting error occured on '{1}'")).ToList();
                          };
 
             //-----------------------------------------------------------------------------------------------------------
