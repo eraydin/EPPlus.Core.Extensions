@@ -24,6 +24,9 @@ namespace EPPlus.Core.Extensions
         {
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
 
+            if (valuedDimension == null)
+                return null;
+
             return new ExcelAddress(
                 valuedDimension.Start.Row + (hasHeaderRow && valuedDimension.Start.Row != valuedDimension.End.Row ? 1 : 0),
                 valuedDimension.Start.Column,
@@ -99,9 +102,15 @@ namespace EPPlus.Core.Extensions
         {
             ExcelAddress dataBounds = worksheet.GetDataBounds(hasHeaderRow);
 
-            IEnumerable<DataColumn> columns = worksheet.AsExcelTable(hasHeaderRow).Columns.Select(x => new DataColumn(!hasHeaderRow ? "Column" + x.Id : x.Name));
-
             var dataTable = new DataTable(worksheet.Name);
+
+            if (dataBounds == null)
+            {
+                return dataTable;
+            }   
+
+            IEnumerable<DataColumn> columns = worksheet.AsExcelTable(hasHeaderRow).Columns.Select(x => new DataColumn(!hasHeaderRow ? "Column" + x.Id : x.Name)); 
+          
             dataTable.Columns.AddRange(columns.ToArray());
 
             for (int rowIndex = dataBounds.Start.Row; rowIndex <= dataBounds.End.Row; ++rowIndex)
@@ -302,10 +311,13 @@ namespace EPPlus.Core.Extensions
         {
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
 
-            for (int i = valuedDimension.Start.Column; i <= valuedDimension.End.Column; i++)
+            if (valuedDimension != null)
             {
-                yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Text);
-            }
+                for (int i = valuedDimension.Start.Column; i <= valuedDimension.End.Column; i++)
+                {
+                    yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Text);
+                }
+            }  
         }
 
         /// <summary>

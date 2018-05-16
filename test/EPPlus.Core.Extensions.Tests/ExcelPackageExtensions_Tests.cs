@@ -66,8 +66,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            dataset.Should().NotBeNull("We have 7 tables");
-            dataset.Tables.Count.Should().Be(7, "We have 7 tables");
+            dataset.Should().NotBeNull("We have 8 tables");
+            dataset.Tables.Count.Should().Be(8, "We have 8 tables");
         }
 
         [Fact]

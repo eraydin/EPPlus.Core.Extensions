@@ -747,15 +747,18 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST6"];
+            ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets["TEST6"];
+            ExcelWorksheet emptySheet = excelPackage.Workbook.Worksheets["EmptySheet"];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () => { worksheet.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'."); };
-            Action action2 = () => { worksheet.CheckHeadersAndThrow<NamedMap>(2); };
-            Action action3 = () => { worksheet.CheckHeadersAndThrow<StocksNullable>(2); };
-            Action action4 = () => { worksheet.CheckHeadersAndThrow<Car>(2); };
+            Action action1 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'."); };
+            Action action2 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2); };
+            Action action3 = () => { worksheet1.CheckHeadersAndThrow<StocksNullable>(2); };
+            Action action4 = () => { worksheet1.CheckHeadersAndThrow<Car>(2); };
+
+            Action actionForEmptySheet = () => emptySheet.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -764,6 +767,8 @@ namespace EPPlus.Core.Extensions.Tests
             action2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
             action3.Should().NotThrow<ExcelValidationException>();
             action4.Should().Throw<ArgumentException>();
+
+            actionForEmptySheet.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Barcode'.");
         }
 
         [Fact]
