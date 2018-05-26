@@ -80,13 +80,14 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddLine(5, configureCells => configureCells.SetBackgroundColor(Color.Yellow), "barcode123", 5, DateTime.UtcNow);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration => { configuration.WithoutHeaderRow(); });
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration => configuration.WithoutHeaderRow()
+                                                                                                              .SkipCastingErrors());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             worksheet.Cells[5, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
-            list.Count().Should().Be(4);
+            list.Count().Should().Be(5);
         }
 
         [Fact]

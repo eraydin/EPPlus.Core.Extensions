@@ -138,6 +138,7 @@ namespace EPPlus.Core.Extensions.Tests
             excelPackage.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
         }
 
+        [Fact]
         public void Should_add_empty_worksheet_to_the_package()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -156,6 +157,7 @@ namespace EPPlus.Core.Extensions.Tests
             excelPackage.GetWorksheet(randomName).Should().NotBe(null);
         }
 
+        [Fact]
         public void Should_add_a_copied_worksheet_to_the_package()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -172,8 +174,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            excelPackage.GetWorksheet(randomName).Should().NotBe(null);
-            excelPackage.GetWorksheet(randomName).Cells[1, 1, 3, 3].Value.Should().Be(copyWorksheet.Cells[1, 1, 3, 3].Value);
+            excelPackage.GetWorksheet(randomName).Should().NotBe(null);   
+            excelPackage.GetWorksheet(randomName).Cells[1, 1, 3, 3].Value.Should().BeEquivalentTo(copyWorksheet.Cells[1, 1, 3, 3].Value);
         }
     }
 }
