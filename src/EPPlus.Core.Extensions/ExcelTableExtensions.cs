@@ -11,14 +11,11 @@ using OfficeOpenXml;
 using OfficeOpenXml.Table;
 
 namespace EPPlus.Core.Extensions
-{
-    /// <summary>
-    ///     Class holds extensions on ExcelTable object
-    /// </summary>
+{  
     public static class ExcelTableExtensions
     {
         /// <summary>
-        ///     Returns table data bounds with regards to header and totals row visibility
+        ///     Returns data bounds of the Excel table with regards to header and totals row visibility
         /// </summary>
         /// <param name="table">Extended object</param>
         /// <returns>Address range</returns>
@@ -35,12 +32,12 @@ namespace EPPlus.Core.Extensions
         }
         
         /// <summary>
-        ///     Validates the excel table against the generating type.
+        ///     Validates the Excel table against the generating type.
         /// </summary>
-        /// <typeparam name="T">Generating class type</typeparam>
-        /// <param name="table">Extended object</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table"></param>
         /// <param name="configurationAction"></param>
-        /// <returns>An enumerable of <see cref="ExcelExceptionArgs" /> containing </returns>
+        /// <returns>An enumerable of <see cref="ExcelExceptionArgs" /> containing</returns>
         public static IEnumerable<ExcelExceptionArgs> Validate<T>(this ExcelTable table, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
             ExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
@@ -87,7 +84,6 @@ namespace EPPlus.Core.Extensions
         ///     Generic extension method yielding objects of specified type from table.
         /// </summary>
         /// <remarks>
-        ///     Exceptions are not catched. It works on all or nothing basis.
         ///     Only primitives and enums are supported as property.
         ///     Currently supports only tables with header.
         /// </remarks>
@@ -150,20 +146,8 @@ namespace EPPlus.Core.Extensions
                     yield return item;
                 }
             } 
-        }
-
-        /// <summary>
-        ///     Returns objects of specified type from table as list.
-        /// </summary>
-        /// <remarks>
-        ///     Exceptions are not catched. It works on all or nothing basis.
-        ///     Only primitives and enums are supported as property.
-        ///     Currently supports only tables with header.
-        /// </remarks>
-        /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
-        /// <param name="table">Table object to fetch</param>
-        /// <param name="configurationAction"></param>
-        /// <returns>An enumerable of the generating type</returns>
+        }  
+       
         public static List<T> ToList<T>(this ExcelTable table, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => AsEnumerable(table, configurationAction).ToList();
 
         /// <summary>

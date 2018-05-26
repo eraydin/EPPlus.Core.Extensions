@@ -11,7 +11,7 @@ namespace EPPlus.Core.Extensions
     public static class ToExcelExtensions
     {
         /// <summary>
-        ///     Generates an Excel worksheet from a list
+        ///     Generates an Excel worksheet from given list
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
@@ -30,7 +30,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Starts new worksheet on same Excel package
+        ///     Starts a new worksheet on the same Excel package
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="K"></typeparam>
@@ -233,7 +233,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Converts list of items to Excel and returns the Excel file as a bytearray.
+        ///     Converts list of items to Excel and returns the Excel file as bytearray.
         /// </summary>
         /// <typeparam name="T">Type of object</typeparam>
         /// <param name="rows">List of objects</param>
@@ -252,7 +252,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Returns the Excel file as a bytearray.
+        ///     Returns the Excel file as byte array.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lastWorksheet"></param>

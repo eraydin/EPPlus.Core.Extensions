@@ -10,8 +10,7 @@ namespace EPPlus.Core.Extensions.Style
     public static class ExcelWorkbookExtensions
     {
         /// <summary>
-        ///     Creates a named style on the Excel workbook. If the named style is already exists, then throws an argument
-        ///     exception.
+        ///     Creates a named style on the Excel workbook. If the named style is already exists then throws the <see cref="ArgumentException"/>
         /// </summary>
         /// <param name="workbook">The workbook</param>
         /// <param name="styleName">The name of style</param>

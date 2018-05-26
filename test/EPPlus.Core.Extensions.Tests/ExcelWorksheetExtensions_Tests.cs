@@ -701,6 +701,26 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_throw_Excel_validation_exception_if_worksheet_does_not_have_valued_dimension()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage.GetWorksheet("EmptySheet");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            List<Cars> cars = worksheet.ToList<Cars>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            cars.Count.Should().Be(0);
+        }
+
+
+        [Fact]
         public void Should_set_horizontal_alignment_of_the_worksheet()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -745,7 +765,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.GetWorksheet("TEST6");
-            ExcelWorksheet emptySheet = excelPackage.Workbook.Worksheets["EmptySheet"];
+            ExcelWorksheet emptySheet1 = excelPackage.GetWorksheet("EmptySheet");
+            ExcelWorksheet emptySheet2 = excelPackage.GetWorksheet("EmptySheet");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -755,7 +776,9 @@ namespace EPPlus.Core.Extensions.Tests
             Action action3 = () => { worksheet1.CheckHeadersAndThrow<StocksNullable>(2); };
             Action action4 = () => { worksheet1.CheckHeadersAndThrow<Car>(2); };
 
-            Action actionForEmptySheet = () => emptySheet.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
+            Action actionForEmptySheet1 = () => emptySheet1.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
+            Action actionForEmptySheet2 = () => emptySheet2.CheckHeadersAndThrow<Cars>(1, "The {0}.column of worksheet should be '{1}'.");
+
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -765,7 +788,8 @@ namespace EPPlus.Core.Extensions.Tests
             action3.Should().NotThrow<ExcelValidationException>();
             action4.Should().Throw<ArgumentException>();
 
-            actionForEmptySheet.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Barcode'.");
+            actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Barcode'.");
+            actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'LicensePlate'."); 
         }
 
         [Fact]

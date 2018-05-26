@@ -22,7 +22,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelAddress GetDataBounds(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
-            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
+            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension() ?? worksheet.Dimension;
 
             if (valuedDimension == null)
             {
@@ -43,7 +43,17 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
         /// <returns></returns>
-        public static ExcelRange GetExcelRange(this ExcelWorksheet worksheet, bool hasHeaderRow = true) => worksheet.Cells[worksheet.GetDataBounds(hasHeaderRow).Address];
+        public static ExcelRange GetExcelRange(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
+        {
+            ExcelAddress dataBounds = worksheet.GetDataBounds(hasHeaderRow);
+
+            if (dataBounds == null)
+            {
+                return null;
+            }
+
+            return worksheet.Cells[dataBounds.Address];
+        }
 
         /// <summary>
         ///     Extracts an ExcelTable from given ExcelWorkSheet
@@ -82,7 +92,9 @@ namespace EPPlus.Core.Extensions
                 }
             }
 
-            worksheet.Tables.Add(worksheet.GetExcelRange(false), tableName);
+            ExcelRange dataRange = worksheet.GetExcelRange(false) ?? worksheet.Cells[1, 1, 1, 1];
+
+            worksheet.Tables.Add(dataRange, tableName);
             worksheet.Tables[tableName].ShowHeader = hasHeaderRow;
 
             return worksheet.Tables[tableName];
@@ -358,13 +370,13 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Checks and throws if column value is wrong on specified index
+        ///     Checks and throws the <see cref="ExcelValidationException"/> if column value is wrong on specified index
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="rowIndex"></param>
         /// <param name="columnIndex"></param>
         /// <param name="expectedValue"></param>
-        /// <param name="exceptionMessage">The {columnIndex}. column of worksheet should be '{expectedValue}'.</param>
+        /// <param name="exceptionMessage">Custom exception message with format parameters: columnIndex, expectedValue</param>
         public static void CheckAndThrowColumn(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, string expectedValue, string exceptionMessage = null)
         {
             if (!worksheet.GetColumns(rowIndex).Any(x => x.Value == expectedValue && x.Key == columnIndex))
@@ -379,7 +391,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Checks and throws an exception if the worksheet has any formula
+        ///     Checks and throws the <see cref="ExcelValidationException"/> if the worksheet has any formula
         /// </summary>
         /// <param name="sheet"></param>
         /// <param name="withMessage"></param>
@@ -392,7 +404,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Checks and throws if header columns does not match with ExcelColumnAttribute
+        ///     Checks and throws the <see cref="ExcelValidationException"/> if header columns does not match with properties of object 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
