@@ -10,7 +10,6 @@ using EPPlus.Core.Extensions.Style;
 using FluentAssertions;
 
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 
 using Xunit;
@@ -64,7 +63,8 @@ namespace EPPlus.Core.Extensions.Tests
             worksheet.Cells[1, 2, 1, 2].Value.Should().Be("NewQuantity");
             worksheet.Cells[1, 3, 1, 3].Value.Should().Be("NewUpdatedDate");
 
-            worksheet.Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", color.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should()
+                     .Be(string.Format("{0:X8}", color.ToArgb() & 0xFFFFFFFF));
             worksheet.Cells[2, 1, 2, 1].Value.Should().Be("Barcode");
         }
 
@@ -79,14 +79,17 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.AddLine(5, configureCells => configureCells.SetBackgroundColor(Color.Yellow), "barcode123", 5, DateTime.UtcNow);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration => configuration.WithoutHeaderRow()
-                                                                                                              .SkipCastingErrors());
+            worksheet.AddLine(5, configureCells => configureCells.SetBackgroundColor(Color.Yellow), "barcode123", 5,
+                DateTime.UtcNow);
+            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration => configuration
+                                                                                                 .WithoutHeaderRow()
+                                                                                                 .SkipCastingErrors());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells[5, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells[5, 1].Style.Fill.BackgroundColor.Rgb.Should()
+                     .Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
             list.Count().Should().Be(5);
         }
 
@@ -120,14 +123,14 @@ namespace EPPlus.Core.Extensions.Tests
             DateTime dateTime = DateTime.MaxValue;
 
             var stocks = new List<StocksNullable>
-                         {
-                             new StocksNullable
-                             {
-                                 Barcode = "barcode123",
-                                 Quantity = 5,
-                                 UpdatedDate = dateTime
-                             }
-                         };
+            {
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = dateTime
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -154,20 +157,21 @@ namespace EPPlus.Core.Extensions.Tests
             ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
 
             var stocks = new List<StocksNullable>
-                         {
-                             new StocksNullable
-                             {
-                                 Barcode = "barcode123",
-                                 Quantity = 5,
-                                 UpdatedDate = DateTime.MaxValue
-                             }
-                         };
+            {
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = DateTime.MaxValue
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddObjects(stocks, 5, 3);
-            IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration => configuration.SkipCastingErrors());
+            IEnumerable<StocksNullable> list =
+                worksheet.ToList<StocksNullable>(configuration => configuration.SkipCastingErrors());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -183,14 +187,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
             var stocks = new List<StocksNullable>
-                         {
-                             new StocksNullable
-                             {
-                                 Barcode = "barcode123",
-                                 Quantity = 5,
-                                 UpdatedDate = DateTime.MaxValue
-                             }
-                         };
+            {
+                new StocksNullable
+                {
+                    Barcode = "barcode123",
+                    Quantity = 5,
+                    UpdatedDate = DateTime.MaxValue
+                }
+            };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -201,135 +205,6 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             action.Should().Throw<ArgumentException>();
-        }
-
-        [Fact]
-        public void Should_change_background_color_of_specific_range_of_worksheet()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(2);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetBackgroundColor(Color.Yellow);
-            worksheet.SetBackgroundColor(worksheet.Cells[1, 3, 1, 3], Color.Brown, ExcelFillStyle.DarkTrellis);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells[1, 3, 1, 3].Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
-            worksheet.Cells[1, 3, 1, 3].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
-            worksheet.Cells[2, 3, 2, 3].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
-        }
-
-        [Fact]
-        public void Should_change_background_color_of_the_worksheet()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(2);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetBackgroundColor(Color.Brown, ExcelFillStyle.DarkTrellis);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
-            worksheet.Cells.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
-        }
-
-        [Fact]
-        public void Should_change_font_color_of_specific_range_of_worksheet()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(3);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetFontColor(Color.Yellow);
-            worksheet.SetFontColor(worksheet.Cells[1, 2, 1, 3], Color.BlueViolet);
-            worksheet.SetFont(new Font("Verdana", 12));
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells[1, 2, 1, 3].Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
-            worksheet.Cells[2, 2, 2, 3].Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
-            worksheet.Cells.Style.Font.Name.Should().Be("Verdana");
-        }
-
-        [Fact]
-        public void Should_change_font_color_of_the_worksheet()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(3);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetFontColor(Color.BlueViolet);
-            worksheet.SetFont(new Font("Verdana", 12));
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells.Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
-            worksheet.Cells.Style.Font.Name.Should().Be("Verdana");
-        }
-
-        [Fact]
-        public void Should_change_font_of_specific_range_of_worksheet()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(3);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetFontColor(Color.BlueViolet);
-            worksheet.SetFont(new Font("Arial", 12));
-            worksheet.SetFont(worksheet.Cells[1, 2, 1, 2], new Font("Verdana", 12));
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells.Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
-            worksheet.Cells[1, 2, 1, 2].Style.Font.Name.Should().Be("Verdana");
-            worksheet.Cells[2, 2, 2, 2].Style.Font.Name.Should().Be("Arial");
-        }
-
-        [Fact]
-        public void Should_change_font_of_the_worksheet()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.First();
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetFont(new Font("Arial", 15));
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells.Style.Font.Name.Should().Be("Arial");
-            worksheet.Cells.Style.Font.Size.Should().Be(15);
         }
 
         [Fact]
@@ -431,16 +306,16 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             List<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(configuration =>
-                                                                           {
-                                                                               configuration.SkipCastingErrors();
-                                                                               configuration.WithoutHeaderRow();
-                                                                           });
+            {
+                configuration.SkipCastingErrors();
+                configuration.WithoutHeaderRow();
+            });
 
             List<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(configuration =>
-                                                                           {
-                                                                               configuration.SkipCastingErrors();
-                                                                               configuration.WithoutHeaderRow();
-                                                                           });
+            {
+                configuration.SkipCastingErrors();
+                configuration.WithoutHeaderRow();
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -559,7 +434,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            List<StocksNullable> listOfStocks = excelTable.ToList<StocksNullable>(configuration => configuration.SkipCastingErrors());
+            List<StocksNullable> listOfStocks =
+                excelTable.ToList<StocksNullable>(configuration => configuration.SkipCastingErrors());
             listOfStocks.Count.Should().Be(4);
         }
 
@@ -635,8 +511,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             List<StocksNullable> results = worksheet.ToList<StocksNullable>(configuration =>
-                                                                            configuration.Intercept((item, row) => { item.Barcode = item.Barcode.Trim(); })
-                );
+                configuration.Intercept((item, row) => { item.Barcode = item.Barcode.Trim(); })
+            );
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -657,18 +533,18 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(configuration =>
-                                                                                        {
-                                                                                            configuration.SkipCastingErrors();
-                                                                                            configuration.SkipValidationErrors();
-                                                                                            configuration.WithoutHeaderRow();
-                                                                                        });
+            {
+                configuration.SkipCastingErrors();
+                configuration.SkipValidationErrors();
+                configuration.WithoutHeaderRow();
+            });
 
             IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(configuration =>
-                                                                                        {
-                                                                                            configuration.SkipCastingErrors();
-                                                                                            configuration.SkipValidationErrors();
-                                                                                            configuration.WithoutHeaderRow();
-                                                                                        });
+            {
+                configuration.SkipCastingErrors();
+                configuration.SkipValidationErrors();
+                configuration.WithoutHeaderRow();
+            });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -701,6 +577,49 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_throw_an_exception_when_columns_of_worksheet_not_matched_with_ExcelTableAttribute()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage.GetWorksheet("TEST6");
+            ExcelWorksheet emptySheet1 = excelPackage.GetWorksheet("EmptySheet");
+            ExcelWorksheet emptySheet2 = excelPackage.GetWorksheet("EmptySheet");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action1 = () =>
+            {
+                worksheet1.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'.");
+            };
+            Action action2 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2); };
+            Action action3 = () => { worksheet1.CheckHeadersAndThrow<StocksNullable>(2); };
+            Action action4 = () => { worksheet1.CheckHeadersAndThrow<Car>(2); };
+
+            Action actionForEmptySheet1 = () =>
+                emptySheet1.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
+            Action actionForEmptySheet2 = () =>
+                emptySheet2.CheckHeadersAndThrow<Cars>(1, "The {0}.column of worksheet should be '{1}'.");
+
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action1.Should().Throw<ExcelValidationException>().And.Message.Should()
+                   .Be("The 1.column of worksheet should be 'Name'.");
+            action2.Should().Throw<ExcelValidationException>().And.Message.Should()
+                   .Be("The 1. column of worksheet should be 'Name'.");
+            action3.Should().NotThrow<ExcelValidationException>();
+            action4.Should().Throw<ArgumentException>();
+
+            actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should()
+                                .Be("The 1.column of worksheet should be 'Barcode'.");
+            actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should()
+                                .Be("The 1.column of worksheet should be 'LicensePlate'.");
+        }
+
+        [Fact]
         public void Should_throw_Excel_validation_exception_if_worksheet_does_not_have_valued_dimension()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -717,79 +636,6 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             cars.Count.Should().Be(0);
-        }
-
-
-        [Fact]
-        public void Should_set_horizontal_alignment_of_the_worksheet()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(4);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetHorizontalAlignment(ExcelHorizontalAlignment.Distributed);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells.Style.HorizontalAlignment.Should().Be(ExcelHorizontalAlignment.Distributed);
-        }
-
-        [Fact]
-        public void Should_set_vertical_alignment_of_the_worksheet()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Last();
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetVerticalAlignment(ExcelVerticalAlignment.Justify);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells.Style.VerticalAlignment.Should().Be(ExcelVerticalAlignment.Justify);
-        }
-
-        [Fact]
-        public void Should_throw_an_exception_when_columns_of_worksheet_not_matched_with_ExcelTableAttribute()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage.GetWorksheet("TEST6");
-            ExcelWorksheet emptySheet1 = excelPackage.GetWorksheet("EmptySheet");
-            ExcelWorksheet emptySheet2 = excelPackage.GetWorksheet("EmptySheet");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'."); };
-            Action action2 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2); };
-            Action action3 = () => { worksheet1.CheckHeadersAndThrow<StocksNullable>(2); };
-            Action action4 = () => { worksheet1.CheckHeadersAndThrow<Car>(2); };
-
-            Action actionForEmptySheet1 = () => emptySheet1.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
-            Action actionForEmptySheet2 = () => emptySheet2.CheckHeadersAndThrow<Cars>(1, "The {0}.column of worksheet should be '{1}'.");
-
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            action1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Name'.");
-            action2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
-            action3.Should().NotThrow<ExcelValidationException>();
-            action4.Should().Throw<ArgumentException>();
-
-            actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Barcode'.");
-            actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'LicensePlate'."); 
         }
 
         [Fact]
