@@ -15,10 +15,7 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if type is nullable</returns>
-        public static bool IsNullable(this Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-        }
+        public static bool IsNullable(this Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
         /// <summary>
         ///     Tests whether given type is numeric or not
@@ -52,10 +49,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="obj"></param>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        public static object GetPropertyValue(this object obj, string propertyName)
-        {
-            return obj.GetType().GetProperty(propertyName)?.GetValue(obj, null);
-        }
+        public static object GetPropertyValue(this object obj, string propertyName) => obj.GetType().GetProperty(propertyName)?.GetValue(obj, null);
 
         /// <summary>
         ///     Returns PropertyInfo and ExcelTableColumnAttribute pairs of given type
@@ -70,7 +64,10 @@ namespace EPPlus.Core.Extensions
                                                                                                      .Where(p => p.Value != null)
                                                                                                      .ToList();
 
-            if (!propertyAttributePairs.Any()) throw new ArgumentException($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
+            if (!propertyAttributePairs.Any())
+            {
+                throw new ArgumentException($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
+            }
 
             return propertyAttributePairs;
         }

@@ -116,7 +116,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static WorksheetWrapper<T> WithConfiguration<T>(this WorksheetWrapper<T> worksheet, Action<IExcelCreateConfiguration<T>> configurationAction)
+        public static WorksheetWrapper<T> WithConfiguration<T>(this WorksheetWrapper<T> worksheet, Action<ExcelCreateConfiguration<T>> configurationAction)
         {
             configurationAction?.Invoke(worksheet.Configuration);
             return worksheet;

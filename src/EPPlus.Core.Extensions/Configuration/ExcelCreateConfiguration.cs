@@ -4,75 +4,51 @@ using OfficeOpenXml;
 
 namespace EPPlus.Core.Extensions.Configuration
 {
-    /// <summary>
-    ///     Configurations for Excel package creation
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IExcelCreateConfiguration<T>
+    public abstract class ExcelCreateConfiguration<T>
     {
-        Action<ExcelRange> ConfigureTitle { get; }
+        internal Action<ExcelRange> ConfigureTitle { get; private set; }
 
-        Action<ExcelRange, T> ConfigureCell { get; }
+        internal Action<ExcelRange, T> ConfigureCell { get; private set; }
 
-        Action<ExcelColumn> ConfigureColumn { get; }
+        internal Action<ExcelColumn> ConfigureColumn { get; private set; }
 
-        Action<ExcelRange> ConfigureHeader { get; }
+        internal Action<ExcelRange> ConfigureHeader { get; private set; }
 
-        Action<ExcelRange> ConfigureHeaderRow { get; }
+        internal Action<ExcelRange> ConfigureHeaderRow { get; private set; }
 
-        IExcelCreateConfiguration<T> WithCellConfiguration(Action<ExcelRange, T> cellConfiguration);
-
-        IExcelCreateConfiguration<T> WithColumnConfiguration(Action<ExcelColumn> columnConfiguration);
-
-        IExcelCreateConfiguration<T> WithHeaderConfiguration(Action<ExcelRange> headerConfiguration);
-
-        IExcelCreateConfiguration<T> WithHeaderRowConfiguration(Action<ExcelRange> headerRowConfiguration);
-
-        IExcelCreateConfiguration<T> WithTitleConfiguration(Action<ExcelRange> titleConfiguration);
-    }
-
-    public class DefaultExcelCreateConfiguration<T> : IExcelCreateConfiguration<T>
-    {
-        public static IExcelCreateConfiguration<T> Instance => new DefaultExcelCreateConfiguration<T>();
-
-        public Action<ExcelRange> ConfigureTitle { get; protected set; }
-
-        public Action<ExcelRange, T> ConfigureCell { get; protected set; }
-
-        public Action<ExcelColumn> ConfigureColumn { get; protected set; }
-
-        public Action<ExcelRange> ConfigureHeader { get; protected set; }
-
-        public Action<ExcelRange> ConfigureHeaderRow { get; protected set; }
-
-        public IExcelCreateConfiguration<T> WithCellConfiguration(Action<ExcelRange, T> cellConfiguration)
+        public ExcelCreateConfiguration<T> WithCellConfiguration(Action<ExcelRange, T> cellConfiguration)
         {
             ConfigureCell = cellConfiguration;
             return this;
         }
 
-        public IExcelCreateConfiguration<T> WithColumnConfiguration(Action<ExcelColumn> columnConfiguration)
+        public ExcelCreateConfiguration<T> WithColumnConfiguration(Action<ExcelColumn> columnConfiguration)
         {
             ConfigureColumn = columnConfiguration;
             return this;
         }
 
-        public IExcelCreateConfiguration<T> WithHeaderConfiguration(Action<ExcelRange> headerConfiguration)
+        public ExcelCreateConfiguration<T> WithHeaderConfiguration(Action<ExcelRange> headerConfiguration)
         {
             ConfigureHeader = headerConfiguration;
             return this;
         }
 
-        public IExcelCreateConfiguration<T> WithHeaderRowConfiguration(Action<ExcelRange> headerRowConfiguration)
+        public ExcelCreateConfiguration<T> WithHeaderRowConfiguration(Action<ExcelRange> headerRowConfiguration)
         {
             ConfigureHeaderRow = headerRowConfiguration;
             return this;
         }
 
-        public IExcelCreateConfiguration<T> WithTitleConfiguration(Action<ExcelRange> titleConfiguration)
+        public ExcelCreateConfiguration<T> WithTitleConfiguration(Action<ExcelRange> titleConfiguration)
         {
             ConfigureTitle = titleConfiguration;
             return this;
         }
     }
-}
+
+    public class DefaultExcelCreateConfiguration<T> : ExcelCreateConfiguration<T>
+    {
+        public static ExcelCreateConfiguration<T> Instance => new DefaultExcelCreateConfiguration<T>();
+    }
+}        

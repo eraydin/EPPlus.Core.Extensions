@@ -10,18 +10,13 @@ using OfficeOpenXml.Table;
 
 namespace EPPlus.Core.Extensions
 {
-    /// <summary>
-    ///     Class holds extensions on ExcelPackage object
-    /// </summary>
     public static class ExcelPackageExtensions
     {
         /// <summary>
-        ///     Returns all table names in the opened worksheet
+        ///     Gets all Excel tables in the package
         /// </summary>
-        /// <remarks>Excel is ensuring the uniqueness of table names</remarks>
-        /// <param name="package">The ExcelPackage object</param>
-        /// <returns>Enumeration of ExcelTables</returns>
-        public static IEnumerable<ExcelTable> GetTables(this ExcelPackage package)
+        /// <param name="package"></param>
+        public static IEnumerable<ExcelTable> GetAllTables(this ExcelPackage package)
         {
             foreach (ExcelWorksheet ws in package.Workbook.Worksheets)
             {
@@ -33,32 +28,30 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Returns concrete ExcelTable by its name
+        ///     Gets an Excel table by name from the package 
         /// </summary>
-        /// <param name="package">The ExcelPackage object</param>
-        /// <param name="name">Name of the table</param>
-        /// <returns>ExcelTable object if found, null if not</returns>
-        public static ExcelTable GetTable(this ExcelPackage package, string name)
+        /// <param name="package"></param>
+        /// <param name="tableName"></param>
+        public static ExcelTable GetTable(this ExcelPackage package, string tableName)
         {
-            return package.GetTables().FirstOrDefault(t => t.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            return package.GetAllTables().FirstOrDefault(t => t.Name.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
-        ///     Checks that given table name is in the ExcelPackage or not
+        ///     Checks whether a table is existing in the package or not
         /// </summary>
-        /// <param name="package">The ExcelPackage object</param>
-        /// <param name="name">Name of the table</param>
-        /// <returns>Result of search as bool</returns>
-        public static bool HasTable(this ExcelPackage package, string name)
+        /// <param name="package"></param>
+        /// <param name="tableName"></param>   
+        public static bool HasTable(this ExcelPackage package, string tableName)
         {
-            return package.GetTables().Any(t => t.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            return package.GetAllTables().Any(t => t.Name.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
-        ///     Extracts a DataSet from the ExcelPackage.
+        ///     Converts the Excel package into a dataset object
         /// </summary>
-        /// <param name="package">The ExcelPackage.</param>
-        /// <param name="hasHeaderRow">Indicates whether worksheet has a header row or not.</param>
+        /// <param name="package">T</param>
+        /// <param name="hasHeaderRow">Indicates whether worksheets have a header row or not.</param>
         /// <returns></returns>
         public static DataSet ToDataSet(this ExcelPackage package, bool hasHeaderRow = true)
         {
@@ -73,29 +66,31 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Yields objects of specified type from given ExcelPackage
+        ///     Converts given worksheet into list of objects as enumerable
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="package"></param>
         /// <param name="configurationAction"></param>
         /// <param name="worksheetIndex"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 1, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
-        {
-            return package.Workbook.Worksheets[worksheetIndex].AsEnumerable(configurationAction);
-        }
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 1, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => package.GetWorksheet(worksheetIndex).AsEnumerable(configurationAction);
 
         /// <summary>
-        ///     Converts given ExcelPackage to list of objects
+        ///     Converts given worksheet into list of objects
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="package"></param>
         /// <param name="worksheetIndex"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 1, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
-        {
-            return package.AsEnumerable(worksheetIndex, configurationAction).ToList();
-        }
+        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 1, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => package.AsEnumerable(worksheetIndex, configurationAction).ToList();
+
+        public static ExcelWorksheet AddWorksheet(this ExcelPackage package, string worksheetName) => package.Workbook.Worksheets.Add(worksheetName);
+
+        public static ExcelWorksheet AddWorksheet(this ExcelPackage package, string worksheetName, ExcelWorksheet copyWorksheet) => package.Workbook.Worksheets.Add(worksheetName, copyWorksheet);
+
+        public static ExcelWorksheet GetWorksheet(this ExcelPackage package, string worksheetName) => package.Workbook.GetWorksheet(worksheetName);
+
+        public static ExcelWorksheet GetWorksheet(this ExcelPackage package, int worksheetIndex) => package.Workbook.GetWorksheet(worksheetIndex);
     }
 }

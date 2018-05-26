@@ -1,4 +1,7 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Security.Cryptography;
+
+using FluentAssertions;
 
 using OfficeOpenXml;
 
@@ -14,17 +17,20 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelAddressBase address = excelPackage.Workbook.Worksheets["TEST7"].GetValuedDimension();
+            ExcelAddressBase address = excelPackage.GetWorksheet("TEST7").GetValuedDimension();
+            ExcelAddressBase address2 = excelPackage.Workbook.Worksheets.Add(GetRandomName()).GetValuedDimension();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             bool result = address.IsEmptyRange(true);
+            bool result2 = address2.IsEmptyRange(true);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             result.Should().BeTrue();
+            result2.Should().BeTrue();
         }
 
         [Fact]
@@ -33,7 +39,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelAddressBase address = excelPackage.Workbook.Worksheets["TEST7"].GetValuedDimension();
+            ExcelAddressBase address = excelPackage.GetWorksheet("TEST7").GetValuedDimension();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

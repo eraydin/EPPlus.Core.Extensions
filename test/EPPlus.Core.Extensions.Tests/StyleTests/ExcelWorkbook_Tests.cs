@@ -22,8 +22,8 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorkbook workbook = excelPackage.Workbook;
-            ExcelWorksheet firstWorksheet = workbook.Worksheets[1];
-            ExcelWorksheet secondWorksheet = workbook.Worksheets[2];
+            ExcelWorksheet firstWorksheet = workbook.GetWorksheet(1);
+            ExcelWorksheet secondWorksheet = workbook.GetWorksheet(2);
             var nameOfStyle1 = "NamedStyle1";
             var nameOfStyle2 = "NamedStyle2";
             var fontName = "Arial";
@@ -33,19 +33,13 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             // Act
             //-----------------------------------------------------------------------------------------------------------
 
-            workbook.CreateNamedStyle(nameOfStyle1, style =>
-                                                    {
-                                                        style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
-                                                        style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
-                                                        style.BorderAround(ExcelBorderStyle.Double, Color.AliceBlue);
-                                                    });
+            workbook.CreateNamedStyle(nameOfStyle1, style => style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown)
+                                                                  .SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow)
+                                                                  .BorderAround(ExcelBorderStyle.Double, Color.AliceBlue));
 
-            workbook.CreateNamedStyleIfNotExists(nameOfStyle2, style =>
-                                                               {
-                                                                   style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
-                                                                   style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
-                                                                   style.BorderAround(ExcelBorderStyle.Double, Color.AliceBlue);
-                                                               });
+            workbook.CreateNamedStyleIfNotExists(nameOfStyle2, style => style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown)
+                                                                            .SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow)
+                                                                             .BorderAround(ExcelBorderStyle.Double, Color.AliceBlue));
 
             firstWorksheet.Cells[1, 1, 1, 1].StyleName = nameOfStyle1;
             secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].StyleName = nameOfStyle1;

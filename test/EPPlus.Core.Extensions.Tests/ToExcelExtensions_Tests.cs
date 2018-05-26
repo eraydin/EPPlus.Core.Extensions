@@ -45,7 +45,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(2);
+            package.GetWorksheet(1).Dimension.Columns.Should().Be(2);
         }
 
         [Fact]
@@ -64,9 +64,9 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Cells[1, 1, 1, 1].Value.Should().Be("Last Name");
-            package.Workbook.Worksheets[1].Cells[1, 2, 1, 2].Value.Should().Be("Year of Birth");
-            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count + 1);
+            package.GetWorksheet(1).Cells[1, 1, 1, 1].Value.Should().Be("Last Name");
+            package.GetWorksheet(1).Cells[1, 2, 1, 2].Value.Should().Be("Year of Birth");
+            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 1);
         }
 
         [Fact]
@@ -97,10 +97,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Workbook.Worksheets.Count.Should().Be(2);
-            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(pre50.Count + 2);
-            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(3);
-            package.Workbook.Worksheets[2].Dimension.Rows.Should().Be(post50.Count + 2);
-            package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(2);
+            package.GetWorksheet(1).Dimension.Rows.Should().Be(pre50.Count + 2);
+            package.GetWorksheet(1).Dimension.Columns.Should().Be(3);
+            package.GetWorksheet(2).Dimension.Rows.Should().Be(post50.Count + 2);
+            package.GetWorksheet(2).Dimension.Columns.Should().Be(2);
         }
 
         [Fact]
@@ -118,64 +118,54 @@ namespace EPPlus.Core.Extensions.Tests
             ExcelPackage package = pre50
                 .ToWorksheet("< 1950")
                 .WithConfiguration(configuration =>
-                                   {
-                                       configuration.WithColumnConfiguration(x => x.SetFontColor(Color.Purple))
-                                                    .WithHeaderConfiguration(x =>
-                                                                             {
-                                                                                 x.SetFont(new Font("Arial", 13, FontStyle.Bold));
-                                                                                 x.SetFontColor(Color.White);
-                                                                                 x.SetBackgroundColor(Color.Black);
-                                                                             })
-                                                    .WithHeaderRowConfiguration(x =>
-                                                                                {
-                                                                                    x.BorderAround(ExcelBorderStyle.Thin);
-                                                                                    x.Style.Font.Name = "Verdana";
-                                                                                })
-                                                    .WithCellConfiguration((x, y) =>
-                                                                           {
-                                                                               x.SetFont(new Font("Times New Roman", 13));
-                                                                               y.YearBorn = y.YearBorn % 2 == 0 ? y.YearBorn : 1990;
-                                                                           })
-                                                    .WithTitleConfiguration(x => x.SetBackgroundColor(Color.Yellow));
-                                   })
+                                   configuration.WithColumnConfiguration(x => x.SetFontColor(Color.Purple))
+                                                .WithHeaderConfiguration(x => x.SetFont(new Font("Arial", 13, FontStyle.Bold))
+                                                                               .SetFontColor(Color.White)
+                                                                               .SetBackgroundColor(Color.Black))
+                                                .WithHeaderRowConfiguration(x => x.BorderAround(ExcelBorderStyle.Thin)
+                                                                                  .SetFontName("Verdana"))
+                                                .WithCellConfiguration((x, y) =>
+                                                                       {
+                                                                           x.SetFont(new Font("Times New Roman", 13));
+                                                                           y.YearBorn = y.YearBorn % 2 == 0 ? y.YearBorn : 1990;
+                                                                       })
+                                                .WithTitleConfiguration(x => x.SetBackgroundColor(Color.Yellow))
+                )
                 .WithTitle("< 1950")
                 .NextWorksheet(post50, "> 1950")
                 .WithConfiguration(configuration =>
-                {
-                    configuration.WithColumnConfiguration(x => x.Style.Font.Color.SetColor(Color.Black))
-                                 .WithHeaderConfiguration(x =>
-                                 {
-                                     x.Style.Font.Bold = true;
-                                     x.Style.Font.Size = 11;
-                                     x.SetFontColor(Color.White);
-                                     x.SetBackgroundColor(Color.Black, ExcelFillStyle.Solid);
-                                 })
-                                 .WithHeaderRowConfiguration(x =>
-                                 {
-                                     x.BorderAround(ExcelBorderStyle.Thin);
-                                     x.Style.Font.Name = "Verdana";
-                                 })
-                                 .WithCellConfiguration((x, y) =>
-                                 {
-                                     x.Style.Font.Name = "Times New Roman";
-                                     y.YearBorn = y.YearBorn % 2 != 0 ? y.YearBorn : 1990;
-                                 });
-                })
+                                   {
+                                       configuration.WithColumnConfiguration(x => x.SetFontColor(Color.Black))
+                                                    .WithHeaderConfiguration(x =>
+                                                                             {
+                                                                                 x.Style.Font.Bold = true;
+                                                                                 x.Style.Font.Size = 11;
+                                                                                 x.SetFontColor(Color.White);
+                                                                                 x.SetBackgroundColor(Color.Black, ExcelFillStyle.Solid);
+                                                                             })
+                                                    .WithHeaderRowConfiguration(x => x.BorderAround(ExcelBorderStyle.Thin)
+                                                                                      .SetFontName("Verdana"))
+                                                    .WithCellConfiguration((x, y) =>
+                                                                           {
+                                                                               x.SetFontName("Times New Roman");
+                                                                               y.YearBorn = y.YearBorn % 2 != 0 ? y.YearBorn : 1990;
+                                                                           });
+                                   })
                 .WithoutHeader()
                 .WithTitle("> 1950")
                 .ToExcelPackage();
-          
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Workbook.Worksheets.Count.Should().Be(2);
-            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(pre50.Count + 2);
-            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(2);
-            package.Workbook.Worksheets[2].Dimension.Rows.Should().Be(post50.Count + 1);
-            package.Workbook.Worksheets[2].Dimension.Columns.Should().Be(2);
-            package.Workbook.Worksheets[1].Cells[2, 1, 1, 1].Style.Font.Size.Should().Be(13);
-            package.Workbook.Worksheets[1].Cells[2, 1, 1, 1].Style.Font.Name.Should().Be("Verdana");
-            package.Workbook.Worksheets[1].Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
+            package.GetWorksheet(1).Dimension.Rows.Should().Be(pre50.Count + 2);
+            package.GetWorksheet(1).Dimension.Columns.Should().Be(2);
+            package.GetWorksheet(2).Dimension.Rows.Should().Be(post50.Count + 1);
+            package.GetWorksheet(2).Dimension.Columns.Should().Be(2);
+            package.GetWorksheet(1).Cells[2, 1, 1, 1].Style.Font.Size.Should().Be(13);
+            package.GetWorksheet(1).Cells[2, 1, 1, 1].Style.Font.Name.Should().Be("Verdana");
+            package.GetWorksheet(1).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
         }
 
         [Fact]
@@ -194,7 +184,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count + 1);
+            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 1);
         }
 
         [Fact]
@@ -216,7 +206,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count + 2);
+            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 2);
         }
 
         [Fact]
@@ -239,7 +229,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count + 3);
+            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 3);
         }
 
         [Fact]
@@ -258,7 +248,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count + 1);
+            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 1);
         }
 
         [Fact]
@@ -277,7 +267,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Rows.Should().Be(_personList.Count);
+            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count);
         }
 
         [Fact]
@@ -298,7 +288,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
             package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package.GetTables().Count().Should().Be(excelPackage.GetTables().Count());
+            package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
         }
 
         [Fact]
@@ -319,7 +309,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
             package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package.GetTables().Count().Should().Be(excelPackage.GetTables().Count());
+            package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
         }
 
         [Fact]
@@ -340,7 +330,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
             package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package.GetTables().Count().Should().Be(excelPackage.GetTables().Count());
+            package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
         }
 
         [Fact]
@@ -362,7 +352,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
             package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package.GetTables().Count().Should().Be(excelPackage.GetTables().Count());
+            package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
         }
 
         [Fact]
@@ -470,10 +460,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             excelPackage.Workbook.Worksheets.Count().Should().Be(2);
-            excelPackage.Workbook.Worksheets[1].Dimension.Rows.Should().Be(4);
-            excelPackage.Workbook.Worksheets[2].Dimension.Rows.Should().Be(5);
-            excelPackage.Workbook.Worksheets[1].Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.AliceBlue.ToArgb() & 0xFFFFFFFF));
-            excelPackage.Workbook.Worksheets[2].Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Aquamarine.ToArgb() & 0xFFFFFFFF));
+            excelPackage.GetWorksheet(1).Dimension.Rows.Should().Be(4);
+            excelPackage.GetWorksheet(2).Dimension.Rows.Should().Be(5);
+            excelPackage.GetWorksheet(1).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.AliceBlue.ToArgb() & 0xFFFFFFFF));
+            excelPackage.GetWorksheet(2).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Aquamarine.ToArgb() & 0xFFFFFFFF));
         }
 
         [Fact]
@@ -562,12 +552,12 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(1);
+            package.GetWorksheet(1).Dimension.Columns.Should().Be(1);
 
             for (var i = 0; i < _personList.Count; i++)
             {
-                package.Workbook.Worksheets[1].Cells[i + 2, 1].Value.Should().Be(_personList[i].YearBorn);
-                package.Workbook.Worksheets[1].Cells[i + 2, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Azure.ToArgb() & 0xFFFFFFFF));
+                package.GetWorksheet(1).Cells[i + 2, 1].Value.Should().Be(_personList[i].YearBorn);
+                package.GetWorksheet(1).Cells[i + 2, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Azure.ToArgb() & 0xFFFFFFFF));
             }
         }
 
@@ -590,10 +580,10 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Workbook.Worksheets[1].Dimension.Columns.Should().Be(1);
+            package.GetWorksheet(1).Dimension.Columns.Should().Be(1);
             for (var i = 0; i < _personList.Count; i++)
             {
-                package.Workbook.Worksheets[1].Cells[i + 2, 1].Text.Should().Be(_personList[i].LastName);
+                package.GetWorksheet(1).Cells[i + 2, 1].Text.Should().Be(_personList[i].LastName);
             }
         }
     }

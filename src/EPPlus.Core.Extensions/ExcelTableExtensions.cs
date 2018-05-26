@@ -41,9 +41,9 @@ namespace EPPlus.Core.Extensions
         /// <param name="table">Extended object</param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of <see cref="ExcelExceptionArgs" /> containing </returns>
-        public static IEnumerable<ExcelExceptionArgs> Validate<T>(this ExcelTable table, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<ExcelExceptionArgs> Validate<T>(this ExcelTable table, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
+            ExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             List<KeyValuePair<int, PropertyInfo>> mapping = PrepareMappings(table, configuration).ToList();
@@ -95,9 +95,9 @@ namespace EPPlus.Core.Extensions
         /// <param name="table">Table object to fetch</param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelTable table, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
+            ExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             if (!table.IsEmpty(configuration.HasHeaderRow))
@@ -164,7 +164,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="table">Table object to fetch</param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
-        public static List<T> ToList<T>(this ExcelTable table, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => AsEnumerable(table, configurationAction).ToList();
+        public static List<T> ToList<T>(this ExcelTable table, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => AsEnumerable(table, configurationAction).ToList();
 
         /// <summary>
         ///     Checks whether given Excel table empty or not
@@ -184,7 +184,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="table">Table to get columns from</param>
         /// <param name="configuration"></param>
         /// <returns>A list of mappings from column index to property</returns>
-        private static IEnumerable<KeyValuePair<int, PropertyInfo>> PrepareMappings<T>(ExcelTable table, IExcelReadConfiguration<T> configuration)
+        private static IEnumerable<KeyValuePair<int, PropertyInfo>> PrepareMappings<T>(ExcelTable table, ExcelReadConfiguration<T> configuration)
         {
             // Get only the properties that have ExcelTableColumnAttribute
             List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes<T>();

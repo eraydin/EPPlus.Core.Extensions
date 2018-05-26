@@ -25,7 +25,7 @@ namespace EPPlus.Core.Extensions
 
         internal List<WorksheetTitleRow> Titles { get; set; }
 
-        internal IExcelCreateConfiguration<T> Configuration { get; } = DefaultExcelCreateConfiguration<T>.Instance;
+        internal ExcelCreateConfiguration<T> Configuration { get; } = DefaultExcelCreateConfiguration<T>.Instance;
 
         /// <summary>
         ///     Generates columns for all public properties on the type

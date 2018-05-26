@@ -15,7 +15,7 @@ namespace EPPlus.Core.Extensions
     public static class ExcelWorksheetExtensions
     {
         /// <summary>
-        ///     Returns given ExcelWorksheet data bounds as ExcelAddress
+        ///     Returns data bounds of the worksheet as ExcelAddress
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
@@ -25,7 +25,9 @@ namespace EPPlus.Core.Extensions
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
 
             if (valuedDimension == null)
+            {
                 return null;
+            }
 
             return new ExcelAddress(
                 valuedDimension.Start.Row + (hasHeaderRow && valuedDimension.Start.Row != valuedDimension.End.Row ? 1 : 0),
@@ -36,7 +38,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Returns given ExcelWorksheet data cell ranges as ExcelRange
+        ///     Returns cell ranges of the worksheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
@@ -55,6 +57,10 @@ namespace EPPlus.Core.Extensions
             string tableName = $"Table{new Random(Guid.NewGuid().GetHashCode()).Next(99999)}";
             return worksheet.AsExcelTable(tableName, hasHeaderRow);
         }
+
+        public static ExcelTable GetTable(this ExcelWorksheet worksheet, string tableName) => worksheet.Tables.FirstOrDefault(x => x.Name == tableName);
+
+        public static ExcelTable GetTable(this ExcelWorksheet worksheet, int tableIndex) => worksheet.Tables[tableIndex];
 
         /// <summary>
         ///     Converts given worksheet into ExcelTable
@@ -107,10 +113,10 @@ namespace EPPlus.Core.Extensions
             if (dataBounds == null)
             {
                 return dataTable;
-            }   
+            }
 
-            IEnumerable<DataColumn> columns = worksheet.AsExcelTable(hasHeaderRow).Columns.Select(x => new DataColumn(!hasHeaderRow ? "Column" + x.Id : x.Name)); 
-          
+            IEnumerable<DataColumn> columns = worksheet.AsExcelTable(hasHeaderRow).Columns.Select(x => new DataColumn(!hasHeaderRow ? "Column" + x.Id : x.Name));
+
             dataTable.Columns.AddRange(columns.ToArray());
 
             for (int rowIndex = dataBounds.Start.Row; rowIndex <= dataBounds.End.Row; ++rowIndex)
@@ -128,38 +134,29 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Generic extension method yielding objects of specified type from the ExcelWorksheet
+        ///     Converts the worksheet into list of objects as enumerable
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of object</typeparam>
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
         {
-            IExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
+            ExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(configurationAction);
         }
 
         /// <summary>
-        ///     Returns objects of specified type from the ExcelWorksheet as a list.
+        ///     Converts the worksheet into list of objects
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<IExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => worksheet.AsEnumerable(configurationAction).ToList();
+        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => worksheet.AsEnumerable(configurationAction).ToList();
 
-        /// <summary>
-        ///     Changes value of the specified cell
-        /// </summary>
-        /// <param name="worksheet"></param>
-        /// <param name="rowIndex"></param>
-        /// <param name="columnIndex"></param>
-        /// <param name="value"></param>
-        /// <param name="configureCell"></param>
-        /// <returns></returns>
         public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value, Action<ExcelRange> configureCell = null)
         {
             configureCell?.Invoke(worksheet.Cells[rowIndex, columnIndex]);
@@ -168,7 +165,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Inserts a header line to the top of the Excel worksheet
+        ///     Inserts a header line to the top of the worksheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="headerTexts"></param>
@@ -176,7 +173,7 @@ namespace EPPlus.Core.Extensions
         public static ExcelWorksheet AddHeader(this ExcelWorksheet worksheet, params string[] headerTexts) => worksheet.AddHeader(null, headerTexts);
 
         /// <summary>
-        ///     Inserts a header line to the top of the Excel worksheet
+        ///     Inserts a header line to the top of the worksheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="configureHeader"></param>
@@ -317,7 +314,7 @@ namespace EPPlus.Core.Extensions
                 {
                     yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Text);
                 }
-            }  
+            }
         }
 
         /// <summary>

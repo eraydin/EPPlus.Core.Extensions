@@ -91,6 +91,12 @@ namespace EPPlus.Core.Extensions.Style
             return thisStyle;
         }
 
+        public static ExcelStyle SetFontName(this ExcelStyle thisStyle, string newFontName)
+        {
+            thisStyle.Font.Name = newFontName;
+            return thisStyle;
+        }
+
         /// <summary>
         ///     Sets horizontal alignment of Excel style
         /// </summary>

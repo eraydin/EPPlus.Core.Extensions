@@ -81,6 +81,12 @@ namespace EPPlus.Core.Extensions.Style
             return range;
         }
 
+        public static ExcelRangeBase SetFontName(this ExcelRangeBase range, string newFontName)
+        {
+            range.Style.SetFontName(newFontName);
+            return range;
+        }
+
         /// <summary>
         ///     Sets the horizontal alignment of given range
         /// </summary>
