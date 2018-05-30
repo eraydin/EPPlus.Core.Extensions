@@ -44,7 +44,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             stocksWithNullables.Any().Should().BeTrue();
             stocksWithNullables.Count.Should().Be(3);
-            stocksWithNullables.All(x => x.Barcode.StartsWith('_')).Should().Be(true);
+            stocksWithNullables.All(x => x.Barcode.StartsWith("_")).Should().Be(true);
 
             stocksWithoutNullables.Min(x => x.Quantity).Should().BeGreaterThan(10);
         }
