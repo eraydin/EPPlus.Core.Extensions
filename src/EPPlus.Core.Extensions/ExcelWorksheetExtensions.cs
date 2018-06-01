@@ -412,7 +412,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="formattedExceptionMessage"></param>
         public static void CheckHeadersAndThrow<T>(this ExcelWorksheet worksheet, int headerRowIndex, string formattedExceptionMessage = null)
         {
-            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes<T>();
+            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes();
 
             for (var i = 0; i < propertyAttributePairs.Count; i++)
             {

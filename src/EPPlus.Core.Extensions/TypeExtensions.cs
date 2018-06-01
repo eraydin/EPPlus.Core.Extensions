@@ -54,10 +54,9 @@ namespace EPPlus.Core.Extensions
         /// <summary>
         ///     Returns PropertyInfo and ExcelTableColumnAttribute pairs of given type
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> GetExcelTableColumnAttributes<T>(this Type type)
+        public static List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> GetExcelTableColumnAttributes(this Type type)
         {
             List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                                                                                      .Select(property => new KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>(property, property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))

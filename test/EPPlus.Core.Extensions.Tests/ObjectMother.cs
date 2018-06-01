@@ -13,7 +13,7 @@ namespace EPPlus.Core.Extensions.Tests
         Mercedes
     }
 
-    internal class WrongCars
+    internal class WrongCars : IExcelExportable
     {
         [ExcelTableColumn("License plate")]
         public string LicensePlate { get; set; }
