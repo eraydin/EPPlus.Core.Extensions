@@ -7,18 +7,17 @@ namespace EPPlus.Core.Extensions
 {
     public static class AssemblyExtensions
     {
-        public static List<Type> FindExcelExportableTypes(this Assembly executingAssembly) => (from type in executingAssembly.GetTypes()
-                                                                                               where typeof(IExcelExportable).IsAssignableFrom(type)
-                                                                                               select type).ToList();
+        public static List<Type> FindExcelWorksheetTypes(this Assembly executingAssembly)
+            => (from type in executingAssembly.GetTypes()
+                where type.IsDefined(typeof(ExcelWorksheetAttribute), false)
+                select type).ToList();
 
-        public static List<string> GetNamesOfExcelExportableObjects(this Assembly executingAssembly)
-        {
-            return FindExcelExportableTypes(executingAssembly).Select(x => x.Name).ToList();
-        }
+        public static List<string> GetNamesOfExcelWorksheetTypes(this Assembly executingAssembly)
+            => FindExcelWorksheetTypes(executingAssembly).Select(x => x.Name).ToList();
 
-        public static Type GetTypeByName(this Assembly executingAssembly, string typeName)
+        public static Type FindExcelWorksheetByName(this Assembly executingAssembly, string typeName)
         {
-            Type type = FindExcelExportableTypes(executingAssembly).FirstOrDefault(x => x.Name.Equals(typeName, StringComparison.InvariantCultureIgnoreCase));
+            Type type = FindExcelWorksheetTypes(executingAssembly).FirstOrDefault(x => x.Name.Equals(typeName, StringComparison.InvariantCultureIgnoreCase));
 
             if (type == null)
             {

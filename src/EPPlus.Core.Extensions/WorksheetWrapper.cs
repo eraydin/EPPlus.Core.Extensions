@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Text.RegularExpressions;
 
 using EPPlus.Core.Extensions.Configuration;
 
@@ -35,21 +33,15 @@ namespace EPPlus.Core.Extensions
         {
             var columns = new List<WorksheetColumn<T>>();
 
-            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes();
+            List<ExcelTableColumnAttributeAndProperyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
 
-            foreach (KeyValuePair<PropertyInfo, ExcelTableColumnAttribute> propertyAttributePair in propertyAttributePairs)
-            {
-                PropertyInfo property = propertyAttributePair.Key;
-                ExcelTableColumnAttribute mappingAttribute = propertyAttributePair.Value;
-
-                string header = !string.IsNullOrEmpty(mappingAttribute.ColumnName) ? mappingAttribute.ColumnName : Regex.Replace(property.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
-
-                var column = new WorksheetColumn<T>
-                             {
-                                 Header = header,
-                                 Map = GetGetter<T>(property.Name)
-                             };
-                columns.Add(column);
+            foreach (ExcelTableColumnAttributeAndProperyInfo properyInfoAndColumnAttribute in properyInfoAndColumnAttributes)
+            { 
+                columns.Add(new WorksheetColumn<T>
+                            {
+                                Header = properyInfoAndColumnAttribute.ToString(),
+                                Map = GetGetter<T>(properyInfoAndColumnAttribute.PropertyInfo.Name)
+                            });
             }
 
             return columns;
@@ -85,7 +77,7 @@ namespace EPPlus.Core.Extensions
                     range.Value = Titles[i].Title;
 
                     Configuration.ConfigureTitle?.Invoke(range);
-                    Titles[i].ConfigureTitle?.Invoke(range);  
+                    Titles[i].ConfigureTitle?.Invoke(range);
                 }
 
                 rowOffset = rowOffset + Titles.Count;
@@ -96,8 +88,8 @@ namespace EPPlus.Core.Extensions
             {
                 for (var i = 0; i < Columns.Count; i++)
                 {
-                    worksheet.Cells[rowOffset + 1, i + 1].Value = Columns[i].Header;  
-                    Configuration.ConfigureHeader?.Invoke(worksheet.Cells[rowOffset + 1, i + 1]);     
+                    worksheet.Cells[rowOffset + 1, i + 1].Value = Columns[i].Header;
+                    Configuration.ConfigureHeader?.Invoke(worksheet.Cells[rowOffset + 1, i + 1]);
                 }
 
                 //configure the header row
@@ -130,7 +122,7 @@ namespace EPPlus.Core.Extensions
             //configure columns
             for (var i = 0; i < Columns.Count; i++)
             {
-                Configuration.ConfigureColumn?.Invoke(worksheet.Column(i + 1));    
+                Configuration.ConfigureColumn?.Invoke(worksheet.Column(i + 1));
                 Columns[i].ConfigureColumn?.Invoke(worksheet.Column(i + 1));
             }
         }

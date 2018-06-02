@@ -19,12 +19,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type type = executingAssembly.FindExcelExportableTypes().First();
+            Type wrongCarsType = executingAssembly.FindExcelWorksheetTypes().First(x => x.Name == "WrongCars");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            ExcelPackage excelPackage1 = executingAssembly.GenerateExcelPackage(type.Name);
+            ExcelPackage excelPackage1 = executingAssembly.GenerateExcelPackage(wrongCarsType.Name);
 
             Action act = () => executingAssembly.GenerateExcelPackage("sadas");
 
@@ -44,20 +44,27 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type firstType = executingAssembly.FindExcelExportableTypes().First();
+            Type wrongCarsType = executingAssembly.FindExcelWorksheetTypes().First(x => x.Name == "WrongCars");
+            string defaultMapType = executingAssembly.GetNamesOfExcelWorksheetTypes().First(x => x == "DefaultMap");
 
             var excelPackage = new ExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage.GenerateWorksheet(executingAssembly, firstType.Name);
+            ExcelWorksheet worksheet1 = excelPackage.GenerateWorksheet(executingAssembly, wrongCarsType.Name);
+            ExcelWorksheet worksheet2 = excelPackage.GenerateWorksheet(executingAssembly, defaultMapType);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             worksheet1.Should().NotBe(null);
+            worksheet1.Name.Should().Be("Wrong Cars");
             worksheet1.GetColumns(1).Count().Should().BeGreaterThan(0);
+
+            worksheet2.Should().NotBe(null);
+            worksheet2.Name.Should().Be("DefaultMap");
+            worksheet2.GetColumns(1).Count().Should().BeGreaterThan(0);
         }
     }
 }

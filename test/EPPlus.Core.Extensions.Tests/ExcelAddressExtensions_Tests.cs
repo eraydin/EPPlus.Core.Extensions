@@ -1,7 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
-
-using FluentAssertions;
+﻿using FluentAssertions;
 
 using OfficeOpenXml;
 

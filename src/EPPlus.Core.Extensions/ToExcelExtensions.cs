@@ -15,13 +15,13 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
-        /// <param name="name"></param>
+        /// <param name="worksheetName"></param>
         /// <returns></returns>
-        public static WorksheetWrapper<T> ToWorksheet<T>(this IEnumerable<T> rows, string name)
+        public static WorksheetWrapper<T> ToWorksheet<T>(this IEnumerable<T> rows, string worksheetName)
         {
             var worksheet = new WorksheetWrapper<T>
                             {
-                                Name = name,
+                                Name = worksheetName,
                                 Package = new ExcelPackage(),
                                 Rows = rows,
                                 Columns = new List<WorksheetColumn<T>>()
@@ -36,15 +36,15 @@ namespace EPPlus.Core.Extensions
         /// <typeparam name="K"></typeparam>
         /// <param name="previousSheet"></param>
         /// <param name="rows"></param>
-        /// <param name="name"></param>
+        /// <param name="worksheetName"></param>
         /// <returns></returns>
-        public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IEnumerable<T> rows, string name)
+        public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IEnumerable<T> rows, string worksheetName)
         {
             previousSheet.AppendWorksheet();
 
             var worksheet = new WorksheetWrapper<T>
                             {
-                                Name = name,
+                                Name = worksheetName,
                                 Package = previousSheet.Package,
                                 Rows = rows,
                                 Columns = new List<WorksheetColumn<T>>()

@@ -10,14 +10,6 @@ namespace EPPlus.Core.Extensions.Exceptions
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Default constructor
-        /// </summary>
-        protected ExcelException()
-        {
-        }
-
-        /// <inheritdoc />
-        /// <summary>
         ///     Constructor with message
         /// </summary>
         /// <param name="message">Exception message</param>

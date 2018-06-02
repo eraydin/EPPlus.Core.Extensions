@@ -56,19 +56,25 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> GetExcelTableColumnAttributes(this Type type)
+        public static List<ExcelTableColumnAttributeAndProperyInfo> GetExcelTableColumnAttributesWithProperyInfo(this Type type)
         {
-            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                                                                                     .Select(property => new KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>(property, property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))
-                                                                                                     .Where(p => p.Value != null)
-                                                                                                     .ToList();
+            List<ExcelTableColumnAttributeAndProperyInfo> columnAttributesWithProperyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                                                                                .Select(property => new ExcelTableColumnAttributeAndProperyInfo(property, property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))
+                                                                                                .Where(p => p.ColumnAttribute != null)
+                                                                                                .ToList();
 
-            if (!propertyAttributePairs.Any())
+            if (!columnAttributesWithProperyInfo.Any())
             {
                 throw new ArgumentException($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
             }
 
-            return propertyAttributePairs;
+            return columnAttributesWithProperyInfo;
+        }
+
+        public static string GetWorksheetName(this Type type)
+        {
+            Attribute worksheetAttribute = type.GetCustomAttribute(typeof(ExcelWorksheetAttribute), true);
+            return (worksheetAttribute as ExcelWorksheetAttribute)?.WorksheetName;
         }
     }
 }

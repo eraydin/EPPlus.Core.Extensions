@@ -64,6 +64,7 @@ namespace EPPlus.Core.Extensions
                 {
                     throw new ArgumentException($"Cannot set both {nameof(ColumnName)} and {nameof(ColumnIndex)}!");
                 }
+
                 if (value <= 0)
                 {
                     throw new ArgumentException($"{nameof(ColumnIndex)} cannot be zero or negative!");

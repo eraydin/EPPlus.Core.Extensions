@@ -2,8 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 
-using EPPlus.Core.Extensions.Configuration;
-
 namespace EPPlus.Core.Extensions.Tests
 {
     internal enum Manufacturers
@@ -13,7 +11,8 @@ namespace EPPlus.Core.Extensions.Tests
         Mercedes
     }
 
-    internal class WrongCars : IExcelExportable
+    [ExcelWorksheet("Wrong Cars")]
+    internal class WrongCars
     {
         [ExcelTableColumn("License plate")]
         public string LicensePlate { get; set; }
@@ -28,6 +27,7 @@ namespace EPPlus.Core.Extensions.Tests
         public bool Ready { get; set; }
     }
 
+    [ExcelWorksheet]
     internal class DefaultMap
     {
         [ExcelTableColumn]

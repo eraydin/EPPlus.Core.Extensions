@@ -380,10 +380,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------    
-            Action act = () =>
-                         {
-                             List<StocksNullable> result = tableWithoutHeaderRow.AsEnumerable<StocksNullable>(c => c.WithCastingExceptionMessage("Casting error occured on '{1}'")).ToList();
-                         };
+            Action act = () => tableWithoutHeaderRow.AsEnumerable<StocksNullable>(c => c.WithCastingExceptionMessage("Casting error occured on '{1}'")).ToList();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -398,12 +395,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.GetWorksheet("TEST1").GetTable("TEST1");
-            List<ObjectWithoutExcelTableAttributes> list;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = table.ToList<ObjectWithoutExcelTableAttributes>(); };
+            Action action = () => table.ToList<ObjectWithoutExcelTableAttributes>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -418,12 +414,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelTable table = excelPackage.GetWorksheet("TEST1").GetTable("TEST1");
-            List<EnumFailMap> list;
-
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = table.ToList<EnumFailMap>(); };
+            Action action = () => table.ToList<EnumFailMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -447,18 +441,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage.GetWorksheet("TEST1").GetTable("TEST1");
-            List<ObjectWithWrongAttributeMappings> list;
+            ExcelTable table = excelPackage.GetWorksheet("TEST1").GetTable("TEST1");  
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () => { list = table.ToList<ObjectWithWrongAttributeMappings>(); };
-            Action action2 = () =>
-                             {
-                                 list = table.ToList<ObjectWithWrongAttributeMappings>(
-                                     configuration => configuration.WithHeaderValidationExceptionMessage("'{0}' column not found."));
-                             };
+            Action action1 = () => table.ToList<ObjectWithWrongAttributeMappings>();
+            Action action2 = () => table.ToList<ObjectWithWrongAttributeMappings>(cfg => cfg.WithHeaderValidationExceptionMessage("'{0}' column not found."));
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

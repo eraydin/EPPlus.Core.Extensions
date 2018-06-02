@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection;
 
 using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Exceptions;
@@ -412,11 +411,11 @@ namespace EPPlus.Core.Extensions
         /// <param name="formattedExceptionMessage"></param>
         public static void CheckHeadersAndThrow<T>(this ExcelWorksheet worksheet, int headerRowIndex, string formattedExceptionMessage = null)
         {
-            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> propertyAttributePairs = typeof(T).GetExcelTableColumnAttributes();
+            List<ExcelTableColumnAttributeAndProperyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
 
-            for (var i = 0; i < propertyAttributePairs.Count; i++)
+            for (var i = 0; i < properyInfoAndColumnAttributes.Count; i++)
             {
-                string columnName = !string.IsNullOrEmpty(propertyAttributePairs[i].Value.ColumnName) ? propertyAttributePairs[i].Value.ColumnName : propertyAttributePairs[i].Key.Name;
+                string columnName = !string.IsNullOrEmpty(properyInfoAndColumnAttributes[i].ColumnAttribute.ColumnName) ? properyInfoAndColumnAttributes[i].ColumnAttribute.ColumnName : properyInfoAndColumnAttributes[i].PropertyInfo.Name;
                 worksheet.CheckAndThrowColumn(headerRowIndex, i + 1, columnName, formattedExceptionMessage);
             }
         }

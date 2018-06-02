@@ -276,19 +276,23 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage.GetAsByteArray();
+            byte[] buffer1 = excelPackage.GetAsByteArray();
+            var buffer2 = new byte[]{ };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            ExcelPackage package = buffer.AsExcelPackage();
+            ExcelPackage package1 = buffer1.AsExcelPackage();
+            Action act = () => buffer2.AsExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
+            package1.Should().NotBeNull();
+            package1.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
+            package1.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
+
+            act.Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -297,12 +301,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage.GetAsByteArray("Test1234");
+            byte[] buffer1 = excelPackage.GetAsByteArray("Test1234");
+            var buffer2 = new byte[] {};
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            ExcelPackage package = buffer.AsExcelPackage("Test1234");
+            ExcelPackage package = buffer1.AsExcelPackage("Test1234");
+            Action act = () => buffer2.AsExcelPackage("test");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -310,6 +316,8 @@ namespace EPPlus.Core.Extensions.Tests
             package.Should().NotBeNull();
             package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
             package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
+
+            act.Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -477,10 +485,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () =>
-                            {
-                                ExcelPackage package = buffer.AsExcelPackage("");
-                            };
+            Action action = () =>buffer.AsExcelPackage("");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -499,10 +504,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () =>
-                            {
-                                ExcelPackage package = buffer.AsExcelPackage("test12345");
-                            };
+            Action action = () => buffer.AsExcelPackage("test12345");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -522,10 +524,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () =>
-                            {
-                                ExcelPackage package = stream.AsExcelPackage("test1234");
-                            };
+            Action action = () =>stream.AsExcelPackage("test1234");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

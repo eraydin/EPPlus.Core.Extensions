@@ -22,7 +22,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<Type> results = executingAssembly.FindExcelExportableTypes();
+            List<Type> results = executingAssembly.FindExcelWorksheetTypes();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -37,12 +37,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string nameOfFirstType = executingAssembly.GetNamesOfExcelExportableObjects().First();
+            string nameOfFirstType = executingAssembly.GetNamesOfExcelWorksheetTypes().First();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Type type = executingAssembly.GetTypeByName(nameOfFirstType);
+            Type type = executingAssembly.FindExcelWorksheetByName(nameOfFirstType);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -58,12 +58,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type firstType = executingAssembly.FindExcelExportableTypes().First();
+            Type firstType = executingAssembly.FindExcelWorksheetTypes().First();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> results = firstType.GetExcelTableColumnAttributes();
+            List<ExcelTableColumnAttributeAndProperyInfo> results = firstType.GetExcelTableColumnAttributesWithProperyInfo();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -82,7 +82,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<string> results = executingAssembly.GetNamesOfExcelExportableObjects();
+            List<string> results = executingAssembly.GetNamesOfExcelWorksheetTypes();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

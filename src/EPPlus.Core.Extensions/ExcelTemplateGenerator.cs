@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 using OfficeOpenXml;
 
@@ -14,23 +13,21 @@ namespace EPPlus.Core.Extensions
             var excelPackage = new ExcelPackage();
             excelPackage.GenerateWorksheet(executingAssembly, typeName);
             return excelPackage;
-        }  
+        }
 
         public static ExcelWorksheet GenerateWorksheet(this ExcelPackage excelPackage, Assembly executingAssembly, string typeName)
         {
-            Type type = executingAssembly.GetTypeByName(typeName);     
+            Type type = executingAssembly.FindExcelWorksheetByName(typeName);
+                                                                                    
+            List<ExcelTableColumnAttributeAndProperyInfo> headerColumns = type.GetExcelTableColumnAttributesWithProperyInfo();
 
-            List<KeyValuePair<PropertyInfo, ExcelTableColumnAttribute>> headerColumns = type.GetExcelTableColumnAttributes();
-
-            ExcelWorksheet worksheet = excelPackage.AddWorksheet(typeName);
+            ExcelWorksheet worksheet = excelPackage.AddWorksheet(type.GetWorksheetName() ?? typeName);
 
             var rowOffset = 0;
 
             for (var i = 0; i < headerColumns.Count; i++)
             {
-                string header = !string.IsNullOrEmpty(headerColumns[i].Value.ColumnName) ? headerColumns[i].Value.ColumnName : Regex.Replace(headerColumns[i].Key.Name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
-
-                worksheet.Cells[rowOffset + 1, i + 1].Value = header;
+                worksheet.Cells[rowOffset + 1, i + 1].Value = headerColumns[i].ToString();
             }
 
             return worksheet;
