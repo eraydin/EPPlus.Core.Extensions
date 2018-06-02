@@ -7,7 +7,7 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 ### **Dependencies**
 
 **.NET Framework 4.6.1**
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.1.1*
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.2.1*
 
 **.NET Standard 2.0**
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus.Core >= 1.5.4*
@@ -16,7 +16,7 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 
 The project will be documented soon. For now, just look at the test project (EPPlus.Core.Extensions.Tests). It has just enough examples to show you how to use these extension methods. 
 
-##### **Basic usage**
+##### Basic examples:
 
 ```cs
 public class PersonDto
@@ -34,25 +34,32 @@ public class PersonDto
         public int YearBorn { get; set; }
         
         public decimal NotMapped { get; set; }
-    }
-    
-// Converting from Excel to list of objects
+    }      
+```
 
+- Converting from Excel to list of objects
+
+```cs
     // Direct usage: 
         excelPackage.ToList<PersonDto>(configuration => configuration.SkipCastingErrors());
 
     // Specific worksheet: 
-        excelPackage.GetWorksheet("Persons").ToList<PersonDto>();  
+        excelPackage.GetWorksheet("Persons").ToList<PersonDto>(); 
+``` 
     
-// From list to Excel package
+- From a list of objects to Excel package
 
+```cs
     List<PersonDto> persons = new List<PersonDto>();
-
-    // Direct usage
+         
+    // Convert list into ExcelPackage
         ExcelPackage excelPackage = persons.ToExcelPackage();
+
+    // Convert list into byte array 
         byte[] excelPackageXlsx = persons.ToXlsx();
        
-    // With configuration
+
+    // Generate ExcelPackage with configuration
 
     List<PersonDto> pre50 = persons.Where(x => x.YearBorn < 1950).ToList();
     List<PersonDto> post50 = persons.Where(x => x.YearBorn >= 1950).ToList();
@@ -68,4 +75,28 @@ public class PersonDto
                              .WithColumn(x => x.YearBorn, "Year of Birth")
                              .WithTitle("> 1950")
                              .ToExcelPackage(); 
+```
+
+- Generating an Excel template from ExcelWorksheetAttribute marked classes
+
+```cs 
+    [ExcelWorksheet("Stocks")]
+    public class StocksDto
+    {
+        [ExcelTableColumn("SKU")]
+        public string Barcode { get; set; }
+    
+        [ExcelTableColumn]
+        public int Quantity { get; set; }
+    }   
+
+    // To ExcelPackage
+    ExcelPackage excelPackage = Assembly.GetExecutingAssembly().GenerateExcelPackage(nameof(StocksDto));
+ 
+    // To ExcelWorksheet
+    using(var excelPackage = new ExcelPackage()){ 
+    
+        ExcelWorksheet worksheet = excelPackage.GenerateWorksheet(Assembly.GetExecutingAssembly(), nameof(StocksDto));
+    
+    }  
 ```
