@@ -11,6 +11,6 @@ namespace EPPlus.Core.Extensions
 
         public ExcelWorksheetAttribute(string worksheetName) => WorksheetName = worksheetName;
 
-        public string WorksheetName { get; protected set; }
+        public string WorksheetName { get; }
     }
 }

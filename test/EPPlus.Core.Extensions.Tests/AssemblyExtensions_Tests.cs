@@ -12,7 +12,28 @@ namespace EPPlus.Core.Extensions.Tests
     public class AssemblyExtensions_Tests
     {
         [Fact]
-        public void Should_find_all_IExcelExportable_marked_types()
+        public void Should_get_a_type_from_ExcelWorksheet_marked_types_by_name()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            KeyValuePair<string, string> wrongCars = executingAssembly.GetExcelWorksheetNamesOfMarkedTypes().First(x => x.Key == "WrongCars");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Type type = executingAssembly.GetExcelWorksheetMarkedTypeByName(wrongCars.Key);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            type.Should().NotBe(null);
+            type.Name.Should().Be(wrongCars.Key);
+        }
+
+        [Fact]
+        public void Should_get_all_ExcelWorksheet_marked_types()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -22,7 +43,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<Type> results = executingAssembly.FindExcelWorksheetTypes();
+            List<Type> results = executingAssembly.GetExcelWorksheetMarkedTypes();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -31,34 +52,13 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_get_a_type_from_name()
+        public void Should_get_Excel_column_attributes_of_ExcelWorksheet_type()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string nameOfFirstType = executingAssembly.GetNamesOfExcelWorksheetTypes().First();
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            Type type = executingAssembly.FindExcelWorksheetByName(nameOfFirstType);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            type.Should().NotBe(null);
-            type.Name.Should().Be(nameOfFirstType);
-        }
-
-        [Fact]
-        public void Should_get_Excel_column_attributes_of_given_type()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type firstType = executingAssembly.FindExcelWorksheetTypes().First();
+            Type firstType = executingAssembly.GetExcelWorksheetMarkedTypes().First();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -72,7 +72,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_get_names_of_all_ExcelExportable_marked_objects()
+        public void Should_get_names_of_all_ExcelWorksheet_marked_objects()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -82,12 +82,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<string> results = executingAssembly.GetNamesOfExcelWorksheetTypes();
+            List<KeyValuePair<string, string>> results = executingAssembly.GetExcelWorksheetNamesOfMarkedTypes();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             results.Count.Should().BeGreaterThan(0);
+            results.Any(x => x.Key.Equals("WrongCars") && x.Value.Equals("Wrong Cars")).Should().BeTrue();
+            results.Any(x => x.Key.Equals("DefaultMap")).Should().BeTrue();
         }
     }
 }

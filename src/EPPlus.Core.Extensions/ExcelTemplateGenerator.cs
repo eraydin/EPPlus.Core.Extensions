@@ -8,26 +8,30 @@ namespace EPPlus.Core.Extensions
 {
     public static class ExcelTemplateGenerator
     {
-        public static ExcelPackage GenerateExcelPackage(this Assembly executingAssembly, string typeName)
+        public static ExcelPackage GenerateExcelPackage(this Assembly executingAssembly, string typeName, Action<ExcelRange> action = null)
         {
             var excelPackage = new ExcelPackage();
-            excelPackage.GenerateWorksheet(executingAssembly, typeName);
+            excelPackage.GenerateWorksheet(executingAssembly, typeName, action);
             return excelPackage;
         }
 
-        public static ExcelWorksheet GenerateWorksheet(this ExcelPackage excelPackage, Assembly executingAssembly, string typeName)
+        public static ExcelWorksheet GenerateWorksheet(this ExcelPackage excelPackage, Assembly executingAssembly, string typeName, Action<ExcelRange> action = null)
         {
-            Type type = executingAssembly.FindExcelWorksheetByName(typeName);
-                                                                                    
+            Type type = executingAssembly.GetExcelWorksheetMarkedTypeByName(typeName);
+
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type), $"Type of {typeName} could not found.");
+            }
+
             List<ExcelTableColumnAttributeAndProperyInfo> headerColumns = type.GetExcelTableColumnAttributesWithProperyInfo();
 
             ExcelWorksheet worksheet = excelPackage.AddWorksheet(type.GetWorksheetName() ?? typeName);
 
-            var rowOffset = 0;
-
             for (var i = 0; i < headerColumns.Count; i++)
             {
-                worksheet.Cells[rowOffset + 1, i + 1].Value = headerColumns[i].ToString();
+                worksheet.Cells[1, i + 1].Value = headerColumns[i].ToString();
+                action?.Invoke(worksheet.Cells[1, i + 1]);
             }
 
             return worksheet;

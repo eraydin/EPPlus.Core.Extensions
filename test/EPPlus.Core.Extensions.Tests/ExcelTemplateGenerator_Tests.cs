@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
+using EPPlus.Core.Extensions.Style;
 
 using FluentAssertions;
 
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 using Xunit;
 
@@ -19,7 +23,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type wrongCarsType = executingAssembly.FindExcelWorksheetTypes().First(x => x.Name == "WrongCars");
+            Type wrongCarsType = executingAssembly.GetExcelWorksheetMarkedTypes().First(x => x.Name == "WrongCars");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -34,7 +38,7 @@ namespace EPPlus.Core.Extensions.Tests
             excelPackage1.Should().NotBe(null);
             excelPackage1.GetWorksheet(1).GetColumns(1).Count().Should().BeGreaterThan(0);
 
-            act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("typeName");
+            act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("type");
         }
 
         [Fact]
@@ -44,8 +48,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type wrongCarsType = executingAssembly.FindExcelWorksheetTypes().First(x => x.Name == "WrongCars");
-            string defaultMapType = executingAssembly.GetNamesOfExcelWorksheetTypes().First(x => x == "DefaultMap");
+            Type wrongCarsType = executingAssembly.GetExcelWorksheetMarkedTypes().First(x => x.Name == "WrongCars");
+            KeyValuePair<string, string> defaultMapType = executingAssembly.GetExcelWorksheetNamesOfMarkedTypes().First(x => x.Key == "DefaultMap");
 
             var excelPackage = new ExcelPackage();
 
@@ -53,7 +57,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.GenerateWorksheet(executingAssembly, wrongCarsType.Name);
-            ExcelWorksheet worksheet2 = excelPackage.GenerateWorksheet(executingAssembly, defaultMapType);
+            ExcelWorksheet worksheet2 = excelPackage.GenerateWorksheet(executingAssembly, defaultMapType.Key, act => act.SetHorizontalAlignment(ExcelHorizontalAlignment.Right));
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -65,6 +69,7 @@ namespace EPPlus.Core.Extensions.Tests
             worksheet2.Should().NotBe(null);
             worksheet2.Name.Should().Be("DefaultMap");
             worksheet2.GetColumns(1).Count().Should().BeGreaterThan(0);
+            worksheet2.Cells[1, 1].Style.HorizontalAlignment.Should().Be(ExcelHorizontalAlignment.Right);
         }
     }
 }
