@@ -15,4 +15,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\EPPlus.Core.Extensions\EPPlus.Core.Extensions.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

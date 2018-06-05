@@ -3,17 +3,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461;</TargetFrameworks>
-  </PropertyGroup>    
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
-    <PackageReference Include="EPPlus" Version="4.5.2.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="EPPlus.Core" Version="1.5.4" />
-  </ItemGroup>
+  </PropertyGroup>   
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="4.5.2.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
   </ItemGroup>
 </Project>
