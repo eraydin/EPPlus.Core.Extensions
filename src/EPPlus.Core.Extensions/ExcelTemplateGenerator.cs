@@ -8,6 +8,13 @@ namespace EPPlus.Core.Extensions
 {
     public static class ExcelTemplateGenerator
     {
+        /// <summary>
+        ///     Finds given type name in the assembly, and generates Excel package
+        /// </summary>
+        /// <param name="executingAssembly"></param>
+        /// <param name="typeName"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public static ExcelPackage GenerateExcelPackage(this Assembly executingAssembly, string typeName, Action<ExcelRange> action = null)
         {
             var excelPackage = new ExcelPackage();
@@ -15,6 +22,14 @@ namespace EPPlus.Core.Extensions
             return excelPackage;
         }
 
+        /// <summary>
+        ///     Finds given type name in the assembly, and generates Excel worksheet
+        /// </summary>
+        /// <param name="excelPackage"></param>
+        /// <param name="executingAssembly"></param>
+        /// <param name="typeName"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public static ExcelWorksheet GenerateWorksheet(this ExcelPackage excelPackage, Assembly executingAssembly, string typeName, Action<ExcelRange> action = null)
         {
             Type type = executingAssembly.GetExcelWorksheetMarkedTypeByName(typeName);

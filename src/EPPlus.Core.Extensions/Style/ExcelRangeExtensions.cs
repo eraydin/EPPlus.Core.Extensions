@@ -87,6 +87,12 @@ namespace EPPlus.Core.Extensions.Style
             return range;
         }
 
+        public static ExcelRangeBase SetFontAsBold(this ExcelRangeBase range)
+        {
+            range.Style.SetFontAsBold();
+            return range;
+        }
+
         /// <summary>
         ///     Sets the horizontal alignment of given range
         /// </summary>

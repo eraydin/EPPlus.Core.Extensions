@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Style
         }
 
         /// <summary>
-        ///     Sets the font color of ExcelColumn from a Color object
+        ///     Sets the font color of ExcelColumn
         /// </summary>
         /// <param name="column"></param>
         /// <param name="fontColor"></param>
@@ -30,7 +30,7 @@ namespace EPPlus.Core.Extensions.Style
             column.Style.SetFontColor(fontColor);
             return column;
         }
-
+    
         /// <summary>
         ///     Sets the background color of ExcelColumn from a Color object
         /// </summary>

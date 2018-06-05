@@ -66,7 +66,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Converts given worksheet into list of objects as enumerable
+        ///     Converts given package into list of objects as enumerable
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="package"></param>
@@ -76,7 +76,7 @@ namespace EPPlus.Core.Extensions
         public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 1, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => package.GetWorksheet(worksheetIndex).AsEnumerable(configurationAction);
 
         /// <summary>
-        ///     Converts given worksheet into list of objects
+        ///     Converts given package into list of objects
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="package"></param>

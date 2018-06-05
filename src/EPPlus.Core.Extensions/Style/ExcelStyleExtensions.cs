@@ -97,6 +97,12 @@ namespace EPPlus.Core.Extensions.Style
             return thisStyle;
         }
 
+        public static ExcelStyle SetFontAsBold(this ExcelStyle thisStyle)
+        {
+            thisStyle.Font.Bold = true;
+            return thisStyle;
+        }
+
         /// <summary>
         ///     Sets horizontal alignment of Excel style
         /// </summary>

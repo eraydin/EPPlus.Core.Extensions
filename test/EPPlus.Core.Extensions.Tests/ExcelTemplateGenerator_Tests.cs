@@ -57,7 +57,9 @@ namespace EPPlus.Core.Extensions.Tests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage.GenerateWorksheet(executingAssembly, wrongCarsType.Name);
-            ExcelWorksheet worksheet2 = excelPackage.GenerateWorksheet(executingAssembly, defaultMapType.Key, act => act.SetHorizontalAlignment(ExcelHorizontalAlignment.Right));
+            ExcelWorksheet worksheet2 = excelPackage.GenerateWorksheet(executingAssembly, defaultMapType.Key,
+                                                                       act => act.SetHorizontalAlignment(ExcelHorizontalAlignment.Right)
+                                                                                 .SetFontAsBold());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -70,6 +72,7 @@ namespace EPPlus.Core.Extensions.Tests
             worksheet2.Name.Should().Be("DefaultMap");
             worksheet2.GetColumns(1).Count().Should().BeGreaterThan(0);
             worksheet2.Cells[1, 1].Style.HorizontalAlignment.Should().Be(ExcelHorizontalAlignment.Right);
+            worksheet2.Cells[1, 2].Style.Font.Bold.Should().BeTrue();
         }
     }
 }

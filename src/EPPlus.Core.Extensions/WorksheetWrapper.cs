@@ -36,7 +36,7 @@ namespace EPPlus.Core.Extensions
             List<ExcelTableColumnAttributeAndProperyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
 
             foreach (ExcelTableColumnAttributeAndProperyInfo properyInfoAndColumnAttribute in properyInfoAndColumnAttributes)
-            { 
+            {
                 columns.Add(new WorksheetColumn<T>
                             {
                                 Header = properyInfoAndColumnAttribute.ToString(),
@@ -127,12 +127,6 @@ namespace EPPlus.Core.Extensions
             }
         }
 
-        /// <summary>
-        ///     Generates a Func from a propertyName
-        /// </summary>
-        /// <typeparam name="TP"></typeparam>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
         private Func<TP, object> GetGetter<TP>(string propertyName)
         {
             ParameterExpression arg = Expression.Parameter(typeof(TP), "x");
