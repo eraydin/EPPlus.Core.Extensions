@@ -33,9 +33,9 @@ namespace EPPlus.Core.Extensions
         {
             var columns = new List<WorksheetColumn<T>>();
 
-            List<ExcelTableColumnAttributeAndProperyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
 
-            foreach (ExcelTableColumnAttributeAndProperyInfo properyInfoAndColumnAttribute in properyInfoAndColumnAttributes)
+            foreach (ExcelTableColumnAttributeAndPropertyInfo properyInfoAndColumnAttribute in properyInfoAndColumnAttributes)
             {
                 columns.Add(new WorksheetColumn<T>
                             {

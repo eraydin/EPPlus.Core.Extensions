@@ -234,4 +234,16 @@ namespace EPPlus.Core.Extensions.Tests
 
         public int YearBorn { get; set; }
     }
+
+    public class UnorderedBarcodeAndQuantity
+    {
+        [ExcelTableColumn]
+        public string Barcode { get; set; }
+
+        [ExcelTableColumn("Quantity")]
+        public int Quantity { get; set; }
+
+        [ExcelTableColumn("UpdatedDate")]
+        public DateTime UpdatedDate { get; set; }
+    }
 }

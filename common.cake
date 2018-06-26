@@ -84,11 +84,11 @@ int Run(string exec, string args, ProcessSettings settings)
     return StartProcess(exec, settings);
 }
 
-void EnsureTool(string tool, string arguements)
+void EnsureTool(string tool, string arguments)
 {
     try
     {
-        ExecuteCommand(tool + (!string.IsNullOrEmpty(arguements) ? " " + arguements : null));
+        ExecuteCommand(tool + (!string.IsNullOrEmpty(arguments) ? " " + arguments : null));
         Information("The tool \"" + tool + "\" is present...");
     }
     catch(Exception ex)

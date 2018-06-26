@@ -72,7 +72,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(worksheetIndex).Cells[1, 1, 1, 1].Value.Should().Be("Last Name");
+            package.GetWorksheet(worksheetIndex).Cells[1, 1, 1, 1].Value.Should().Be("LastName");
             package.GetWorksheet(worksheetIndex).Cells[1, 2, 1, 2].Value.Should().Be("Year of Birth");
             package.GetWorksheet(worksheetIndex).Dimension.Rows.Should().Be(_personList.Count + 1);
         }
@@ -451,7 +451,7 @@ namespace EPPlus.Core.Extensions.Tests
             excelPackage.Workbook.Worksheets.Any().Should().Be(true);
             excelPackage.Workbook.Worksheets.First().Should().NotBe(null);
             excelPackage.Workbook.Worksheets.First().Dimension.Rows.Should().Be(3);
-            excelPackage.Workbook.Worksheets.First().Cells[1, 1, 1, 1].Text.Should().Be("Last Name");
+            excelPackage.Workbook.Worksheets.First().Cells[1, 1, 1, 1].Text.Should().Be("LastName");
             excelPackage.Workbook.Worksheets.First().Cells[1, 2, 1, 2].Text.Should().Be("Year of Birth");
         }
 

@@ -216,11 +216,11 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () => { worksheet.CheckAndThrowColumn(2, 3, "Barcode", "Barcode column is missing"); };
+            Action action1 = () =>  worksheet.CheckAndThrowColumn(2, 3, "Barcode", "Barcode column is missing");
 
-            Action action2 = () => { worksheet.CheckAndThrowColumn(2, 1, "Barcode"); };
+            Action action2 = () =>  worksheet.CheckAndThrowColumn(2, 1, "Barcode"); 
 
-            Action action3 = () => { worksheet.CheckAndThrowColumn(3, 14, "Barcode"); };
+            Action action3 = () => worksheet.CheckAndThrowColumn(3, 14, "Barcode");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -269,6 +269,29 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             Action act1 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow(1);
             Action act2 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow(1, "'{0}' column is duplicated (rowIndex: {1})");
+
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            act1.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated on 1. row.");
+            act2.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated (rowIndex: 1)");
+        }
+
+
+        [Fact]
+        public void Should_check_and_throw_if_duplicated_column_found_on_a_row_with_object()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action act1 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow<UnorderedBarcodeAndQuantity>(1);
+            Action act2 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow<UnorderedBarcodeAndQuantity>(1, "'{0}' column is duplicated (rowIndex: {1})");
 
 
             //-----------------------------------------------------------------------------------------------------------
@@ -665,15 +688,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'."); };
-            Action action2 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2); };
-            Action action3 = () => { worksheet1.CheckHeadersAndThrow<StocksNullable>(2); };
-            Action action4 = () => { worksheet1.CheckHeadersAndThrow<Car>(2); };
+            Action action1 = () => worksheet1.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'.");
+            Action action2 = () => worksheet1.CheckHeadersAndThrow<NamedMap>(2);
+            Action action3 = () => worksheet1.CheckHeadersAndThrow<StocksNullable>(2); 
+            Action action4 = () => worksheet1.CheckHeadersAndThrow<Car>(2);
 
-            Action actionForEmptySheet1 = () =>
-                                          emptySheet1.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
-            Action actionForEmptySheet2 = () =>
-                                          emptySheet2.CheckHeadersAndThrow<Cars>(1, "The {0}.column of worksheet should be '{1}'.");
+            Action actionForEmptySheet1 = () => emptySheet1.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
+            Action actionForEmptySheet2 = () => emptySheet2.CheckHeadersAndThrow<Cars>(1, "The {0}.column of worksheet should be '{1}'.");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -777,17 +798,5 @@ namespace EPPlus.Core.Extensions.Tests
             valuedDimension.End.Column.Should().Be(7);
             valuedDimension.End.Row.Should().Be(13);
         }
-    }
-
-    public class UnorderedBarcodeAndQuantity
-    {
-        [ExcelTableColumn]
-        public string Barcode { get; set; }
-
-        [ExcelTableColumn("Quantity")]
-        public int Quantity { get; set; }
-
-        [ExcelTableColumn("UpdatedDate")]
-        public DateTime UpdatedDate { get; set; }
-    }
+    }   
 }

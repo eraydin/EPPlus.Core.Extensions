@@ -349,6 +349,24 @@ namespace EPPlus.Core.Extensions
             }
         }
 
+        public static void CheckAndThrowIfDuplicatedColumnsFoundOnRow<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
+        {
+            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+
+            foreach (ExcelTableColumnAttributeAndPropertyInfo columnAttribute in properyInfoAndColumnAttributes)
+            {
+                if (worksheet.IsColumnDuplicatedOnRow(rowIndex, columnAttribute.ToString()))
+                {
+                    if (!string.IsNullOrEmpty(exceptionMessage))
+                    {
+                        throw new ExcelValidationException(string.Format(exceptionMessage, columnAttribute, rowIndex));
+                    }
+
+                    throw new ExcelValidationException($"'{columnAttribute}' column is duplicated on {rowIndex}. row.");
+                }  
+            } 
+        }
+
         /// <summary>
         ///     Deletes a column from worksheet by using column header text
         /// </summary>
@@ -433,12 +451,11 @@ namespace EPPlus.Core.Extensions
         /// <param name="formattedExceptionMessage"></param>
         public static void CheckHeadersAndThrow<T>(this ExcelWorksheet worksheet, int headerRowIndex, string formattedExceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndProperyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
 
             for (var i = 0; i < properyInfoAndColumnAttributes.Count; i++)
             {
-                string columnName = !string.IsNullOrEmpty(properyInfoAndColumnAttributes[i].ColumnAttribute.ColumnName) ? properyInfoAndColumnAttributes[i].ColumnAttribute.ColumnName : properyInfoAndColumnAttributes[i].PropertyInfo.Name;
-                worksheet.CheckAndThrowColumn(headerRowIndex, i + 1, columnName, formattedExceptionMessage);
+                worksheet.CheckAndThrowColumn(headerRowIndex, i + 1, properyInfoAndColumnAttributes[i].ToString(), formattedExceptionMessage);
             }
         }
 

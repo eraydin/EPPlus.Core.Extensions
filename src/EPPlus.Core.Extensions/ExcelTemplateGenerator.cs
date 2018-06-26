@@ -39,7 +39,7 @@ namespace EPPlus.Core.Extensions
                 throw new ArgumentNullException(nameof(type), $"Type of {typeName} could not found.");
             }
 
-            List<ExcelTableColumnAttributeAndProperyInfo> headerColumns = type.GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> headerColumns = type.GetExcelTableColumnAttributesWithProperyInfo();
 
             ExcelWorksheet worksheet = excelPackage.AddWorksheet(type.GetWorksheetName() ?? typeName);
 
