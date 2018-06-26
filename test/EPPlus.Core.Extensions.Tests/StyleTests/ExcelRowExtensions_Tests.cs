@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(4);
+            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -31,7 +31,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             row.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
-            row.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
+            row.Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Brown.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(4);
+            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -50,7 +50,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            row.Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
+            row.Style.Font.Color.Rgb.Should().Be($"{Color.BlueViolet.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(4);
+            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -79,7 +79,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(8);
+            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(8);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -98,7 +98,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage.Workbook.Worksheets.First().Row(5);
+            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(5);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

@@ -137,7 +137,7 @@ namespace EPPlus.Core.Extensions
                             if (configuration.ThrowCastingExceptions)
                             {
                                 throw new ExcelException(string.Format(configuration.CastingExceptionMessage, exceptionArgs.ColumnName, exceptionArgs.CellAddress.Address, exceptionArgs.CellValue, exceptionArgs.ExpectedType.Name), ex)
-                                    .WithArguments(exceptionArgs);
+                                    .WithArguments(exceptionArgs); 
                             }
                         }
                     }

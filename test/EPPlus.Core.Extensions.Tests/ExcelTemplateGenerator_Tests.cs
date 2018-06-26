@@ -24,6 +24,10 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
             Type wrongCarsType = executingAssembly.GetExcelWorksheetMarkedTypes().First(x => x.Name == "WrongCars");
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -36,7 +40,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             excelPackage1.Should().NotBe(null);
-            excelPackage1.GetWorksheet(1).GetColumns(1).Count().Should().BeGreaterThan(0);
+            excelPackage1.GetWorksheet(worksheetIndex).GetColumns(1).Count().Should().BeGreaterThan(0);
 
             act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("type");
         }

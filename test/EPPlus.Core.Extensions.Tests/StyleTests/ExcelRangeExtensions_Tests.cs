@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -31,7 +31,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             forthColumn.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
-            forthColumn.Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Brown.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -50,11 +50,11 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            forthColumn.Style.Border.Left.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
-            forthColumn.Style.Border.Left.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
-            forthColumn.Style.Border.Right.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
-            forthColumn.Style.Border.Top.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
-            forthColumn.Style.Border.Bottom.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Purple.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Left.Color.Rgb.Should().Be($"{Color.Purple.ToArgb() & 0xFFFFFFFF:X8}");
+            forthColumn.Style.Border.Left.Color.Rgb.Should().Be($"{Color.Purple.ToArgb() & 0xFFFFFFFF:X8}");
+            forthColumn.Style.Border.Right.Color.Rgb.Should().Be($"{Color.Purple.ToArgb() & 0xFFFFFFFF:X8}");
+            forthColumn.Style.Border.Top.Color.Rgb.Should().Be($"{Color.Purple.ToArgb() & 0xFFFFFFFF:X8}");
+            forthColumn.Style.Border.Bottom.Color.Rgb.Should().Be($"{Color.Purple.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -78,11 +78,11 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             forthColumn.Style.Border.Top.Style.Should().Be(ExcelBorderStyle.Dashed);
             forthColumn.Style.Border.Bottom.Style.Should().Be(ExcelBorderStyle.Dashed);
 
-            forthColumn.Style.Border.Left.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
-            forthColumn.Style.Border.Left.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
-            forthColumn.Style.Border.Right.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
-            forthColumn.Style.Border.Top.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
-            forthColumn.Style.Border.Bottom.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.Red.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Border.Left.Color.Rgb.Should().Be($"{Color.Red.ToArgb() & 0xFFFFFFFF:X8}");
+            forthColumn.Style.Border.Left.Color.Rgb.Should().Be($"{Color.Red.ToArgb() & 0xFFFFFFFF:X8}");
+            forthColumn.Style.Border.Right.Color.Rgb.Should().Be($"{Color.Red.ToArgb() & 0xFFFFFFFF:X8}");
+            forthColumn.Style.Border.Top.Color.Rgb.Should().Be($"{Color.Red.ToArgb() & 0xFFFFFFFF:X8}");
+            forthColumn.Style.Border.Bottom.Color.Rgb.Should().Be($"{Color.Red.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -101,7 +101,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            forthColumn.Style.Font.Color.Rgb.Should().Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
+            forthColumn.Style.Font.Color.Rgb.Should().Be($"{Color.BlueViolet.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -130,7 +130,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -152,7 +152,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -171,7 +171,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

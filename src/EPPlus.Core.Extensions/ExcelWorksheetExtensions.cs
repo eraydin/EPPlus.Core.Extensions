@@ -328,6 +328,27 @@ namespace EPPlus.Core.Extensions
             }
         }
 
+        public static bool IsColumnDuplicatedOnRow(this ExcelWorksheet worksheet, int rowIndex, string columnText, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
+        {
+            return worksheet.GetColumns(rowIndex).Where(x => x.Value.Equals(columnText, stringComparison)).IsGreaterThanOne();
+        }
+
+        public static void CheckAndThrowIfDuplicatedColumnsFoundOnRow(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
+        {
+            foreach (KeyValuePair<int, string> column in worksheet.GetColumns(rowIndex).Where(x => !string.IsNullOrEmpty(x.Value)))
+            {
+                if (worksheet.IsColumnDuplicatedOnRow(rowIndex, column.Value))
+                {
+                    if (!string.IsNullOrEmpty(exceptionMessage))
+                    {
+                        throw new ExcelValidationException(string.Format(exceptionMessage, column.Value, rowIndex));
+                    }
+
+                    throw new ExcelValidationException($"'{column.Value}' column is duplicated on {rowIndex}. row.");
+                }
+            }
+        }
+
         /// <summary>
         ///     Deletes a column from worksheet by using column header text
         /// </summary>
@@ -369,7 +390,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Checks and throws the <see cref="ExcelValidationException"/> if column value is wrong on specified index
+        ///     Checks and throws the <see cref="ExcelValidationException" /> if column value is wrong on specified index
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="rowIndex"></param>
@@ -390,7 +411,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Checks and throws the <see cref="ExcelValidationException"/> if the worksheet has any formula
+        ///     Checks and throws the <see cref="ExcelValidationException" /> if the worksheet has any formula
         /// </summary>
         /// <param name="sheet"></param>
         /// <param name="withMessage"></param>
@@ -403,7 +424,8 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Checks and throws the <see cref="ExcelValidationException"/> if header columns does not match with properties of object 
+        ///     Checks and throws the <see cref="ExcelValidationException" /> if header columns does not match with properties of
+        ///     object
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>

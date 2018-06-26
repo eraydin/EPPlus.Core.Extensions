@@ -48,7 +48,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            results.Count.Should().BeGreaterThan(0);
+            results.Should().HaveCountGreaterThan(0);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            results.Count.Should().BeGreaterThan(0);
+            results.Should().HaveCountGreaterThan(0);
         }
 
         [Fact]
@@ -87,9 +87,9 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            results.Count.Should().BeGreaterThan(0);
-            results.Any(x => x.Key.Equals("WrongCars") && x.Value.Equals("Wrong Cars")).Should().BeTrue();
-            results.Any(x => x.Key.Equals("DefaultMap")).Should().BeTrue();
+            results.Should().HaveCountGreaterThan(0);
+            results.Should().Contain(x => x.Key.Equals("WrongCars") && x.Value.Equals("Wrong Cars"));
+            results.Should().Contain(x => x.Key.Equals("DefaultMap"));
         }
     }
 }

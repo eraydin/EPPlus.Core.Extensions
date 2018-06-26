@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -59,7 +59,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -79,7 +79,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -98,7 +98,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

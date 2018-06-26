@@ -21,7 +21,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorkbook workbook = excelPackage.Workbook;
+            ExcelWorkbook workbook = excelPackage1.Workbook;
             ExcelWorksheet firstWorksheet = workbook.GetWorksheet(1);
             ExcelWorksheet secondWorksheet = workbook.GetWorksheet(2);
             var nameOfStyle1 = "NamedStyle1";
@@ -56,27 +56,21 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             firstWorksheet.Cells[1, 1, 1, 1].StyleName.Should().Be(nameOfStyle1);
             firstWorksheet.Cells[1, 1, 1, 1].Style.Font.Name.Should().Be(fontName);
-            firstWorksheet.Cells[1, 1, 1, 1].Style.Font.Color.Rgb.Should()
-                          .Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
-            firstWorksheet.Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should()
-                          .Be(string.Format("{0:X8}", Color.Blue.ToArgb() & 0xFFFFFFFF));
+            firstWorksheet.Cells[1, 1, 1, 1].Style.Font.Color.Rgb.Should().Be($"{Color.Yellow.ToArgb() & 0xFFFFFFFF:X8}");
+            firstWorksheet.Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Blue.ToArgb() & 0xFFFFFFFF:X8}");
             firstWorksheet.Cells[1, 1, 1, 1].Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkDown);
-            firstWorksheet.Cells[1, 1, 1, 1].Style.Border.Top.Color.Rgb.Should()
-                          .Be(string.Format("{0:X8}", Color.AliceBlue.ToArgb() & 0xFFFFFFFF));
+            firstWorksheet.Cells[1, 1, 1, 1].Style.Border.Top.Color.Rgb.Should().Be($"{Color.AliceBlue.ToArgb() & 0xFFFFFFFF:X8}");
             firstWorksheet.Cells[1, 1, 1, 1].Style.Border.Left.Style.Should().Be(ExcelBorderStyle.Double);
 
             secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].StyleName.Should().Be(nameOfStyle1);
             secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Font.Name.Should().Be(fontName);
-            secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Font.Color.Rgb.Should()
-                           .Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
-            secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Fill.BackgroundColor.Rgb.Should()
-                           .Be(string.Format("{0:X8}", Color.Blue.ToArgb() & 0xFFFFFFFF));
+            secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Font.Color.Rgb.Should().Be($"{Color.Yellow.ToArgb() & 0xFFFFFFFF:X8}");
+            secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Blue.ToArgb() & 0xFFFFFFFF:X8}");
             secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Fill.PatternType.Should()
                            .Be(ExcelFillStyle.DarkDown);
             secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Border.Right.Style.Should()
                            .Be(ExcelBorderStyle.DashDot);
-            secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Border.Bottom.Color.Rgb.Should()
-                           .Be(string.Format("{0:X8}", Color.Black.ToArgb() & 0xFFFFFFFF));
+            secondWorksheet.Cells[valuedDimensionsOfSecondWorksheet].Style.Border.Bottom.Color.Rgb.Should().Be($"{Color.Black.ToArgb() & 0xFFFFFFFF:X8}");
 
             workbook.Styles.NamedStyles.Any(x => x.Name == nameOfStyle2).Should().Be(true);
         }
@@ -87,7 +81,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorkbook workbook = excelPackage.Workbook;
+            ExcelWorkbook workbook = excelPackage1.Workbook;
             var nameOfStyle = "NamedStyle1";
             var fontName = "Arial";
 
@@ -122,7 +116,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorkbook workbook = excelPackage.Workbook;
+            ExcelWorkbook workbook = excelPackage1.Workbook;
             var nameOfStyle = "NamedStyle1";
             var fontName = "Arial";
 

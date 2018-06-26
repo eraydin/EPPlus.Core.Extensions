@@ -2,23 +2,20 @@
   <PropertyGroup>
     <TargetFrameworks>net461;netcoreapp2.1</TargetFrameworks>
     <AssemblyName>EPPlus.Core.Extensions.Tests</AssemblyName>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\testsheets.xlsx" />
+    <EmbeddedResource Include="Resources\testsheets1.xlsx" />
+    <EmbeddedResource Include="Resources\testsheets2.xlsx" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.3.2" />
+    <PackageReference Include="FluentAssertions" Version="5.4.1" />    
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\EPPlus.Core.Extensions\EPPlus.Core.Extensions.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

@@ -24,7 +24,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -47,7 +47,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
             Color color = Color.AntiqueWhite;
 
             //-----------------------------------------------------------------------------------------------------------
@@ -63,8 +63,7 @@ namespace EPPlus.Core.Extensions.Tests
             worksheet.Cells[1, 2, 1, 2].Value.Should().Be("NewQuantity");
             worksheet.Cells[1, 3, 1, 3].Value.Should().Be("NewUpdatedDate");
 
-            worksheet.Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should()
-                     .Be(string.Format("{0:X8}", color.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be($"{color.ToArgb() & 0xFFFFFFFF:X8}");
             worksheet.Cells[2, 1, 2, 1].Value.Should().Be("Barcode");
         }
 
@@ -74,22 +73,21 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.AddLine(5, configureCells => configureCells.SetBackgroundColor(Color.Yellow), "barcode123", 5,
-                DateTime.UtcNow);
+                              DateTime.UtcNow);
             IEnumerable<StocksNullable> list = worksheet.ToList<StocksNullable>(configuration => configuration
-                                                                                                 .WithoutHeaderRow()
-                                                                                                 .SkipCastingErrors());
+                                                                                                     .WithoutHeaderRow()
+                                                                                                     .SkipCastingErrors());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells[5, 1].Style.Fill.BackgroundColor.Rgb.Should()
-                     .Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells[5, 1].Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Yellow.ToArgb() & 0xFFFFFFFF:X8}");
             list.Count().Should().Be(5);
         }
 
@@ -99,7 +97,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -119,18 +117,18 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
             DateTime dateTime = DateTime.MaxValue;
 
             var stocks = new List<StocksNullable>
-            {
-                new StocksNullable
-                {
-                    Barcode = "barcode123",
-                    Quantity = 5,
-                    UpdatedDate = dateTime
-                }
-            };
+                         {
+                             new StocksNullable
+                             {
+                                 Barcode = "barcode123",
+                                 Quantity = 5,
+                                 UpdatedDate = dateTime
+                             }
+                         };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -154,17 +152,17 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
 
             var stocks = new List<StocksNullable>
-            {
-                new StocksNullable
-                {
-                    Barcode = "barcode123",
-                    Quantity = 5,
-                    UpdatedDate = DateTime.MaxValue
-                }
-            };
+                         {
+                             new StocksNullable
+                             {
+                                 Barcode = "barcode123",
+                                 Quantity = 5,
+                                 UpdatedDate = DateTime.MaxValue
+                             }
+                         };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -185,21 +183,21 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
             var stocks = new List<StocksNullable>
-            {
-                new StocksNullable
-                {
-                    Barcode = "barcode123",
-                    Quantity = 5,
-                    UpdatedDate = DateTime.MaxValue
-                }
-            };
+                         {
+                             new StocksNullable
+                             {
+                                 Barcode = "barcode123",
+                                 Quantity = 5,
+                                 UpdatedDate = DateTime.MaxValue
+                             }
+                         };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { worksheet.AddObjects(stocks, 5, null); };
+            Action action = () => worksheet.AddObjects(stocks, 5, null);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -213,7 +211,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -233,12 +231,60 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_check_if_duplicated_column_exists_on_a_row()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+            ExcelWorksheet worksheet2 = excelPackage2.GetWorksheet("EmptyWorksheet"); 
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            bool duplicatedColumn = worksheet1.IsColumnDuplicatedOnRow(1, "Barcode");
+            bool notDuplicatedColumn = worksheet1.IsColumnDuplicatedOnRow(1, "Quantity");
+            bool notfoundColumn = worksheet1.IsColumnDuplicatedOnRow(1, "Barcode1asdacfddsd");
+            bool emptyRow = worksheet2.IsColumnDuplicatedOnRow(2, "empty");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            duplicatedColumn.Should().BeTrue();
+            notDuplicatedColumn.Should().BeFalse();
+            notfoundColumn.Should().BeFalse();
+            emptyRow.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_check_and_throw_if_duplicated_column_found_on_a_row()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");  
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action act1 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow(1);
+            Action act2 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow(1, "'{0}' column is duplicated (rowIndex: {1})");
+
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            act1.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated on 1. row.");
+            act2.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated (rowIndex: 1)");
+        }
+
+        [Fact]
         public void Should_check_if_column_value_is_null_or_empty_on_given_index()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -264,7 +310,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            dataTable = excelPackage.GetWorksheet("TEST5").ToDataTable();
+            dataTable = excelPackage1.GetWorksheet("TEST5").ToDataTable();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -284,7 +330,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            dataTable = excelPackage.GetWorksheet("TEST5").ToDataTable(false);
+            dataTable = excelPackage1.GetWorksheet("TEST5").ToDataTable(false);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -299,23 +345,23 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage.GetWorksheet("TEST4");
-            ExcelWorksheet worksheet2 = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet1 = excelPackage1.GetWorksheet("TEST4");
+            ExcelWorksheet worksheet2 = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             List<StocksNullable> list1 = worksheet1.ToList<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors();
-                configuration.WithoutHeaderRow();
-            });
+                                                                           {
+                                                                               configuration.SkipCastingErrors();
+                                                                               configuration.WithoutHeaderRow();
+                                                                           });
 
             List<StocksNullable> list2 = worksheet2.ToList<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors();
-                configuration.WithoutHeaderRow();
-            });
+                                                                           {
+                                                                               configuration.SkipCastingErrors();
+                                                                               configuration.WithoutHeaderRow();
+                                                                           });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -330,7 +376,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -350,7 +396,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
 
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
 
@@ -371,15 +417,15 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_found_any_formula_on_worksheet()
+        public void Should_find_formulas_on_a_worksheet()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet1 = excelPackage1.GetWorksheet("TEST5");
             worksheet1.Cells[18, 2, 18, 2].Formula = "=SUM(B2:B4)";
 
-            ExcelWorksheet worksheet2 = excelPackage.GetWorksheet("TEST4");
+            ExcelWorksheet worksheet2 = excelPackage1.GetWorksheet("TEST4");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -402,7 +448,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet excelWorksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet excelWorksheet = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -423,7 +469,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet excelWorksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet excelWorksheet = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -445,7 +491,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -465,7 +511,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet excelWorksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet excelWorksheet = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -485,7 +531,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet excelWorksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet excelWorksheet = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -505,14 +551,14 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["TEST7"];
+            ExcelWorksheet worksheet = excelPackage1.Workbook.Worksheets["TEST7"];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             List<StocksNullable> results = worksheet.ToList<StocksNullable>(configuration =>
-                configuration.Intercept((item, row) => { item.Barcode = item.Barcode.Trim(); })
-            );
+                                                                            configuration.Intercept((item, row) => { item.Barcode = item.Barcode.Trim(); })
+                );
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -526,25 +572,25 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage.GetWorksheet("TEST4");
-            ExcelWorksheet worksheet2 = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet1 = excelPackage1.GetWorksheet("TEST4");
+            ExcelWorksheet worksheet2 = excelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             IEnumerable<StocksNullable> list1 = worksheet1.AsEnumerable<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors();
-                configuration.SkipValidationErrors();
-                configuration.WithoutHeaderRow();
-            });
+                                                                                        {
+                                                                                            configuration.SkipCastingErrors();
+                                                                                            configuration.SkipValidationErrors();
+                                                                                            configuration.WithoutHeaderRow();
+                                                                                        });
 
             IEnumerable<StocksNullable> list2 = worksheet2.AsEnumerable<StocksNullable>(configuration =>
-            {
-                configuration.SkipCastingErrors();
-                configuration.SkipValidationErrors();
-                configuration.WithoutHeaderRow();
-            });
+                                                                                        {
+                                                                                            configuration.SkipCastingErrors();
+                                                                                            configuration.SkipValidationErrors();
+                                                                                            configuration.WithoutHeaderRow();
+                                                                                        });
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -559,7 +605,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -577,31 +623,57 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_read_worksheet_without_considering_orders_of_columns()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage2.GetWorksheet("RandomOrderedColumns");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            List<UnorderedBarcodeAndQuantity> result = worksheet.ToList<UnorderedBarcodeAndQuantity>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            result.Count.Should().Be(3);
+            result[0].Barcode.Should().Be("barcode1");
+            result[0].Quantity.Should().Be(11);
+            result[0].UpdatedDate.Date.Should().Be(new DateTime(2018, 06, 25));
+
+            result[1].Barcode.Should().Be("barcode2");
+            result[1].Quantity.Should().Be(22);
+            result[1].UpdatedDate.Date.Should().Be(new DateTime(2018, 06, 26));
+
+            result[2].Barcode.Should().Be("barcode3");
+            result[2].Quantity.Should().Be(33);
+            result[2].UpdatedDate.Date.Should().Be(new DateTime(2018, 06, 27));
+        }
+
+        [Fact]
         public void Should_throw_an_exception_when_columns_of_worksheet_not_matched_with_ExcelTableAttribute()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage.GetWorksheet("TEST6");
-            ExcelWorksheet emptySheet1 = excelPackage.GetWorksheet("EmptySheet");
-            ExcelWorksheet emptySheet2 = excelPackage.GetWorksheet("EmptySheet");
+            ExcelWorksheet worksheet1 = excelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet emptySheet1 = excelPackage1.GetWorksheet("EmptySheet");
+            ExcelWorksheet emptySheet2 = excelPackage1.GetWorksheet("EmptySheet");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () =>
-            {
-                worksheet1.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'.");
-            };
+            Action action1 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'."); };
             Action action2 = () => { worksheet1.CheckHeadersAndThrow<NamedMap>(2); };
             Action action3 = () => { worksheet1.CheckHeadersAndThrow<StocksNullable>(2); };
             Action action4 = () => { worksheet1.CheckHeadersAndThrow<Car>(2); };
 
             Action actionForEmptySheet1 = () =>
-                emptySheet1.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
+                                          emptySheet1.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
             Action actionForEmptySheet2 = () =>
-                emptySheet2.CheckHeadersAndThrow<Cars>(1, "The {0}.column of worksheet should be '{1}'.");
-
+                                          emptySheet2.CheckHeadersAndThrow<Cars>(1, "The {0}.column of worksheet should be '{1}'.");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -625,7 +697,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("EmptySheet");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("EmptySheet");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -644,7 +716,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
             List<StocksValidation> list;
 
             //-----------------------------------------------------------------------------------------------------------
@@ -666,7 +738,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -689,7 +761,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet("TEST4");
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST4");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -705,5 +777,17 @@ namespace EPPlus.Core.Extensions.Tests
             valuedDimension.End.Column.Should().Be(7);
             valuedDimension.End.Row.Should().Be(13);
         }
+    }
+
+    public class UnorderedBarcodeAndQuantity
+    {
+        [ExcelTableColumn]
+        public string Barcode { get; set; }
+
+        [ExcelTableColumn("Quantity")]
+        public int Quantity { get; set; }
+
+        [ExcelTableColumn("UpdatedDate")]
+        public DateTime UpdatedDate { get; set; }
     }
 }

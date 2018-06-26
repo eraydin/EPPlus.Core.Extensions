@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(2);
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(2);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -32,10 +32,8 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             worksheet.Cells[1, 3, 1, 3].Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
-            worksheet.Cells[1, 3, 1, 3].Style.Fill.BackgroundColor.Rgb.Should()
-                     .Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
-            worksheet.Cells[2, 3, 2, 3].Style.Fill.BackgroundColor.Rgb.Should()
-                     .Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells[1, 3, 1, 3].Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Brown.ToArgb() & 0xFFFFFFFF:X8}");
+            worksheet.Cells[2, 3, 2, 3].Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Yellow.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -44,7 +42,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(2);
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(2);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -55,8 +53,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             worksheet.Cells.Style.Fill.PatternType.Should().Be(ExcelFillStyle.DarkTrellis);
-            worksheet.Cells.Style.Fill.BackgroundColor.Rgb.Should()
-                     .Be(string.Format("{0:X8}", Color.Brown.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells.Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Brown.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -65,7 +62,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(3);
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(3);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -77,10 +74,8 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells[1, 2, 1, 3].Style.Font.Color.Rgb.Should()
-                     .Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
-            worksheet.Cells[2, 2, 2, 3].Style.Font.Color.Rgb.Should()
-                     .Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells[1, 2, 1, 3].Style.Font.Color.Rgb.Should().Be($"{Color.BlueViolet.ToArgb() & 0xFFFFFFFF:X8}");
+            worksheet.Cells[2, 2, 2, 3].Style.Font.Color.Rgb.Should().Be($"{Color.Yellow.ToArgb() & 0xFFFFFFFF:X8}");
             worksheet.Cells.Style.Font.Name.Should().Be("Verdana");
         }
 
@@ -90,7 +85,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(3);
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(3);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -101,8 +96,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells.Style.Font.Color.Rgb.Should()
-                     .Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells.Style.Font.Color.Rgb.Should().Be($"{Color.BlueViolet.ToArgb() & 0xFFFFFFFF:X8}");
             worksheet.Cells.Style.Font.Name.Should().Be("Verdana");
         }
 
@@ -112,7 +106,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(3);
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(3);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -124,8 +118,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.Cells.Style.Font.Color.Rgb.Should()
-                     .Be(string.Format("{0:X8}", Color.BlueViolet.ToArgb() & 0xFFFFFFFF));
+            worksheet.Cells.Style.Font.Color.Rgb.Should().Be($"{Color.BlueViolet.ToArgb() & 0xFFFFFFFF:X8}");
             worksheet.Cells[1, 2, 1, 2].Style.Font.Name.Should().Be("Verdana");
             worksheet.Cells[2, 2, 2, 2].Style.Font.Name.Should().Be("Arial");
         }
@@ -136,7 +129,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.First();
+            ExcelWorksheet worksheet = excelPackage1.Workbook.Worksheets.First();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -157,7 +150,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.GetWorksheet(4);
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -176,7 +169,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Last();
+            ExcelWorksheet worksheet = excelPackage1.Workbook.Worksheets.Last();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

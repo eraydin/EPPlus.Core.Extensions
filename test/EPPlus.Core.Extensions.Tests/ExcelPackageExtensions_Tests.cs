@@ -14,6 +14,46 @@ namespace EPPlus.Core.Extensions.Tests
     public class ExcelPackageExtensions_Tests : TestBase
     {
         [Fact]
+        public void Should_add_a_copied_worksheet_to_the_package()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            string randomName = GetRandomName();
+            ExcelWorksheet copyWorksheet = excelPackage1.GetWorksheet(2);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            excelPackage1.AddWorksheet(randomName, copyWorksheet);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            excelPackage1.GetWorksheet(randomName).Should().NotBe(null);
+            excelPackage1.GetWorksheet(randomName).Cells[1, 1, 3, 3].Value.Should().BeEquivalentTo(copyWorksheet.Cells[1, 1, 3, 3].Value);
+        }
+
+        [Fact]
+        public void Should_add_empty_worksheet_to_the_package()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            string randomName = GetRandomName();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            excelPackage1.AddWorksheet(randomName);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            excelPackage1.GetWorksheet(randomName).Should().NotBe(null);
+        }
+
+        [Fact]
         public void Should_be_interceptable_current_row_when_its_converting_to_a_list()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -21,23 +61,24 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             List<StocksNullable> stocksWithNullables;
             List<StocksValidation> stocksWithoutNullables;
+            var stocksNullableWorksheetIndex = 5;
+            var stocksValidationWorksheetIndex = 4;
+
+#if NETFRAMEWORK
+            stocksNullableWorksheetIndex = 6;
+            stocksValidationWorksheetIndex = 5;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            stocksWithNullables = excelPackage.ToList<StocksNullable>(6, configuration =>  configuration.SkipCastingErrors()
-                                                                                                        .SkipValidationErrors()
-                                                                                                        .Intercept((current, rowIndex) =>
-                                                                                                                   {
-                                                                                                                       current.Barcode = current.Barcode.Insert(0, "_");
-                                                                                                                   }));
+            stocksWithNullables = excelPackage1.ToList<StocksNullable>(stocksNullableWorksheetIndex, configuration => configuration.SkipCastingErrors()
+                                                                                                                                   .SkipValidationErrors()
+                                                                                                                                   .Intercept((current, rowIndex) => { current.Barcode = current.Barcode.Insert(0, "_"); }));
 
-            stocksWithoutNullables = excelPackage.ToList<StocksValidation>(5, configuration => configuration.SkipCastingErrors()
-                                                                                                            .SkipValidationErrors()
-                                                                                                            .Intercept((current, rowIndex) =>
-                                                                                                                       {
-                                                                                                                           current.Quantity += 10 + rowIndex;
-                                                                                                                       }));
+            stocksWithoutNullables = excelPackage1.ToList<StocksValidation>(stocksValidationWorksheetIndex, configuration => configuration.SkipCastingErrors()
+                                                                                                                                          .SkipValidationErrors()
+                                                                                                                                          .Intercept((current, rowIndex) => { current.Quantity += 10 + rowIndex; }));
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -56,17 +97,18 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             DataSet dataset;
+            const int expectedCount = 8;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            dataset = excelPackage.ToDataSet();
+            dataset = excelPackage1.ToDataSet();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            dataset.Should().NotBeNull("We have 8 tables");
-            dataset.Tables.Count.Should().Be(8, "We have 8 tables");
+            dataset.Should().NotBeNull($"We have {expectedCount} tables");
+            dataset.Tables.Count.Should().Be(expectedCount, $"We have {expectedCount} tables");
         }
 
         [Fact]
@@ -76,11 +118,16 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             List<DateMap> list;
+            var worksheetIndex = 0;
+
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<DateMap>();
+            list = excelPackage1.ToList<DateMap>(worksheetIndex);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -96,12 +143,16 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             List<StocksNullable> list;
+            var worksheetIndex = 5;
+#if NETFRAMEWORK
+            worksheetIndex = 6;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            list = excelPackage.ToList<StocksNullable>(6, configuration =>  configuration.SkipCastingErrors()
-                                                                                         .WithoutHeaderRow());
+            list = excelPackage1.ToList<StocksNullable>(worksheetIndex, configuration => configuration.SkipCastingErrors()
+                                                                                                      .WithoutHeaderRow());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -121,7 +172,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            tables = excelPackage.GetAllTables();
+            tables = excelPackage1.GetAllTables();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -129,53 +180,13 @@ namespace EPPlus.Core.Extensions.Tests
             tables.Should().NotBeNull("We have 4 tables");
             tables.Count().Should().Be(4, "We have 4 tables");
 
-            excelPackage.HasTable("TEST2").Should().BeTrue("We have TEST2 table");
-            excelPackage.HasTable("test2").Should().BeTrue("Table names are case insensitive");
+            excelPackage1.HasTable("TEST2").Should().BeTrue("We have TEST2 table");
+            excelPackage1.HasTable("test2").Should().BeTrue("Table names are case insensitive");
 
-            excelPackage.GetWorksheet("TEST2").GetTable("TEST2").Should().BeEquivalentTo(excelPackage.GetTable("TEST2"), "We are accessing the same objects");
+            excelPackage1.GetWorksheet("TEST2").GetTable("TEST2").Should().BeEquivalentTo(excelPackage1.GetTable("TEST2"), "We are accessing the same objects");
 
-            excelPackage.HasTable("NOTABLE").Should().BeFalse("We don't have NOTABLE table");
-            excelPackage.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
-        }
-
-        [Fact]
-        public void Should_add_empty_worksheet_to_the_package()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            string randomName = GetRandomName();      
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            excelPackage.AddWorksheet(randomName);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            excelPackage.GetWorksheet(randomName).Should().NotBe(null);
-        }
-
-        [Fact]
-        public void Should_add_a_copied_worksheet_to_the_package()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            string randomName = GetRandomName();
-            ExcelWorksheet copyWorksheet = excelPackage.GetWorksheet(2);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            excelPackage.AddWorksheet(randomName, copyWorksheet);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            excelPackage.GetWorksheet(randomName).Should().NotBe(null);   
-            excelPackage.GetWorksheet(randomName).Cells[1, 1, 3, 3].Value.Should().BeEquivalentTo(copyWorksheet.Cells[1, 1, 3, 3].Value);
+            excelPackage1.HasTable("NOTABLE").Should().BeFalse("We don't have NOTABLE table");
+            excelPackage1.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
         }
     }
 }

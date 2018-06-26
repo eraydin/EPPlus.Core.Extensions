@@ -36,6 +36,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -45,7 +49,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Dimension.Columns.Should().Be(2);
+            package.GetWorksheet(worksheetIndex).Dimension.Columns.Should().Be(2);
         }
 
         [Fact]
@@ -55,6 +59,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -64,9 +72,9 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Cells[1, 1, 1, 1].Value.Should().Be("Last Name");
-            package.GetWorksheet(1).Cells[1, 2, 1, 2].Value.Should().Be("Year of Birth");
-            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 1);
+            package.GetWorksheet(worksheetIndex).Cells[1, 1, 1, 1].Value.Should().Be("Last Name");
+            package.GetWorksheet(worksheetIndex).Cells[1, 2, 1, 2].Value.Should().Be("Year of Birth");
+            package.GetWorksheet(worksheetIndex).Dimension.Rows.Should().Be(_personList.Count + 1);
         }
 
         [Fact]
@@ -77,6 +85,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             List<Person> pre50 = _personList.Where(x => x.YearBorn < 1950).ToList();
             List<Person> post50 = _personList.Where(x => x.YearBorn >= 1950).ToList();
+
+            var worksheetPre50Index = 0;
+            var worksheetPost50Index = 1;
+#if NETFRAMEWORK
+            worksheetPre50Index = 1;
+            worksheetPost50Index = 2;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -97,10 +112,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Workbook.Worksheets.Count.Should().Be(2);
-            package.GetWorksheet(1).Dimension.Rows.Should().Be(pre50.Count + 2);
-            package.GetWorksheet(1).Dimension.Columns.Should().Be(3);
-            package.GetWorksheet(2).Dimension.Rows.Should().Be(post50.Count + 2);
-            package.GetWorksheet(2).Dimension.Columns.Should().Be(2);
+            package.GetWorksheet(worksheetPre50Index).Dimension.Rows.Should().Be(pre50.Count + 2);
+            package.GetWorksheet(worksheetPre50Index).Dimension.Columns.Should().Be(3);
+            package.GetWorksheet(worksheetPost50Index).Dimension.Rows.Should().Be(post50.Count + 2);
+            package.GetWorksheet(worksheetPost50Index).Dimension.Columns.Should().Be(2);
         }
 
         [Fact]
@@ -111,6 +126,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             List<Person> pre50 = _personList.Where(x => x.YearBorn < 1950).ToList();
             List<Person> post50 = _personList.Where(x => x.YearBorn >= 1950).ToList();
+
+            var worksheetPre50Index = 0;
+            var worksheetPost50Index = 1;
+#if NETFRAMEWORK
+            worksheetPre50Index = 1;
+            worksheetPost50Index = 2;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -159,13 +181,13 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Workbook.Worksheets.Count.Should().Be(2);
-            package.GetWorksheet(1).Dimension.Rows.Should().Be(pre50.Count + 2);
-            package.GetWorksheet(1).Dimension.Columns.Should().Be(2);
-            package.GetWorksheet(2).Dimension.Rows.Should().Be(post50.Count + 1);
-            package.GetWorksheet(2).Dimension.Columns.Should().Be(2);
-            package.GetWorksheet(1).Cells[2, 1, 1, 1].Style.Font.Size.Should().Be(13);
-            package.GetWorksheet(1).Cells[2, 1, 1, 1].Style.Font.Name.Should().Be("Verdana");
-            package.GetWorksheet(1).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
+            package.GetWorksheet(worksheetPre50Index).Dimension.Rows.Should().Be(pre50.Count + 2);
+            package.GetWorksheet(worksheetPre50Index).Dimension.Columns.Should().Be(2);
+            package.GetWorksheet(worksheetPost50Index).Dimension.Rows.Should().Be(post50.Count + 1);
+            package.GetWorksheet(worksheetPost50Index).Dimension.Columns.Should().Be(2);
+            package.GetWorksheet(worksheetPre50Index).Cells[2, 1, 1, 1].Style.Font.Size.Should().Be(13);
+            package.GetWorksheet(worksheetPre50Index).Cells[2, 1, 1, 1].Style.Font.Name.Should().Be("Verdana");
+            package.GetWorksheet(worksheetPre50Index).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Yellow.ToArgb() & 0xFFFFFFFF));
         }
 
         [Fact]
@@ -175,6 +197,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -184,7 +210,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 1);
+            package.GetWorksheet(worksheetIndex).Dimension.Rows.Should().Be(_personList.Count + 1);
         }
 
         [Fact]
@@ -194,6 +220,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -206,7 +236,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 2);
+            package.GetWorksheet(worksheetIndex).Dimension.Rows.Should().Be(_personList.Count + 2);
         }
 
         [Fact]
@@ -216,6 +246,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -229,7 +263,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 3);
+            package.GetWorksheet(worksheetIndex).Dimension.Rows.Should().Be(_personList.Count + 3);
         }
 
         [Fact]
@@ -239,6 +273,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -248,7 +286,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count + 1);
+            package.GetWorksheet(worksheetIndex).Dimension.Rows.Should().Be(_personList.Count + 1);
         }
 
         [Fact]
@@ -258,6 +296,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -267,7 +309,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Dimension.Rows.Should().Be(_personList.Count);
+            package.GetWorksheet(worksheetIndex).Dimension.Rows.Should().Be(_personList.Count);
         }
 
         [Fact]
@@ -276,8 +318,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer1 = excelPackage.GetAsByteArray();
-            var buffer2 = new byte[]{ };
+            byte[] buffer1 = excelPackage1.GetAsByteArray();
+            var buffer2 = new byte[] { };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -289,8 +331,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package1.Should().NotBeNull();
-            package1.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package1.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
+            package1.Workbook.Worksheets.Count.Should().Be(excelPackage1.Workbook.Worksheets.Count);
+            package1.GetAllTables().Count().Should().Be(excelPackage1.GetAllTables().Count());
 
             act.Should().Throw<ArgumentException>();
         }
@@ -301,8 +343,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer1 = excelPackage.GetAsByteArray("Test1234");
-            var buffer2 = new byte[] {};
+            byte[] buffer1 = excelPackage1.GetAsByteArray("Test1234");
+            var buffer2 = new byte[] { };
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -314,8 +356,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
+            package.Workbook.Worksheets.Count.Should().Be(excelPackage1.Workbook.Worksheets.Count);
+            package.GetAllTables().Count().Should().Be(excelPackage1.GetAllTables().Count());
 
             act.Should().Throw<ArgumentException>();
         }
@@ -326,7 +368,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            Stream stream = new MemoryStream(excelPackage.GetAsByteArray());
+            Stream stream = new MemoryStream(excelPackage1.GetAsByteArray());
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -337,8 +379,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
+            package.Workbook.Worksheets.Count.Should().Be(excelPackage1.Workbook.Worksheets.Count);
+            package.GetAllTables().Count().Should().Be(excelPackage1.GetAllTables().Count());
         }
 
         [Fact]
@@ -347,7 +389,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage.GetAsByteArray("Test1234");
+            byte[] buffer = excelPackage1.GetAsByteArray("Test1234");
             var stream = new MemoryStream(buffer);
 
             //-----------------------------------------------------------------------------------------------------------
@@ -359,8 +401,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.Should().Be(excelPackage.Workbook.Worksheets.Count);
-            package.GetAllTables().Count().Should().Be(excelPackage.GetAllTables().Count());
+            package.Workbook.Worksheets.Count.Should().Be(excelPackage1.Workbook.Worksheets.Count);
+            package.GetAllTables().Count().Should().Be(excelPackage1.GetAllTables().Count());
         }
 
         [Fact]
@@ -448,6 +490,13 @@ namespace EPPlus.Core.Extensions.Tests
             List<Person> pre50 = _personList.Where(x => x.YearBorn < 1950).ToList();
             List<Person> post50 = _personList.Where(x => x.YearBorn >= 1950).ToList();
 
+            var worksheetPre50Index = 0;
+            var worksheetPost50Index = 1;
+#if NETFRAMEWORK
+            worksheetPre50Index = 1;
+            worksheetPost50Index = 2;
+#endif
+
             WorksheetWrapper<Person> worksheetWrapper = pre50
                 .ToWorksheet("< 1950")
                 .WithTitle("< 1950")
@@ -468,10 +517,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             excelPackage.Workbook.Worksheets.Count().Should().Be(2);
-            excelPackage.GetWorksheet(1).Dimension.Rows.Should().Be(4);
-            excelPackage.GetWorksheet(2).Dimension.Rows.Should().Be(5);
-            excelPackage.GetWorksheet(1).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.AliceBlue.ToArgb() & 0xFFFFFFFF));
-            excelPackage.GetWorksheet(2).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Aquamarine.ToArgb() & 0xFFFFFFFF));
+            excelPackage.GetWorksheet(worksheetPre50Index).Dimension.Rows.Should().Be(4);
+            excelPackage.GetWorksheet(worksheetPost50Index).Dimension.Rows.Should().Be(5);
+            excelPackage.GetWorksheet(worksheetPre50Index).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.AliceBlue.ToArgb() & 0xFFFFFFFF:X8}");
+            excelPackage.GetWorksheet(worksheetPost50Index).Cells[1, 1, 1, 1].Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Aquamarine.ToArgb() & 0xFFFFFFFF:X8}");
         }
 
         [Fact]
@@ -480,12 +529,12 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage.GetAsByteArray();
+            byte[] buffer = excelPackage1.GetAsByteArray();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () =>buffer.AsExcelPackage("");
+            Action action = () => buffer.AsExcelPackage("");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -499,7 +548,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage.GetAsByteArray("Test1234");
+            byte[] buffer = excelPackage1.GetAsByteArray("Test1234");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -518,13 +567,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage.GetAsByteArray("Test1234");
+            byte[] buffer = excelPackage1.GetAsByteArray("Test1234");
             var stream = new MemoryStream(buffer);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () =>stream.AsExcelPackage("test1234");
+            Action action = () => stream.AsExcelPackage("test1234");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -539,6 +588,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -551,12 +604,12 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Dimension.Columns.Should().Be(1);
+            package.GetWorksheet(worksheetIndex).Dimension.Columns.Should().Be(1);
 
             for (var i = 0; i < _personList.Count; i++)
             {
-                package.GetWorksheet(1).Cells[i + 2, 1].Value.Should().Be(_personList[i].YearBorn);
-                package.GetWorksheet(1).Cells[i + 2, 1].Style.Fill.BackgroundColor.Rgb.Should().Be(string.Format("{0:X8}", Color.Azure.ToArgb() & 0xFFFFFFFF));
+                package.GetWorksheet(worksheetIndex).Cells[i + 2, 1].Value.Should().Be(_personList[i].YearBorn);
+                package.GetWorksheet(worksheetIndex).Cells[i + 2, 1].Style.Fill.BackgroundColor.Rgb.Should().Be($"{Color.Azure.ToArgb() & 0xFFFFFFFF:X8}");
             }
         }
 
@@ -567,6 +620,10 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -579,10 +636,10 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(1).Dimension.Columns.Should().Be(1);
+            package.GetWorksheet(worksheetIndex).Dimension.Columns.Should().Be(1);
             for (var i = 0; i < _personList.Count; i++)
             {
-                package.GetWorksheet(1).Cells[i + 2, 1].Text.Should().Be(_personList[i].LastName);
+                package.GetWorksheet(worksheetIndex).Cells[i + 2, 1].Text.Should().Be(_personList[i].LastName);
             }
         }
     }
