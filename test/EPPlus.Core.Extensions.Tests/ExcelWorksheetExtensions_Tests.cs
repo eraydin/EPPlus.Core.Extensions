@@ -216,11 +216,11 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action1 = () =>  worksheet.CheckAndThrowColumn(2, 3, "Barcode", "Barcode column is missing");
+            Action action1 = () => worksheet.CheckColumnAndThrow(2, 3, "Barcode", "Barcode column is missing");
 
-            Action action2 = () =>  worksheet.CheckAndThrowColumn(2, 1, "Barcode"); 
+            Action action2 = () => worksheet.CheckColumnAndThrow(2, 1, "Barcode");
 
-            Action action3 = () => worksheet.CheckAndThrowColumn(3, 14, "Barcode");
+            Action action3 = () => worksheet.CheckColumnAndThrow(3, 14, "Barcode");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -231,13 +231,76 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
+        public void Should_check_and_throw_if_duplicated_column_found_on_a_row()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action act1 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFound(1);
+            Action act2 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFound(1, "'{0}' column is duplicated (rowIndex: {1})");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            act1.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated on 1. row.");
+            act2.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated (rowIndex: 1)");
+        }
+
+        [Fact]
+        public void Should_check_and_throw_if_duplicated_column_found_on_a_row_with_object()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action act1 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFound<UnorderedBarcodeAndQuantity>(1);
+            Action act2 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFound<UnorderedBarcodeAndQuantity>(1, "'{0}' column is duplicated (rowIndex: {1})");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            act1.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated on 1. row.");
+            act2.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated (rowIndex: 1)");
+        }
+
+        [Fact]
+        public void Should_check_if_a_cell_is_null_or_empty_on_given_index()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            bool result1 = worksheet.IsCellEmpty(3, 4);
+            bool result2 = worksheet.IsCellEmpty(2, 1);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            result1.Should().BeTrue();
+            result2.Should().BeFalse();
+        }
+
+        [Fact]
         public void Should_check_if_duplicated_column_exists_on_a_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
-            ExcelWorksheet worksheet2 = excelPackage2.GetWorksheet("EmptyWorksheet"); 
+            ExcelWorksheet worksheet2 = excelPackage2.GetWorksheet("EmptyWorksheet");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -254,72 +317,6 @@ namespace EPPlus.Core.Extensions.Tests
             notDuplicatedColumn.Should().BeFalse();
             notfoundColumn.Should().BeFalse();
             emptyRow.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_check_and_throw_if_duplicated_column_found_on_a_row()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");  
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            Action act1 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow(1);
-            Action act2 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow(1, "'{0}' column is duplicated (rowIndex: {1})");
-
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            act1.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated on 1. row.");
-            act2.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated (rowIndex: 1)");
-        }
-
-
-        [Fact]
-        public void Should_check_and_throw_if_duplicated_column_found_on_a_row_with_object()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            Action act1 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow<UnorderedBarcodeAndQuantity>(1);
-            Action act2 = () => worksheet1.CheckAndThrowIfDuplicatedColumnsFoundOnRow<UnorderedBarcodeAndQuantity>(1, "'{0}' column is duplicated (rowIndex: {1})");
-
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            act1.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated on 1. row.");
-            act2.Should().Throw<ExcelValidationException>().WithMessage("'Barcode' column is duplicated (rowIndex: 1)");
-        }
-
-        [Fact]
-        public void Should_check_if_column_value_is_null_or_empty_on_given_index()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            bool result1 = worksheet.CheckColumnValueIsNullOrEmpty(3, 4);
-            bool result2 = worksheet.CheckColumnValueIsNullOrEmpty(2, 1);
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            result1.Should().BeTrue();
-            result2.Should().BeFalse();
         }
 
         [Fact]
@@ -400,15 +397,17 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            const string columnName = "Quantity";
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.DeleteColumn("Quantity");
+            worksheet.DeleteColumn(columnName);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
+            worksheet.GetColumns(1).Any(x => x.Value == columnName).Should().BeFalse();
             worksheet.GetValuedDimension().End.Column.Should().Be(2);
             worksheet.Cells[2, 2, 2, 2].Text.Should().Be("UpdatedDate");
         }
@@ -420,21 +419,23 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            const string columnName = "Quantity";
 
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
 
-            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 1, "Quantity");
-            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 2, "Quantity");
-            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 3, "Quantity");
+            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 1, columnName);
+            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 2, columnName);
+            worksheet.ChangeCellValue(2, valuedDimension.End.Column + 3, columnName);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.DeleteColumns("Quantity");
+            worksheet.DeleteColumns(columnName);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
+            worksheet.GetColumns(2).Any(x => x.Value == columnName).Should().BeFalse();
             worksheet.GetValuedDimension().End.Column.Should().Be(2);
             worksheet.Cells[2, 2, 2, 2].Text.Should().Be("UpdatedDate");
         }
@@ -690,7 +691,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             Action action1 = () => worksheet1.CheckHeadersAndThrow<NamedMap>(2, "The {0}.column of worksheet should be '{1}'.");
             Action action2 = () => worksheet1.CheckHeadersAndThrow<NamedMap>(2);
-            Action action3 = () => worksheet1.CheckHeadersAndThrow<StocksNullable>(2); 
+            Action action3 = () => worksheet1.CheckHeadersAndThrow<StocksNullable>(2);
             Action action4 = () => worksheet1.CheckHeadersAndThrow<Car>(2);
 
             Action actionForEmptySheet1 = () => emptySheet1.CheckHeadersAndThrow<StocksValidation>(1, "The {0}.column of worksheet should be '{1}'.");
@@ -699,17 +700,13 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.Should().Throw<ExcelValidationException>().And.Message.Should()
-                   .Be("The 1.column of worksheet should be 'Name'.");
-            action2.Should().Throw<ExcelValidationException>().And.Message.Should()
-                   .Be("The 1. column of worksheet should be 'Name'.");
+            action1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Name'.");
+            action2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
             action3.Should().NotThrow<ExcelValidationException>();
             action4.Should().Throw<ArgumentException>();
 
-            actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should()
-                                .Be("The 1.column of worksheet should be 'Barcode'.");
-            actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should()
-                                .Be("The 1.column of worksheet should be 'LicensePlate'.");
+            actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Barcode'.");
+            actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'LicensePlate'.");
         }
 
         [Fact]
@@ -798,5 +795,39 @@ namespace EPPlus.Core.Extensions.Tests
             valuedDimension.End.Column.Should().Be(7);
             valuedDimension.End.Row.Should().Be(13);
         }
-    }   
+
+
+        [Fact]
+        public void Should_check_columns_of_given_row_whether_it_contains_same_values_with_excel_exportable_object_properties()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+            ExcelWorksheet emptySheet1 = excelPackage1.GetWorksheet("EmptySheet");
+            ExcelWorksheet emptySheet2 = excelPackage1.GetWorksheet("EmptySheet");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action1 = () => worksheet1.CheckExistenceOfColumnsAndThrow<NamedMap>(2, "'{0}' column is not found on the Excel.");
+            Action action2 = () => worksheet1.CheckExistenceOfColumnsAndThrow<NamedMap>(2);
+            Action action3 = () => worksheet1.CheckExistenceOfColumnsAndThrow<UnorderedBarcodeAndQuantity>(1);
+            Action action4 = () => worksheet1.CheckExistenceOfColumnsAndThrow<Car>(2);
+
+            Action actionForEmptySheet1 = () => emptySheet1.CheckExistenceOfColumnsAndThrow<StocksValidation>(1, "'{0}' column is not found on the worksheet.");
+            Action actionForEmptySheet2 = () => emptySheet2.CheckExistenceOfColumnsAndThrow<Cars>(1, "'{0}' column is not found on the worksheet.");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Name' column is not found on the Excel.");
+            action2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Name' column is not found on the worksheet.");
+            action3.Should().NotThrow<ExcelValidationException>();
+            action4.Should().Throw<ArgumentException>();
+
+            actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Barcode' column is not found on the worksheet.");
+            actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'LicensePlate' column is not found on the worksheet.");
+        }
+    }
 }

@@ -48,7 +48,7 @@ namespace EPPlus.Core.Extensions
 
             ExcelAddress bounds = table.GetDataBounds();
 
-            var item = (T)Activator.CreateInstance(typeof(T));
+            var item = new T();
 
             // Parse table
             for (int row = bounds.Start.Row; row <= bounds.End.Row; row++)
@@ -105,7 +105,7 @@ namespace EPPlus.Core.Extensions
                 // Parse table
                 for (int row = bounds.Start.Row; row <= bounds.End.Row; row++)
                 {
-                    var item = (T)Activator.CreateInstance(typeof(T));
+                    var item = new T();
 
                     foreach (KeyValuePair<int, PropertyInfo> map in mapping)
                     {

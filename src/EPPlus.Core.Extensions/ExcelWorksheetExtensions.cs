@@ -333,7 +333,7 @@ namespace EPPlus.Core.Extensions
             return worksheet.GetColumns(rowIndex).Where(x => x.Value.Equals(columnText, stringComparison)).IsGreaterThanOne();
         }
 
-        public static void CheckAndThrowIfDuplicatedColumnsFoundOnRow(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
+        public static void CheckAndThrowIfDuplicatedColumnsFound(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
             foreach (KeyValuePair<int, string> column in worksheet.GetColumns(rowIndex).Where(x => !string.IsNullOrEmpty(x.Value)))
             {
@@ -349,7 +349,7 @@ namespace EPPlus.Core.Extensions
             }
         }
 
-        public static void CheckAndThrowIfDuplicatedColumnsFoundOnRow<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
+        public static void CheckAndThrowIfDuplicatedColumnsFound<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
             List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
 
@@ -363,8 +363,8 @@ namespace EPPlus.Core.Extensions
                     }
 
                     throw new ExcelValidationException($"'{columnAttribute}' column is duplicated on {rowIndex}. row.");
-                }  
-            } 
+                }
+            }
         }
 
         /// <summary>
@@ -415,7 +415,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="columnIndex"></param>
         /// <param name="expectedValue"></param>
         /// <param name="exceptionMessage">Custom exception message with format parameters: columnIndex, expectedValue</param>
-        public static void CheckAndThrowColumn(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, string expectedValue, string exceptionMessage = null)
+        public static void CheckColumnAndThrow(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, string expectedValue, string exceptionMessage = null)
         {
             if (!worksheet.GetColumns(rowIndex).Any(x => x.Value == expectedValue && x.Key == columnIndex))
             {
@@ -455,7 +455,7 @@ namespace EPPlus.Core.Extensions
 
             for (var i = 0; i < properyInfoAndColumnAttributes.Count; i++)
             {
-                worksheet.CheckAndThrowColumn(headerRowIndex, i + 1, properyInfoAndColumnAttributes[i].ToString(), formattedExceptionMessage);
+                worksheet.CheckColumnAndThrow(headerRowIndex, i + 1, properyInfoAndColumnAttributes[i].ToString(), formattedExceptionMessage);
             }
         }
 
@@ -466,9 +466,9 @@ namespace EPPlus.Core.Extensions
         /// <param name="rowIndex"></param>
         /// <param name="columnIndex"></param>
         /// <returns></returns>
-        public static bool CheckColumnValueIsNullOrEmpty(this ExcelWorksheet worksheet, int rowIndex, int columnIndex)
+        public static bool IsCellEmpty(this ExcelWorksheet worksheet, int rowIndex, int columnIndex)
         {
-            object value = worksheet.Cells[rowIndex, columnIndex, rowIndex, columnIndex].Value;
+            object value = worksheet.Cells[rowIndex, columnIndex, rowIndex, columnIndex]?.Value;
             return string.IsNullOrWhiteSpace(value?.ToString());
         }
 
@@ -517,6 +517,28 @@ namespace EPPlus.Core.Extensions
             }
 
             return hasValue ? new ExcelAddressBase(minRow, minCol, maxRow, maxCol) : null;
+        }
+
+        /// <summary>
+        ///     Checks existence of columns on given row, and throws the <see cref="ExcelValidationException" /> if one of the
+        ///     columns is missing
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="worksheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="exceptionMessage"></param>
+        public static void CheckExistenceOfColumnsAndThrow<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
+        {
+            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+            List<KeyValuePair<int, string>> columns = worksheet.GetColumns(rowIndex).ToList();
+
+            for (var i = 0; i < properyInfoAndColumnAttributes.Count; i++)
+            {
+                if (!columns.Any(x => x.Value.Equals(properyInfoAndColumnAttributes[i].ToString())))
+                {
+                    throw new ExcelValidationException(string.Format(exceptionMessage ?? "'{0}' column is not found on the worksheet.", properyInfoAndColumnAttributes[i]));
+                }
+            }
         }
     }
 }

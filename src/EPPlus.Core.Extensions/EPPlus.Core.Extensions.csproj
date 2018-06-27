@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\common.props"></Import>
-
+  <Import Project="..\..\common.props">
+  </Import>
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461;</TargetFrameworks>
-  </PropertyGroup>   
-
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="4.5.2.1" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
-  </ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />   
+  </ItemGroup>   
 </Project>
