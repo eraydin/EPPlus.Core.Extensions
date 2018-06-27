@@ -137,7 +137,7 @@ namespace EPPlus.Core.Extensions
                             if (configuration.ThrowCastingExceptions)
                             {
                                 throw new ExcelException(string.Format(configuration.CastingExceptionMessage, exceptionArgs.ColumnName, exceptionArgs.CellAddress.Address, exceptionArgs.CellValue, exceptionArgs.ExpectedType.Name), ex)
-                                    .WithArguments(exceptionArgs); 
+                                    .WithArguments(exceptionArgs);
                             }
                         }
                     }
@@ -180,11 +180,11 @@ namespace EPPlus.Core.Extensions
 
                 // There is no case when both column name and index is specified since this is excluded by the attribute
                 // Neither index, nor column name is specified, use property name
-                if (columnAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(columnAttribute.ColumnName))
+                if (columnAttribute.ColumnIndex == 0 && string.IsNullOrWhiteSpace(columnAttribute.ColumnName) && table.Columns[propertyInfo.Name] != null)
                 {
                     col = table.Columns[propertyInfo.Name].Position;
                 }
-                else if (columnAttribute.ColumnIndex > 0) // Column index was specified
+                else if (columnAttribute.ColumnIndex > 0 && table.Columns[columnAttribute.ColumnIndex - 1] != null) // Column index was specified
                 {
                     col = table.Columns[columnAttribute.ColumnIndex - 1].Position;
                 }
