@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>2.2.3</VersionPrefix>
+    <VersionPrefix>2.2.4</VersionPrefix>
     <Description>An extensions library for EPPlus package to generate and manipulate Excel files easily.</Description>
 
     <NoWarn>$(NoWarn);CS1591</NoWarn>

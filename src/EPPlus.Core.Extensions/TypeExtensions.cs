@@ -10,19 +10,56 @@ namespace EPPlus.Core.Extensions
 {
     internal static class TypeExtensions
     {
+        internal static object ChangeType(this object value, Type type)
+            => value != null ? Convert.ChangeType(value, type) : null;
+
+        /// <summary>
+        ///     Returns PropertyInfo and ExcelTableColumnAttribute pairs of given type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static List<ExcelTableColumnAttributeAndPropertyInfo> GetExcelTableColumnAttributesWithProperyInfo(this Type type)
+        {
+            List<ExcelTableColumnAttributeAndPropertyInfo> columnAttributesWithProperyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                                                                                 .Select(property => new ExcelTableColumnAttributeAndPropertyInfo(property, property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))
+                                                                                                 .Where(p => p.ColumnAttribute != null)
+                                                                                                 .ToList();
+
+            if (!columnAttributesWithProperyInfo.Any())
+            {
+                throw new ArgumentException($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
+            }
+
+            return columnAttributesWithProperyInfo;
+        }
+
+        /// <summary>
+        ///     Returns value of the property name
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        internal static object GetPropertyValue(this object obj, string propertyName) => obj.GetType().GetProperty(propertyName)?.GetValue(obj, null);
+
+        internal static string GetWorksheetName(this Type type)
+        {
+            Attribute worksheetAttribute = type.GetCustomAttribute(typeof(ExcelWorksheetAttribute), true);
+            return (worksheetAttribute as ExcelWorksheetAttribute)?.WorksheetName;
+        }
+
         /// <summary>
         ///     Determines whether given type is nullable or not
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if type is nullable</returns>
-        public static bool IsNullable(this Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        internal static bool IsNullable(this Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
         /// <summary>
         ///     Tests whether given type is numeric or not
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if type is numeric</returns>
-        public static bool IsNumeric(this Type type)
+        internal static bool IsNumeric(this Type type)
         {
             switch (Type.GetTypeCode(type))
             {
@@ -41,40 +78,6 @@ namespace EPPlus.Core.Extensions
                 default:
                     return false;
             }
-        }
-
-        /// <summary>
-        ///     Returns value of the property name
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        public static object GetPropertyValue(this object obj, string propertyName) => obj.GetType().GetProperty(propertyName)?.GetValue(obj, null);
-
-        /// <summary>
-        ///     Returns PropertyInfo and ExcelTableColumnAttribute pairs of given type
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static List<ExcelTableColumnAttributeAndPropertyInfo> GetExcelTableColumnAttributesWithProperyInfo(this Type type)
-        {
-            List<ExcelTableColumnAttributeAndPropertyInfo> columnAttributesWithProperyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                                                                                .Select(property => new ExcelTableColumnAttributeAndPropertyInfo(property, property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))
-                                                                                                .Where(p => p.ColumnAttribute != null)
-                                                                                                .ToList();
-
-            if (!columnAttributesWithProperyInfo.Any())
-            {
-                throw new ArgumentException($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
-            }
-
-            return columnAttributesWithProperyInfo;
-        }
-
-        public static string GetWorksheetName(this Type type)
-        {
-            Attribute worksheetAttribute = type.GetCustomAttribute(typeof(ExcelWorksheetAttribute), true);
-            return (worksheetAttribute as ExcelWorksheetAttribute)?.WorksheetName;
         }
     }
 }

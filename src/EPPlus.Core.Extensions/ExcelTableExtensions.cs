@@ -282,7 +282,7 @@ namespace EPPlus.Core.Extensions
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                         null,
                         item,
-                        new object[] { Enum.ToObject(type, Convert.ChangeType(cell, underType)) });
+                        new object[] { Enum.ToObject(type, cell.ChangeType(underType)) });
                 }
             }
 
@@ -293,7 +293,7 @@ namespace EPPlus.Core.Extensions
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                     null,
                     item,
-                    new object[] { Convert.ChangeType(cell, type) });
+                    new object[] { cell.ChangeType(type) });
             }
 
             Validator.ValidateProperty(property.GetValue(item), new ValidationContext(item) { MemberName = property.Name });

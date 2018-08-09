@@ -166,7 +166,8 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => worksheet.AsEnumerable(configurationAction).ToList();
+        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() 
+            => worksheet.AsEnumerable(configurationAction).ToList();
 
         public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value, Action<ExcelRange> configureCell = null)
         {

@@ -3,8 +3,9 @@
     <TargetFrameworks>net461;netcoreapp2.1</TargetFrameworks>
     <AssemblyName>EPPlus.Core.Extensions.Tests</AssemblyName>
     <IsPackable>false</IsPackable>
-  </PropertyGroup>
+  </PropertyGroup>    
   <ItemGroup>
+    <EmbeddedResource Include="Resources\testcase1.xlsx" />
     <EmbeddedResource Include="Resources\testsheets1.xlsx" />
     <EmbeddedResource Include="Resources\testsheets2.xlsx" />
   </ItemGroup>
