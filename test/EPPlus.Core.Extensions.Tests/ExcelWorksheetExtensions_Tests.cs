@@ -703,7 +703,7 @@ namespace EPPlus.Core.Extensions.Tests
             action1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Name'.");
             action2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1. column of worksheet should be 'Name'.");
             action3.Should().NotThrow<ExcelValidationException>();
-            action4.Should().Throw<ArgumentException>();
+            action4.Should().Throw<InvalidOperationException>();
 
             actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'Barcode'.");
             actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("The 1.column of worksheet should be 'LicensePlate'.");
@@ -824,7 +824,7 @@ namespace EPPlus.Core.Extensions.Tests
             action1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Name' column is not found on the Excel.");
             action2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Name' column is not found on the worksheet.");
             action3.Should().NotThrow<ExcelValidationException>();
-            action4.Should().Throw<ArgumentException>();
+            action4.Should().Throw<InvalidOperationException>();
 
             actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Barcode' column is not found on the worksheet.");
             actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'LicensePlate' column is not found on the worksheet.");

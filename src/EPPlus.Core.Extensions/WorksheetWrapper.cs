@@ -33,7 +33,7 @@ namespace EPPlus.Core.Extensions
         {
             var columns = new List<WorksheetColumn<T>>();
 
-            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             foreach (ExcelTableColumnAttributeAndPropertyInfo properyInfoAndColumnAttribute in properyInfoAndColumnAttributes)
             {

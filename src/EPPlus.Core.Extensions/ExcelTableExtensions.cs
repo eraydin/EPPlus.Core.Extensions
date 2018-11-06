@@ -168,7 +168,7 @@ namespace EPPlus.Core.Extensions
         private static IEnumerable<KeyValuePair<int, PropertyInfo>> PrepareMappings<T>(ExcelTable table, ExcelReadConfiguration<T> configuration)
         {
             // Get only the properties that have ExcelTableColumnAttribute
-            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             // Build property-table column mapping
             foreach (ExcelTableColumnAttributeAndPropertyInfo properyInfoAndColumnAttribute in propertyInfoAndColumnAttributes)

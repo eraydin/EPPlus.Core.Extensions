@@ -34,8 +34,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.Should().Throw<ArgumentException>().WithMessage($"Cannot set both {nameof(excelTableColumnAttribute.ColumnName)} and {nameof(excelTableColumnAttribute.ColumnIndex)}!");
-            action2.Should().Throw<ArgumentException>().WithMessage($"Cannot set both {nameof(excelTableColumnAttribute.ColumnName)} and {nameof(excelTableColumnAttribute.ColumnIndex)}!");
+            action1.Should().Throw<InvalidOperationException>().WithMessage($"Cannot set both {nameof(excelTableColumnAttribute.ColumnName)} and {nameof(excelTableColumnAttribute.ColumnIndex)}!");
+            action2.Should().Throw<InvalidOperationException>().WithMessage($"Cannot set both {nameof(excelTableColumnAttribute.ColumnName)} and {nameof(excelTableColumnAttribute.ColumnIndex)}!");
         }
 
         [Fact]
@@ -55,8 +55,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.Should().Throw<ArgumentException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnIndex)} cannot be zero or negative!");
-            action2.Should().Throw<ArgumentException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnIndex)} cannot be zero or negative!");
+            action1.Should().Throw<InvalidOperationException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnIndex)} cannot be zero or negative!");
+            action2.Should().Throw<InvalidOperationException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnIndex)} cannot be zero or negative!");
         }
 
         [Fact]
@@ -76,8 +76,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action1.Should().Throw<ArgumentException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnName)} cannot be null or empty!");
-            action2.Should().Throw<ArgumentException>().WithMessage($"{nameof(excelTableColumnAttribute.ColumnName)} cannot be null or empty!");
+            action1.Should().Throw<ArgumentException>().WithMessage("Value must not be empty*");
+            action2.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null*");
         }
     }
 }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+using static EPPlus.Core.Extensions.Helpers.Guard;
+
 [assembly: InternalsVisibleTo("EPPlus.Core.Extensions.Tests")]
 
 namespace EPPlus.Core.Extensions
@@ -18,19 +20,16 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        internal static List<ExcelTableColumnAttributeAndPropertyInfo> GetExcelTableColumnAttributesWithProperyInfo(this Type type)
+        internal static List<ExcelTableColumnAttributeAndPropertyInfo> GetExcelTableColumnAttributesWithPropertyInfo(this Type type)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> columnAttributesWithProperyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            List<ExcelTableColumnAttributeAndPropertyInfo> columnAttributesWithPropertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                                                                                  .Select(property => new ExcelTableColumnAttributeAndPropertyInfo(property, property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))
                                                                                                  .Where(p => p.ColumnAttribute != null)
                                                                                                  .ToList();
 
-            if (!columnAttributesWithProperyInfo.Any())
-            {
-                throw new ArgumentException($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
-            }
-
-            return columnAttributesWithProperyInfo;
+            ThrowIfConditionMet(!columnAttributesWithPropertyInfo.Any(), "Given object does not have any {0}.", nameof(ExcelTableColumnAttribute));
+           
+            return columnAttributesWithPropertyInfo;
         }
 
         /// <summary>

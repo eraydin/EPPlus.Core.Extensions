@@ -6,8 +6,12 @@ using System.Linq;
 using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Exceptions;
 
+using JetBrains.Annotations;
+
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
+
+using static EPPlus.Core.Extensions.Helpers.Guard;
 
 namespace EPPlus.Core.Extensions
 {
@@ -19,6 +23,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
         /// <returns></returns>
+        [CanBeNull]
         public static ExcelAddress GetDataBounds(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension() ?? worksheet.Dimension;
@@ -294,10 +299,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex, Action<ExcelRange> configureCells = null, params Func<T, object>[] propertySelectors)
         {
-            if (propertySelectors == null)
-            {
-                throw new ArgumentException($"{nameof(propertySelectors)} cannot be null");
-            }
+            NotNull(propertySelectors, nameof(propertySelectors));
 
             for (var i = 0; i < items.Count(); i++)
             {
@@ -352,7 +354,7 @@ namespace EPPlus.Core.Extensions
 
         public static void CheckAndThrowIfDuplicatedColumnsFound<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             foreach (ExcelTableColumnAttributeAndPropertyInfo columnAttribute in properyInfoAndColumnAttributes)
             {
@@ -452,7 +454,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="formattedExceptionMessage"></param>
         public static void CheckHeadersAndThrow<T>(this ExcelWorksheet worksheet, int headerRowIndex, string formattedExceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             for (var i = 0; i < properyInfoAndColumnAttributes.Count; i++)
             {
@@ -478,6 +480,7 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="worksheet"></param>
         /// <returns></returns>
+        [CanBeNull]
         public static ExcelAddressBase GetValuedDimension(this ExcelWorksheet worksheet)
         {
             ExcelAddressBase dimension = worksheet.Dimension;
@@ -530,7 +533,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="exceptionMessage"></param>
         public static void CheckExistenceOfColumnsAndThrow<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
             List<KeyValuePair<int, string>> columns = worksheet.GetColumns(rowIndex).ToList();
 
             for (var i = 0; i < properyInfoAndColumnAttributes.Count; i++)

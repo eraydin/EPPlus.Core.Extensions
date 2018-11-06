@@ -1,5 +1,7 @@
 ﻿using System;
 
+using static EPPlus.Core.Extensions.Helpers.Guard;
+
 namespace EPPlus.Core.Extensions
 {
     /// <inheritdoc />
@@ -38,15 +40,8 @@ namespace EPPlus.Core.Extensions
             get => _columnName;
             set
             {
-                if (_columnIndex > 0)
-                {
-                    throw new ArgumentException($"Cannot set both {nameof(ColumnName)} and {nameof(ColumnIndex)}!");
-                }
-
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException($"{nameof(ColumnName)} cannot be null or empty!");
-                }
+                ThrowIfConditionMet(_columnIndex > 0, "Cannot set both {0} and {1}!", nameof(ColumnName), nameof(ColumnIndex));
+                NotNullOrWhiteSpace(value, nameof(ColumnName));
 
                 _columnName = value;
             }
@@ -60,16 +55,8 @@ namespace EPPlus.Core.Extensions
             get => _columnIndex;
             set
             {
-                if (_columnName != null)
-                {
-                    throw new ArgumentException($"Cannot set both {nameof(ColumnName)} and {nameof(ColumnIndex)}!");
-                }
-
-                if (value <= 0)
-                {
-                    throw new ArgumentException($"{nameof(ColumnIndex)} cannot be zero or negative!");
-                }
-
+                ThrowIfConditionMet(_columnName != null, "Cannot set both {0} and {1}!", nameof(ColumnName), nameof(ColumnIndex));
+                ThrowIfConditionMet(value <= 0, "{0} cannot be zero or negative!", nameof(ColumnIndex));
                 _columnIndex = value;
             }
         }

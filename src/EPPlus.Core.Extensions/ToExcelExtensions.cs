@@ -6,6 +6,9 @@ using EPPlus.Core.Extensions.Configuration;
 
 using OfficeOpenXml;
 
+using static EPPlus.Core.Extensions.Helpers.Guard;
+
+
 namespace EPPlus.Core.Extensions
 {
     public static class ToExcelExtensions
@@ -161,10 +164,7 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this byte[] buffer)
         {
-            if (buffer == null || buffer.Length <= 0)
-            {
-                throw new ArgumentException($"{nameof(buffer)} cannot be null or empty");
-            }
+            NotNullOrEmpty(buffer, nameof(buffer));
 
             using (var memoryStream = new MemoryStream(buffer))
             {
@@ -180,15 +180,8 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this byte[] buffer, string password)
         {
-            if (buffer == null || buffer.Length <= 0)
-            {
-                throw new ArgumentException($"{nameof(buffer)} cannot be null or empty");
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException($"{nameof(password)} cannot be null or empty");
-            }
+            NotNullOrEmpty(buffer, nameof(buffer));
+            NotNullOrWhiteSpace(password, nameof(password));
 
             using (var memoryStream = new MemoryStream(buffer))
             {
@@ -203,10 +196,7 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this Stream stream)
         {
-            if (stream == null)
-            {
-                throw new ArgumentException($"{nameof(stream)} cannot be null");
-            }
+            NotNull(stream, nameof(stream));
 
             return new ExcelPackage(stream);
         }
@@ -219,15 +209,8 @@ namespace EPPlus.Core.Extensions
         /// <returns>Excel package</returns>
         public static ExcelPackage AsExcelPackage(this Stream stream, string password)
         {
-            if (stream == null)
-            {
-                throw new ArgumentException($"{nameof(stream)} cannot be null");
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException($"{nameof(password)} cannot be null or empty");
-            }
+            NotNull(stream, nameof(stream));
+            NotNullOrWhiteSpace(password, nameof(password));
 
             return new ExcelPackage(stream, password);
         }

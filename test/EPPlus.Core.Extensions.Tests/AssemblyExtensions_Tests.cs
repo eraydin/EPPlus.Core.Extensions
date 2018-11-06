@@ -63,7 +63,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<ExcelTableColumnAttributeAndPropertyInfo> results = firstType.GetExcelTableColumnAttributesWithProperyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> results = firstType.GetExcelTableColumnAttributesWithPropertyInfo();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

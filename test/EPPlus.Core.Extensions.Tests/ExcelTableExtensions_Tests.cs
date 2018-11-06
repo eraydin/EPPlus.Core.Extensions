@@ -404,7 +404,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ArgumentException>().WithMessage($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
+            action.Should().Throw<InvalidOperationException>().WithMessage($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
         }
 
         [Fact]

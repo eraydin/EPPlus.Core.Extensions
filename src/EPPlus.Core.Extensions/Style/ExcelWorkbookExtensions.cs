@@ -5,6 +5,8 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Style.XmlAccess;
 
+using static EPPlus.Core.Extensions.Helpers.Guard;
+
 namespace EPPlus.Core.Extensions.Style
 {
     public static class ExcelWorkbookExtensions
@@ -14,17 +16,15 @@ namespace EPPlus.Core.Extensions.Style
         /// </summary>
         /// <param name="workbook">The workbook</param>
         /// <param name="styleName">The name of style</param>
-        /// <param name="style">The style actions will be applied</param>
+        /// <param name="styleAction">The style actions which will be applied</param>
         /// <returns></returns>
-        public static ExcelWorkbook CreateNamedStyle(this ExcelWorkbook workbook, string styleName, Action<ExcelStyle> style)
+        public static ExcelWorkbook CreateNamedStyle(this ExcelWorkbook workbook, string styleName, Action<ExcelStyle> styleAction)
         {
-            if (workbook.Styles.NamedStyles.Any(x => x.Name == styleName))
-            {
-                throw new ArgumentException($"The Excel package already has a style with the name of '{styleName}'");
-            }
-
+            NotNull(styleAction, nameof(styleAction));
+            ThrowIfConditionMet(workbook.Styles.NamedStyles.Any(x => x.Name == styleName), "The Excel package already has a style with the name of '{0}'", styleName);
+            
             ExcelNamedStyleXml errorStyle = workbook.Styles.CreateNamedStyle(styleName);
-            style.Invoke(errorStyle.Style);
+            styleAction.Invoke(errorStyle.Style);
 
             return workbook;
         }
@@ -34,14 +34,16 @@ namespace EPPlus.Core.Extensions.Style
         /// </summary>
         /// <param name="workbook">The workbook</param>
         /// <param name="styleName">The name of style</param>
-        /// <param name="style">The style actions will be applied</param>
+        /// <param name="styleAction">The style action which will be applied</param>
         /// <returns></returns>
-        public static ExcelWorkbook CreateNamedStyleIfNotExists(this ExcelWorkbook workbook, string styleName, Action<ExcelStyle> style)
+        public static ExcelWorkbook CreateNamedStyleIfNotExists(this ExcelWorkbook workbook, string styleName, Action<ExcelStyle> styleAction)
         {
+            NotNull(styleAction, nameof(styleAction));
+
             if (workbook.Styles.NamedStyles.All(x => x.Name != styleName))
             {
                 ExcelNamedStyleXml errorStyle = workbook.Styles.CreateNamedStyle(styleName);
-                style.Invoke(errorStyle.Style);
+                styleAction.Invoke(errorStyle.Style);
             }
             return workbook;
         }

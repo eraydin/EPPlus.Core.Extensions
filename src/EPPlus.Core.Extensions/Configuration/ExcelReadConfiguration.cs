@@ -1,4 +1,6 @@
-﻿namespace EPPlus.Core.Extensions.Configuration
+﻿using EPPlus.Core.Extensions.Events;
+
+namespace EPPlus.Core.Extensions.Configuration
 {
     public abstract class ExcelReadConfiguration<T>
     {

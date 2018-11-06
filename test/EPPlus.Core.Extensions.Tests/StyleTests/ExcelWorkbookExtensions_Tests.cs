@@ -107,7 +107,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<ArgumentException>();
+            action.Should().Throw<InvalidOperationException>();
         }
 
         [Fact]

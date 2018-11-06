@@ -4,6 +4,8 @@ using System.Reflection;
 
 using OfficeOpenXml;
 
+using static EPPlus.Core.Extensions.Helpers.Guard;
+
 namespace EPPlus.Core.Extensions
 {
     public static class ExcelTemplateGenerator
@@ -34,12 +36,9 @@ namespace EPPlus.Core.Extensions
         {
             Type type = executingAssembly.GetExcelWorksheetMarkedTypeByName(typeName);
 
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type), $"Type of {typeName} could not found.");
-            }
-
-            List<ExcelTableColumnAttributeAndPropertyInfo> headerColumns = type.GetExcelTableColumnAttributesWithProperyInfo();
+            ThrowIfConditionMet(type == null, "Type of '{0}' could not found.", typeName);
+            
+            List<ExcelTableColumnAttributeAndPropertyInfo> headerColumns = type.GetExcelTableColumnAttributesWithPropertyInfo();
 
             ExcelWorksheet worksheet = excelPackage.AddWorksheet(type.GetWorksheetName() ?? typeName);
 
