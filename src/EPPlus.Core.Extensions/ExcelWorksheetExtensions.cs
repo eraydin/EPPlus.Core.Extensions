@@ -6,8 +6,6 @@ using System.Linq;
 using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Exceptions;
 
-using JetBrains.Annotations;
-
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 
@@ -23,7 +21,6 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
         /// <returns></returns>
-        [CanBeNull]
         public static ExcelAddress GetDataBounds(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension() ?? worksheet.Dimension;
@@ -480,7 +477,6 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="worksheet"></param>
         /// <returns></returns>
-        [CanBeNull]
         public static ExcelAddressBase GetValuedDimension(this ExcelWorksheet worksheet)
         {
             ExcelAddressBase dimension = worksheet.Dimension;
