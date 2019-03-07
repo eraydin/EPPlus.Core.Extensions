@@ -48,6 +48,11 @@ namespace EPPlus.Core.Extensions.Tests
             inputs.Select(x => x.CampaignId).Should().AllBeEquivalentTo(1);
             inputs.Select(x => x.StockChannel).Should().AllBeEquivalentTo(StockChannel.Ft);
             inputs.Select(x => x.ProductListId).Should().AllBeEquivalentTo(1);
+            inputs.First().IsPublished.Should().BeTrue();
+            inputs.Last().IsPublished.Should().BeFalse();
+            inputs.Count(x => !x.IsPublished).Should().Be(1187);
+            inputs.Count(x => x.IsPublished).Should().Be(562);
+
             inputs.Last().Index.Should().Be(1750);
         }
     }
@@ -75,6 +80,9 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn(ColumnNames.Price)]
         public decimal Price { get; set; } = 0;
+
+        [ExcelTableColumn(ColumnNames.IsPublished)]
+        public bool IsPublished { get; set; }
     }
 
     public static class ColumnNames
@@ -91,6 +99,8 @@ namespace EPPlus.Core.Extensions.Tests
         public const string Message = "Mesaj";
 
         public const string StBuyingPrice = "St Alış Fiyatı";
+
+        public const string IsPublished = "Yayında mı?";
     }
 
     public enum StockChannel

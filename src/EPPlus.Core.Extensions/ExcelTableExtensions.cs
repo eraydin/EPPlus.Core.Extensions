@@ -87,7 +87,7 @@ namespace EPPlus.Core.Extensions
         ///     Only primitives and enums are supported as property.
         ///     Currently supports only tables with header.
         /// </remarks>
-        /// <typeparam name="T">Type to map to. Type should be a class and should have parameterless constructor.</typeparam>
+        /// <typeparam name="T">Type to map to. Type should be a class and should have parameter-less constructor.</typeparam>
         /// <param name="table">Table object to fetch</param>
         /// <param name="configurationAction"></param>
         /// <returns>An enumerable of the generating type</returns>
@@ -259,7 +259,7 @@ namespace EPPlus.Core.Extensions
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                     null,
                     item,
-                    new object[] { cell });
+                    new object[] { Convert.ToBoolean(cell) });
             }
 
             if (type.IsEnum)
