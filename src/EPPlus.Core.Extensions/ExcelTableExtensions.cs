@@ -4,7 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
+using EPPlus.Core.Extensions.Attributes;
 using EPPlus.Core.Extensions.Configuration;
+using EPPlus.Core.Extensions.Enrichments;
 using EPPlus.Core.Extensions.Exceptions;
 
 using OfficeOpenXml;
@@ -171,10 +173,10 @@ namespace EPPlus.Core.Extensions
             List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             // Build property-table column mapping
-            foreach (ExcelTableColumnAttributeAndPropertyInfo properyInfoAndColumnAttribute in propertyInfoAndColumnAttributes)
+            foreach (var propertyInfoAndColumnAttribute in propertyInfoAndColumnAttributes)
             {
-                PropertyInfo propertyInfo = properyInfoAndColumnAttribute.PropertyInfo;
-                ExcelTableColumnAttribute columnAttribute = properyInfoAndColumnAttribute.ColumnAttribute;
+                PropertyInfo propertyInfo = propertyInfoAndColumnAttribute.PropertyInfo;
+                ExcelTableColumnAttribute columnAttribute = propertyInfoAndColumnAttribute.ColumnAttribute;
 
                 int col = -1;
 
@@ -271,7 +273,7 @@ namespace EPPlus.Core.Extensions
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                         null,
                         item,
-                        new object[] { Enum.Parse(type, cell.ToString(), true) });
+                        new [] { Enum.Parse(type, cell.ToString(), true) });
                 }
                 else // ...and numeric cell value
                 {
@@ -282,7 +284,7 @@ namespace EPPlus.Core.Extensions
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                         null,
                         item,
-                        new object[] { Enum.ToObject(type, cell.ChangeType(underType)) });
+                        new [] { Enum.ToObject(type, cell.ChangeType(underType)) });
                 }
             }
 
@@ -293,7 +295,7 @@ namespace EPPlus.Core.Extensions
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                     null,
                     item,
-                    new object[] { cell.ChangeType(type) });
+                    new [] { cell.ChangeType(type) });
             }
 
             Validator.ValidateProperty(property.GetValue(item), new ValidationContext(item) { MemberName = property.Name });

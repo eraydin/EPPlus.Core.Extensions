@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
 
-namespace EPPlus.Core.Extensions
+using EPPlus.Core.Extensions.Attributes;
+
+namespace EPPlus.Core.Extensions.Enrichments
 {
     internal class ExcelTableColumnAttributeAndPropertyInfo
     {

@@ -245,12 +245,10 @@ namespace EPPlus.Core.Extensions
             lastWorksheet.AppendWorksheet();
 
             using (var stream = new MemoryStream())
+            using (ExcelPackage package = lastWorksheet.Package)
             {
-                using (ExcelPackage package = lastWorksheet.Package)
-                {
-                    package.SaveAs(stream);
-                    return stream.ToArray();
-                }
+                package.SaveAs(stream);
+                return stream.ToArray();
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EPPlus.Core.Extensions
+namespace EPPlus.Core.Extensions.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class ExcelWorksheetAttribute : Attribute

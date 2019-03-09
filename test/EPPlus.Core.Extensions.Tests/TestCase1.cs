@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Reflection;
 
+using EPPlus.Core.Extensions.Attributes;
+
 using FluentAssertions;
 
 using OfficeOpenXml;

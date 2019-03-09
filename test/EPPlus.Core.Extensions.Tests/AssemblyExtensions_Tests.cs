@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using EPPlus.Core.Extensions.Enrichments;
+
 using FluentAssertions;
 
 using Xunit;

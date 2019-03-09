@@ -1,5 +1,7 @@
 ﻿using System;
 
+using EPPlus.Core.Extensions.Attributes;
+
 using FluentAssertions;
 
 using Xunit;

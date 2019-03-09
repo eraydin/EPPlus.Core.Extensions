@@ -42,7 +42,7 @@ namespace EPPlus.Core.Extensions.Tests
             excelPackage1.Should().NotBe(null);
             excelPackage1.GetWorksheet(worksheetIndex).GetColumns(1).Count().Should().BeGreaterThan(0);
 
-            act.Should().Throw<InvalidOperationException>().WithMessage("Type of 'sadas' could not found.");
+            act.Should().Throw<InvalidOperationException>().WithMessage("The 'sadas' type could not found in the assembly.");
         }
 
         [Fact]

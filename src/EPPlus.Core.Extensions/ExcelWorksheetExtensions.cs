@@ -4,7 +4,9 @@ using System.Data;
 using System.Linq;
 
 using EPPlus.Core.Extensions.Configuration;
+using EPPlus.Core.Extensions.Enrichments;
 using EPPlus.Core.Extensions.Exceptions;
+using EPPlus.Core.Extensions.Helpers;
 
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
@@ -261,6 +263,8 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, int startColumnIndex = 1, Action<ExcelRange> configureCells = null)
         {
+            NotNull(items, nameof(items));
+
             for (var i = 0; i < items.Count(); i++)
             {
                 for (int j = startColumnIndex; j < startColumnIndex + typeof(T).GetProperties().Length; j++)
@@ -351,9 +355,9 @@ namespace EPPlus.Core.Extensions
 
         public static void CheckAndThrowIfDuplicatedColumnsFound<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
-            foreach (ExcelTableColumnAttributeAndPropertyInfo columnAttribute in properyInfoAndColumnAttributes)
+            foreach (ExcelTableColumnAttributeAndPropertyInfo columnAttribute in propertyInfoAndColumnAttributes)
             {
                 if (worksheet.IsColumnDuplicatedOnRow(rowIndex, columnAttribute.ToString()))
                 {
@@ -529,14 +533,14 @@ namespace EPPlus.Core.Extensions
         /// <param name="exceptionMessage"></param>
         public static void CheckExistenceOfColumnsAndThrow<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
             List<KeyValuePair<int, string>> columns = worksheet.GetColumns(rowIndex).ToList();
 
-            for (var i = 0; i < properyInfoAndColumnAttributes.Count; i++)
+            for (var i = 0; i < propertyInfoAndColumnAttributes.Count; i++)
             {
-                if (!columns.Any(x => x.Value.Equals(properyInfoAndColumnAttributes[i].ToString())))
+                if (!columns.Any(x => x.Value.Equals(propertyInfoAndColumnAttributes[i].ToString())))
                 {
-                    throw new ExcelValidationException(string.Format(exceptionMessage ?? "'{0}' column is not found on the worksheet.", properyInfoAndColumnAttributes[i]));
+                    throw new ExcelValidationException(string.Format(exceptionMessage ?? "'{0}' column is not found on the worksheet.", propertyInfoAndColumnAttributes[i]));
                 }
             }
         }

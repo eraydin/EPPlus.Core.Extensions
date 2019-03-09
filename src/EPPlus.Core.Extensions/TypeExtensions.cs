@@ -4,6 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+using EPPlus.Core.Extensions.Attributes;
+using EPPlus.Core.Extensions.Enrichments;
+
 using static EPPlus.Core.Extensions.Helpers.Guard;
 
 [assembly: InternalsVisibleTo("EPPlus.Core.Extensions.Tests")]
@@ -27,7 +30,7 @@ namespace EPPlus.Core.Extensions
                                                                                                  .Where(p => p.ColumnAttribute != null)
                                                                                                  .ToList();
 
-            ThrowIfConditionMet(!columnAttributesWithPropertyInfo.Any(), "Given object does not have any {0}.", nameof(ExcelTableColumnAttribute));
+            ThrowIfConditionMet(!columnAttributesWithPropertyInfo.Any(), "Given object does not have any '{0}'.", nameof(ExcelTableColumnAttribute));
            
             return columnAttributesWithPropertyInfo;
         }

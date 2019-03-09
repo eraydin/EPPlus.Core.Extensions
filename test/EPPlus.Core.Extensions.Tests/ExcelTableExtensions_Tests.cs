@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Attributes;
 using EPPlus.Core.Extensions.Exceptions;
 
 using FluentAssertions;
@@ -404,7 +405,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            action.Should().Throw<InvalidOperationException>().WithMessage($"Given object does not have any {nameof(ExcelTableColumnAttribute)}.");
+            action.Should().Throw<InvalidOperationException>().WithMessage($"Given object does not have any '{nameof(ExcelTableColumnAttribute)}'.");
         }
 
         [Fact]

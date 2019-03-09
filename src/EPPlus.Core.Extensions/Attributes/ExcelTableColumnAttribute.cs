@@ -2,7 +2,7 @@
 
 using static EPPlus.Core.Extensions.Helpers.Guard;
 
-namespace EPPlus.Core.Extensions
+namespace EPPlus.Core.Extensions.Attributes
 {
     /// <inheritdoc />
     /// <summary>

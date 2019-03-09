@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 
+using EPPlus.Core.Extensions.Attributes;
+
 namespace EPPlus.Core.Extensions.Tests
 {
     internal enum Manufacturers

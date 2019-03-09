@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using EPPlus.Core.Extensions.Configuration;
+using EPPlus.Core.Extensions.Enrichments;
 
 using OfficeOpenXml;
 
@@ -24,28 +25,6 @@ namespace EPPlus.Core.Extensions
         internal List<WorksheetTitleRow> Titles { get; set; }
 
         internal ExcelCreateConfiguration<T> Configuration { get; } = DefaultExcelCreateConfiguration<T>.Instance;
-
-        /// <summary>
-        ///     Generates columns for all public properties on the type
-        /// </summary>
-        /// <returns></returns>
-        internal List<WorksheetColumn<T>> AutoGenerateColumns()
-        {
-            var columns = new List<WorksheetColumn<T>>();
-
-            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
-
-            foreach (ExcelTableColumnAttributeAndPropertyInfo properyInfoAndColumnAttribute in properyInfoAndColumnAttributes)
-            {
-                columns.Add(new WorksheetColumn<T>
-                            {
-                                Header = properyInfoAndColumnAttribute.ToString(),
-                                Map = GetGetter<T>(properyInfoAndColumnAttribute.PropertyInfo.Name)
-                            });
-            }
-
-            return columns;
-        }
 
         /// <summary>
         ///     Wraps creation of an Excel worksheet
@@ -127,6 +106,22 @@ namespace EPPlus.Core.Extensions
             }
         }
 
+        /// <summary>
+        ///     Generates columns for all public properties on the type
+        /// </summary>
+        /// <returns></returns>
+        private List<WorksheetColumn<T>> AutoGenerateColumns()
+        {
+            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+
+            var columns = propertyInfoAndColumnAttributes.Select(x => new WorksheetColumn<T>
+                                                         {
+                                                             Header = x.ToString(),
+                                                             Map = GetGetter<T>(x.PropertyInfo.Name)
+                                                         })
+                                                         .ToList();
+            return columns;
+        }
         private Func<TP, object> GetGetter<TP>(string propertyName)
         {
             ParameterExpression arg = Expression.Parameter(typeof(TP), "x");
