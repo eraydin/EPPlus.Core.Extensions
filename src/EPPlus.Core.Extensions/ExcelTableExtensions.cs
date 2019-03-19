@@ -177,7 +177,7 @@ namespace EPPlus.Core.Extensions
             {
                 PropertyInfo propertyInfo = propertyInfoAndColumnAttribute.PropertyInfo;
                 ExcelTableColumnAttribute columnAttribute = propertyInfoAndColumnAttribute.ColumnAttribute;
-
+                
                 int col = -1;
 
                 // There is no case when both column name and index is specified since this is excluded by the attribute
@@ -197,7 +197,7 @@ namespace EPPlus.Core.Extensions
 
                 if (col == -1)
                 {
-                    throw new ExcelValidationException(string.Format(configuration.ColumnValidationExceptionMessage, columnAttribute.ColumnName))
+                    throw new ExcelValidationException(string.Format(configuration.ColumnValidationExceptionMessage, columnAttribute.ColumnName ?? propertyInfo.Name))
                         .WithArguments(new ExcelExceptionArgs
                                        {
                                            ColumnName = columnAttribute.ColumnName,
