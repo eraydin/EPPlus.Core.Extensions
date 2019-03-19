@@ -644,31 +644,32 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_add_two_different_titles()
+        public void Should_add_multiple_titles()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelPackage package;
-            var worksheetIndex = 0;
-#if NETFRAMEWORK
-            worksheetIndex = 1;
-#endif
+            const string worksheetName = "Actors";
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             package = _personList
-                .ToWorksheet("Actors")
+                .ToWorksheet(worksheetName)
                 .WithTitle("title 1")
                 .WithTitle("title 2")
+                .WithTitle("title 3")
                 .ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            package.GetWorksheet(worksheetIndex).Cells[1, 1].Value.Should().Be("title 1");
-            package.GetWorksheet(worksheetIndex).Cells[2, 1].Value.Should().Be("title 2");
+            var worksheet = package.GetWorksheet(worksheetName);
+            worksheet.Cells[1, 1].Value.Should().Be("title 1");
+            worksheet.Cells[2, 1].Value.Should().Be("title 2");
+            worksheet.Cells[3, 1].Value.Should().Be("title 3");
+            // TODO: Fix reparsing problem. Provide an option to set Excel worksheet start index.
         }
     }
 }
