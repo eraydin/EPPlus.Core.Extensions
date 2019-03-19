@@ -829,5 +829,27 @@ namespace EPPlus.Core.Extensions.Tests
             actionForEmptySheet1.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Barcode' column is not found on the worksheet.");
             actionForEmptySheet2.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'LicensePlate' column is not found on the worksheet.");
         }
+
+        [Fact]
+        public void Should_throw_exception_if_columnname_and_columnindex_not_defined_and_column_missing_on_Excel()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action act = () =>
+            {
+                var result = worksheet1.ToList<DefaultMap>();
+            };
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            act.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Name' column could not found on the worksheet.");
+        }
     }
 }

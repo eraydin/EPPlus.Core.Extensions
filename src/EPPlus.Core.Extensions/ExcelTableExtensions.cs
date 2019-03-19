@@ -171,10 +171,10 @@ namespace EPPlus.Core.Extensions
             List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             // Build property-table column mapping
-            foreach (ExcelTableColumnAttributeAndPropertyInfo properyInfoAndColumnAttribute in propertyInfoAndColumnAttributes)
+            foreach (var propertyInfoAndColumnAttribute in propertyInfoAndColumnAttributes)
             {
-                PropertyInfo propertyInfo = properyInfoAndColumnAttribute.PropertyInfo;
-                ExcelTableColumnAttribute columnAttribute = properyInfoAndColumnAttribute.ColumnAttribute;
+                PropertyInfo propertyInfo = propertyInfoAndColumnAttribute.PropertyInfo;
+                ExcelTableColumnAttribute columnAttribute = propertyInfoAndColumnAttribute.ColumnAttribute;
 
                 int col = -1;
 
@@ -195,7 +195,7 @@ namespace EPPlus.Core.Extensions
 
                 if (col == -1)
                 {
-                    throw new ExcelValidationException(string.Format(configuration.ColumnValidationExceptionMessage, columnAttribute.ColumnName))
+                    throw new ExcelValidationException(string.Format(configuration.ColumnValidationExceptionMessage, columnAttribute.ColumnName ?? propertyInfo.Name))
                         .WithArguments(new ExcelExceptionArgs
                                        {
                                            ColumnName = columnAttribute.ColumnName,
@@ -271,7 +271,7 @@ namespace EPPlus.Core.Extensions
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                         null,
                         item,
-                        new object[] { Enum.Parse(type, cell.ToString(), true) });
+                        new [] { Enum.Parse(type, cell.ToString(), true) });
                 }
                 else // ...and numeric cell value
                 {
@@ -282,7 +282,7 @@ namespace EPPlus.Core.Extensions
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                         null,
                         item,
-                        new object[] { Enum.ToObject(type, cell.ChangeType(underType)) });
+                        new [] { Enum.ToObject(type, cell.ChangeType(underType)) });
                 }
             }
 
@@ -293,7 +293,7 @@ namespace EPPlus.Core.Extensions
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty,
                     null,
                     item,
-                    new object[] { cell.ChangeType(type) });
+                    new [] { cell.ChangeType(type) });
             }
 
             Validator.ValidateProperty(property.GetValue(item), new ValidationContext(item) { MemberName = property.Name });
