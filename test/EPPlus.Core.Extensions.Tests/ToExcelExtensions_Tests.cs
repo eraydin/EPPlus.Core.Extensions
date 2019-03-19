@@ -642,5 +642,33 @@ namespace EPPlus.Core.Extensions.Tests
                 package.GetWorksheet(worksheetIndex).Cells[i + 2, 1].Text.Should().Be(_personList[i].LastName);
             }
         }
+
+        [Fact]
+        public void Should_add_two_different_titles()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelPackage package;
+            var worksheetIndex = 0;
+#if NETFRAMEWORK
+            worksheetIndex = 1;
+#endif
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            package = _personList
+                .ToWorksheet("Actors")
+                .WithTitle("title 1")
+                .WithTitle("title 2")
+                .ToExcelPackage();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            package.GetWorksheet(worksheetIndex).Cells[1, 1].Value.Should().Be("title 1");
+            package.GetWorksheet(worksheetIndex).Cells[2, 1].Value.Should().Be("title 2");
+        }
     }
 }

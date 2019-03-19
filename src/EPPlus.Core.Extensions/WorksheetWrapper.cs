@@ -51,7 +51,7 @@ namespace EPPlus.Core.Extensions
             {
                 for (var i = 0; i < Titles.Count; i++)
                 {
-                    ExcelRange range = worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count];
+                    ExcelRange range = worksheet.Cells[rowOffset + 1 + i, 1, rowOffset + 1 + i, Columns.Count];
                     range.Merge = true;
                     range.Value = Titles[i].Title;
 
