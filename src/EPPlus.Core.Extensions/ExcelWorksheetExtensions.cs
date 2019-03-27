@@ -88,7 +88,7 @@ namespace EPPlus.Core.Extensions
             {
                 // Has any table on same addresses
                 ExcelAddress dataBounds = worksheet.GetDataBounds(false);
-                ExcelTable excelTable = worksheet.Tables.FirstOrDefault(x => x.Address.Address.Equals(dataBounds.Address, StringComparison.InvariantCultureIgnoreCase));
+                ExcelTable excelTable = worksheet.Tables.FirstOrDefault(x => x.Address.End.Address.Equals(dataBounds.End.Address, StringComparison.OrdinalIgnoreCase));
                 if (excelTable != null)
                 {
                     return excelTable;

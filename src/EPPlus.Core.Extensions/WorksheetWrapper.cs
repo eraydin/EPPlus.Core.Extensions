@@ -7,6 +7,7 @@ using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Enrichments;
 
 using OfficeOpenXml;
+using OfficeOpenXml.Table;
 
 namespace EPPlus.Core.Extensions
 {
@@ -37,7 +38,7 @@ namespace EPPlus.Core.Extensions
             }
 
             ExcelWorksheet worksheet = Package.Workbook.Worksheets.Add(Name);
-
+            
             var rowOffset = 0;
 
             //if no columns specified auto generate them with reflection
@@ -45,6 +46,8 @@ namespace EPPlus.Core.Extensions
             {
                 Columns = AutoGenerateColumns();
             }
+            
+            CreateExcelTable(worksheet);
 
             //render title rows
             if (Titles != null)
@@ -76,10 +79,6 @@ namespace EPPlus.Core.Extensions
                 {
                     Configuration.ConfigureHeaderRow.Invoke(worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count]);
                 }
-                else
-                {
-                    worksheet.Cells[rowOffset + 1, 1, rowOffset + 1, Columns.Count].AutoFilter = true;
-                }
 
                 rowOffset++;
             }
@@ -104,6 +103,16 @@ namespace EPPlus.Core.Extensions
                 Configuration.ConfigureColumn?.Invoke(worksheet.Column(i + 1));
                 Columns[i].ConfigureColumn?.Invoke(worksheet.Column(i + 1));
             }
+        }
+
+        private void CreateExcelTable(ExcelWorksheet worksheet)
+        {
+            var tableStartRow = (Titles?.Count ?? 0) + 1;
+            var tableEndRow = tableStartRow + (Rows?.Count() ?? 0);
+            var columnsCount = (Columns?.Count ?? 1);
+            string tableName = $"Table{new Random(Guid.NewGuid().GetHashCode()).Next(99999)}"; // TODO: 
+            var tableRange = worksheet.Cells[tableStartRow, 1, tableEndRow, columnsCount];
+            worksheet.Tables.Add(tableRange, tableName).TableStyle = TableStyles.None;
         }
 
         /// <summary>

@@ -669,7 +669,6 @@ namespace EPPlus.Core.Extensions.Tests
             worksheet.Cells[1, 1].Value.Should().Be("title 1");
             worksheet.Cells[2, 1].Value.Should().Be("title 2");
             worksheet.Cells[3, 1].Value.Should().Be("title 3");
-            // TODO: Fix reparsing problem. Provide an option to set Excel worksheet start index.
         }
     }
 }
