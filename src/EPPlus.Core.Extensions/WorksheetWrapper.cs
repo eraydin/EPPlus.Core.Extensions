@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 
 using EPPlus.Core.Extensions.Configuration;
 using EPPlus.Core.Extensions.Enrichments;
+using EPPlus.Core.Extensions.Helpers;
 
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
@@ -47,8 +48,6 @@ namespace EPPlus.Core.Extensions
                 Columns = AutoGenerateColumns();
             }
             
-            CreateExcelTable(worksheet);
-
             //render title rows
             if (Titles != null)
             {
@@ -83,6 +82,8 @@ namespace EPPlus.Core.Extensions
                 rowOffset++;
             }
 
+            CreateTableIfPossible(worksheet);
+
             //render data
             if (Rows != null)
             {
@@ -104,17 +105,7 @@ namespace EPPlus.Core.Extensions
                 Columns[i].ConfigureColumn?.Invoke(worksheet.Column(i + 1));
             }
         }
-
-        private void CreateExcelTable(ExcelWorksheet worksheet)
-        {
-            var tableStartRow = (Titles?.Count ?? 0) + 1;
-            var tableEndRow = tableStartRow + (Rows?.Count() ?? 0);
-            var columnsCount = (Columns?.Count ?? 1);
-            string tableName = $"Table{new Random(Guid.NewGuid().GetHashCode()).Next(99999)}"; // TODO: 
-            var tableRange = worksheet.Cells[tableStartRow, 1, tableEndRow, columnsCount];
-            worksheet.Tables.Add(tableRange, tableName).TableStyle = TableStyles.None;
-        }
-
+     
         /// <summary>
         ///     Generates columns for all public properties on the type
         /// </summary>
@@ -131,6 +122,23 @@ namespace EPPlus.Core.Extensions
                                                          .ToList();
             return columns;
         }
+
+        private void CreateTableIfPossible(ExcelWorksheet worksheet)
+        {
+            try
+            {
+                var tableStartRow = (Titles?.Count ?? 0) + 1;
+                var tableEndRow = tableStartRow + (Rows?.Count() ?? 0);
+                var columnsCount = (Columns?.Count ?? 1);
+                var tableRange = worksheet.Cells[tableStartRow, 1, tableEndRow, columnsCount];
+                worksheet.Tables.Add(tableRange, StringHelper.GenerateRandomTableName()).TableStyle = TableStyles.None;
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
         private Func<TP, object> GetGetter<TP>(string propertyName)
         {
             ParameterExpression arg = Expression.Parameter(typeof(TP), "x");

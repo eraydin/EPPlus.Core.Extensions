@@ -66,9 +66,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
-            // Table names should be unique
-            string tableName = $"Table{new Random(Guid.NewGuid().GetHashCode()).Next(99999)}";
-            return worksheet.AsExcelTable(tableName, hasHeaderRow);
+            return worksheet.AsExcelTable(StringHelper.GenerateRandomTableName(), hasHeaderRow);
         }
 
         public static ExcelTable GetTable(this ExcelWorksheet worksheet, string tableName) => worksheet.Tables.FirstOrDefault(x => x.Name == tableName);

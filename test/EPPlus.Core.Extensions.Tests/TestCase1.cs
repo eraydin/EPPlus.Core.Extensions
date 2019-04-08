@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using EPPlus.Core.Extensions.Attributes;
@@ -57,6 +59,36 @@ namespace EPPlus.Core.Extensions.Tests
 
             inputs.Last().Index.Should().Be(1750);
         }
+
+        [Fact(DisplayName = "https://github.com/eraydin/EPPlus.Core.Extensions/issues/23")]
+        public void Worksheet_CreatedBy_ToExcelPackage_ShouldBeParseable()
+        {
+            var rows = new[]
+            {
+                new DtoString(){ DateColumn = new DateTime(2019,12,30).ToString() }
+            };
+            var excelPackage = rows.ToExcelPackage();
+        
+            //excelPackage.SaveAs(new FileInfo("c:\\test\\abde.xlsx"));
+
+
+            var worksheet = excelPackage.Workbook.Worksheets["DtoString"];
+
+
+
+            //throws EPPlus.Core.Extensions.Exceptions.ExcelValidationException : 'DateColumn' column could not found on the worksheet.
+            var parsedRows = worksheet.ToList<DtoString>();
+
+            parsedRows.Count.Should().Be(rows.Length);
+        }
+
+
+        public class DtoString
+        {
+            [ExcelTableColumn]
+            public string DateColumn { get; set; }
+        }
+
     }
 
     public class PriceInput

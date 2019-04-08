@@ -177,6 +177,11 @@ namespace EPPlus.Core.Extensions
             {
                 PropertyInfo propertyInfo = propertyInfoAndColumnAttribute.PropertyInfo;
                 ExcelTableColumnAttribute columnAttribute = propertyInfoAndColumnAttribute.ColumnAttribute;
+
+                if (columnAttribute.ColumnIndex<=0 && string.IsNullOrEmpty(columnAttribute.ColumnName))
+                {
+                    columnAttribute.ColumnName = propertyInfo.Name;
+                }
                 
                 int col = -1;
 
