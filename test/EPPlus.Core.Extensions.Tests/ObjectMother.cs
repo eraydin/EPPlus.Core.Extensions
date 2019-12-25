@@ -133,6 +133,12 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn]
         public int? Price { get; set; }
+
+        [ExcelTableColumn("Optional1", true)]
+        public decimal Optional1 { get; set; }
+
+        [ExcelTableColumn(true)]
+        public decimal Optional2 { get; set; }
     }
 
     internal class StocksNullable
@@ -145,6 +151,9 @@ namespace EPPlus.Core.Extensions.Tests
 
         [ExcelTableColumn(3)]
         public DateTime? UpdatedDate { get; set; }
+
+        [ExcelTableColumn(4, true)]
+        public decimal OptionalField { get; set; }
     }
 
     internal class StocksValidation

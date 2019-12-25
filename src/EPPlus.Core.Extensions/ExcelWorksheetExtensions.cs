@@ -453,11 +453,16 @@ namespace EPPlus.Core.Extensions
         /// <param name="formattedExceptionMessage"></param>
         public static void CheckHeadersAndThrow<T>(this ExcelWorksheet worksheet, int headerRowIndex, string formattedExceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> properyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
-            for (var i = 0; i < properyInfoAndColumnAttributes.Count; i++)
+            for (var i = 0; i < propertyInfoAndColumnAttributes.Count; i++)
             {
-                worksheet.CheckColumnAndThrow(headerRowIndex, i + 1, properyInfoAndColumnAttributes[i].ToString(), formattedExceptionMessage);
+                if (propertyInfoAndColumnAttributes[i].ColumnAttribute.IsOptional)
+                {
+                    continue;
+                }
+
+                worksheet.CheckColumnAndThrow(headerRowIndex, i + 1, propertyInfoAndColumnAttributes[i].ToString(), formattedExceptionMessage);
             }
         }
 
