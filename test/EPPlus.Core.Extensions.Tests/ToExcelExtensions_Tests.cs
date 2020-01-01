@@ -16,9 +16,9 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ToExcelExtensions_Tests : TestBase
+    public class ToExcelExtensionsTests : TestBase
     {
-        public ToExcelExtensions_Tests() => _personList = new List<Person>
+        public ToExcelExtensionsTests() => _personList = new List<Person>
                                                           {
                                                               new Person { FirstName = "Daniel", LastName = "Day-Lewis", YearBorn = 1957 },
                                                               new Person { FirstName = "Sally", LastName = "Field", YearBorn = 1946 },
@@ -35,7 +35,6 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelPackage package;
             var worksheetIndex = 0;
 #if NETFRAMEWORK
             worksheetIndex = 1;
@@ -44,7 +43,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            package = _personList.ToExcelPackage();
+            var package = _personList.ToExcelPackage();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -58,7 +57,6 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelPackage package;
             var worksheetIndex = 0;
 #if NETFRAMEWORK
             worksheetIndex = 1;
@@ -67,7 +65,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            package = _personList.ToExcelPackage(true);
+            var package = _personList.ToExcelPackage(true);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -318,7 +316,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer1 = excelPackage1.GetAsByteArray();
+            byte[] buffer1 = ExcelPackage1.GetAsByteArray();
             var buffer2 = new byte[] { };
 
             //-----------------------------------------------------------------------------------------------------------
@@ -331,8 +329,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package1.Should().NotBeNull();
-            package1.Workbook.Worksheets.Count.Should().Be(excelPackage1.Workbook.Worksheets.Count);
-            package1.GetAllTables().Count().Should().Be(excelPackage1.GetAllTables().Count());
+            package1.Workbook.Worksheets.Count.Should().Be(ExcelPackage1.Workbook.Worksheets.Count);
+            package1.GetAllTables().Count().Should().Be(ExcelPackage1.GetAllTables().Count());
 
             act.Should().Throw<ArgumentException>();
         }
@@ -343,7 +341,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer1 = excelPackage1.GetAsByteArray("Test1234");
+            byte[] buffer1 = ExcelPackage1.GetAsByteArray("Test1234");
             var buffer2 = new byte[] { };
 
             //-----------------------------------------------------------------------------------------------------------
@@ -356,8 +354,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.Should().Be(excelPackage1.Workbook.Worksheets.Count);
-            package.GetAllTables().Count().Should().Be(excelPackage1.GetAllTables().Count());
+            package.Workbook.Worksheets.Count.Should().Be(ExcelPackage1.Workbook.Worksheets.Count);
+            package.GetAllTables().Count().Should().Be(ExcelPackage1.GetAllTables().Count());
 
             act.Should().Throw<ArgumentException>();
         }
@@ -368,7 +366,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            Stream stream = new MemoryStream(excelPackage1.GetAsByteArray());
+            Stream stream = new MemoryStream(ExcelPackage1.GetAsByteArray());
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -379,8 +377,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.Should().Be(excelPackage1.Workbook.Worksheets.Count);
-            package.GetAllTables().Count().Should().Be(excelPackage1.GetAllTables().Count());
+            package.Workbook.Worksheets.Count.Should().Be(ExcelPackage1.Workbook.Worksheets.Count);
+            package.GetAllTables().Count().Should().Be(ExcelPackage1.GetAllTables().Count());
         }
 
         [Fact]
@@ -389,7 +387,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage1.GetAsByteArray("Test1234");
+            byte[] buffer = ExcelPackage1.GetAsByteArray("Test1234");
             var stream = new MemoryStream(buffer);
 
             //-----------------------------------------------------------------------------------------------------------
@@ -401,8 +399,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             package.Should().NotBeNull();
-            package.Workbook.Worksheets.Count.Should().Be(excelPackage1.Workbook.Worksheets.Count);
-            package.GetAllTables().Count().Should().Be(excelPackage1.GetAllTables().Count());
+            package.Workbook.Worksheets.Count.Should().Be(ExcelPackage1.Workbook.Worksheets.Count);
+            package.GetAllTables().Count().Should().Be(ExcelPackage1.GetAllTables().Count());
         }
 
         [Fact]
@@ -529,7 +527,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage1.GetAsByteArray();
+            byte[] buffer = ExcelPackage1.GetAsByteArray();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -548,7 +546,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage1.GetAsByteArray("Test1234");
+            byte[] buffer = ExcelPackage1.GetAsByteArray("Test1234");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -567,7 +565,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            byte[] buffer = excelPackage1.GetAsByteArray("Test1234");
+            byte[] buffer = ExcelPackage1.GetAsByteArray("Test1234");
             var stream = new MemoryStream(buffer);
 
             //-----------------------------------------------------------------------------------------------------------

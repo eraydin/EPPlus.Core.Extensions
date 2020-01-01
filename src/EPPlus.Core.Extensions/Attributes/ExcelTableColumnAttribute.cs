@@ -15,8 +15,7 @@ namespace EPPlus.Core.Extensions.Attributes
         private int _columnIndex;
 
         private string _columnName;
-
-        private bool _isOptional;
+        
 
         public ExcelTableColumnAttribute(bool isOptional = false)
         {
@@ -70,10 +69,6 @@ namespace EPPlus.Core.Extensions.Attributes
             }
         }
 
-        public bool IsOptional
-        {
-            get => _isOptional;
-            set => _isOptional = value;
-        }
+        public bool IsOptional { get; set; }
     }
 }

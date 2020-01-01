@@ -6,7 +6,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class TypeExtensions_Tests
+    public class TypeExtensionsTests
     {
         [Fact]
         public void Test_IsNullable()

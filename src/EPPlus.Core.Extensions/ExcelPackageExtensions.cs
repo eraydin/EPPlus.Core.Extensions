@@ -18,13 +18,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="package"></param>
         public static IEnumerable<ExcelTable> GetAllTables(this ExcelPackage package)
         {
-            foreach (ExcelWorksheet ws in package.Workbook.Worksheets)
-            {
-                foreach (ExcelTable t in ws.Tables)
-                {
-                    yield return t;
-                }
-            }
+            return package.Workbook.Worksheets.SelectMany(x => x.Tables.Select(t => t));
         }
 
         /// <summary>

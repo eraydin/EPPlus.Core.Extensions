@@ -8,6 +8,8 @@ namespace EPPlus.Core.Extensions.Helpers
 {
     internal static class Guard
     {
+        private const string ErrorMessage = "Value must not be empty";
+
         [DebuggerStepThrough]
         public static void NotNull<T>(T value, string parameterName)
         {
@@ -24,7 +26,7 @@ namespace EPPlus.Core.Extensions.Helpers
 
             if (!value.Any())
             {
-                throw new ArgumentException("Value must not be empty", name);
+                throw new ArgumentException(ErrorMessage, name);
             }
         }
 
@@ -35,7 +37,7 @@ namespace EPPlus.Core.Extensions.Helpers
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentException("Value must not be empty", name);
+                throw new ArgumentException(ErrorMessage, name);
             }
         }
 
@@ -55,7 +57,7 @@ namespace EPPlus.Core.Extensions.Helpers
 
             if (value.Length == 0)
             {
-                throw new ArgumentException("Value must not be empty", name);
+                throw new ArgumentException(ErrorMessage, name);
             }
         }
     }

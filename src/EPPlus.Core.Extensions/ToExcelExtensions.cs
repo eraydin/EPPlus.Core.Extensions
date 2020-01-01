@@ -36,12 +36,12 @@ namespace EPPlus.Core.Extensions
         ///     Starts a new worksheet on the same Excel package
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="TP"></typeparam>
         /// <param name="previousSheet"></param>
         /// <param name="rows"></param>
         /// <param name="worksheetName"></param>
         /// <returns></returns>
-        public static WorksheetWrapper<T> NextWorksheet<T, K>(this WorksheetWrapper<K> previousSheet, IEnumerable<T> rows, string worksheetName)
+        public static WorksheetWrapper<T> NextWorksheet<T, TP>(this WorksheetWrapper<TP> previousSheet, IEnumerable<T> rows, string worksheetName)
         {
             previousSheet.AppendWorksheet();
 

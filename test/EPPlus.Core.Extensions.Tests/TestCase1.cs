@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
@@ -33,17 +33,18 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
 
             var inputs = sheet.ToList<PriceInput>(configuration => configuration.Intercept((current, index) =>
-                                                                                           {
-                                                                                               if (index == 1)
-                                                                                               {
-                                                                                                   return;
-                                                                                               }
+                                                                                {
+                                                                                    if (index == 1)
+                                                                                    {
+                                                                                        return;
+                                                                                    }
 
-                                                                                               current.CampaignId = campaignId;
-                                                                                               current.StockChannel = stockChannel;
-                                                                                               current.ProductListId = productListId;
-                                                                                               current.Index = index;
-                                                                                           }).SkipCastingErrors());
+                                                                                    current.CampaignId = campaignId;
+                                                                                    current.StockChannel = stockChannel;
+                                                                                    current.ProductListId = productListId;
+                                                                                    current.Index = index;
+                                                                                })
+                                                                                .SkipCastingErrors());
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -65,30 +66,25 @@ namespace EPPlus.Core.Extensions.Tests
         {
             var rows = new[]
             {
-                new DtoString(){ DateColumn = new DateTime(2019,12,30).ToString() }
+                new DtoString() { DateColumn = new DateTime(2019, 12, 30).ToString(CultureInfo.InvariantCulture) }
             };
             var excelPackage = rows.ToExcelPackage();
-        
+
             //excelPackage.SaveAs(new FileInfo("c:\\test\\abde.xlsx"));
 
-
             var worksheet = excelPackage.Workbook.Worksheets["DtoString"];
-
-
 
             //throws EPPlus.Core.Extensions.Exceptions.ExcelValidationException : 'DateColumn' column could not found on the worksheet.
             var parsedRows = worksheet.ToList<DtoString>();
 
             parsedRows.Count.Should().Be(rows.Length);
         }
+    }
 
-
-        public class DtoString
-        {
-            [ExcelTableColumn]
-            public string DateColumn { get; set; }
-        }
-
+    public class DtoString
+    {
+        [ExcelTableColumn]
+        public string DateColumn { get; set; }
     }
 
     public class PriceInput

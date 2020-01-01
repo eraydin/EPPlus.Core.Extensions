@@ -6,7 +6,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ExcelAddressExtensions_Tests : TestBase
+    public class ExcelAddressExtensionsTests : TestBase
     {
         [Fact]
         public void Should_given_address_range_be_empty_with_header_row()
@@ -14,8 +14,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelAddressBase address = excelPackage1.GetWorksheet("TEST7").GetValuedDimension();
-            ExcelAddressBase address2 = excelPackage1.Workbook.Worksheets.Add(GetRandomName()).ChangeCellValue(1, 1,"").GetValuedDimension();
+            ExcelAddressBase address = ExcelPackage1.GetWorksheet("TEST7").GetValuedDimension();
+            ExcelAddressBase address2 = ExcelPackage1.Workbook.Worksheets.Add(GetRandomName()).ChangeCellValue(1, 1,"").GetValuedDimension();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -36,7 +36,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelAddressBase address = excelPackage1.GetWorksheet("TEST7").GetValuedDimension();
+            ExcelAddressBase address = ExcelPackage1.GetWorksheet("TEST7").GetValuedDimension();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

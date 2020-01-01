@@ -14,7 +14,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ExcelTemplateGenerator_Tests
+    public class ExcelTemplateGeneratorTests
     {
         [Fact]
         public void Should_generate_an_Excel_package_from_given_ExcelExportable_class_name()

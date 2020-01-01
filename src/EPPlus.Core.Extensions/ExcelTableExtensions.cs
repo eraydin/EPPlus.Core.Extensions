@@ -45,7 +45,7 @@ namespace EPPlus.Core.Extensions
             ExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
-            List<ColumnPositionAndPropertyInfoAndIsOptional> mapping = PrepareMappings(table, configuration).Where(x => x.ColumnPosition >= 0).ToList();
+            List<ColumnAttributeAndPropertyInfo> mapping = PrepareMappings(table, configuration).Where(x => x.ColumnPosition >= 0).ToList();
             var result = new LinkedList<ExcelExceptionArgs>();
 
             ExcelAddress bounds = table.GetDataBounds();
@@ -55,7 +55,7 @@ namespace EPPlus.Core.Extensions
             // Parse table
             for (int row = bounds.Start.Row; row <= bounds.End.Row; row++)
             {
-                foreach (ColumnPositionAndPropertyInfoAndIsOptional map in mapping)
+                foreach (ColumnAttributeAndPropertyInfo map in mapping)
                 {
                     object cell = table.WorkSheet.Cells[row, map.ColumnPosition + table.Address.Start.Column].Value;
 
@@ -100,7 +100,7 @@ namespace EPPlus.Core.Extensions
 
             if (!table.IsEmpty(configuration.HasHeaderRow))
             {
-                List<ColumnPositionAndPropertyInfoAndIsOptional> mapping = PrepareMappings(table, configuration).Where(x => x.ColumnPosition >= 0).ToList();
+                List<ColumnAttributeAndPropertyInfo> mapping = PrepareMappings(table, configuration).Where(x => x.ColumnPosition >= 0).ToList();
 
                 ExcelAddress bounds = table.GetDataBounds();
 
@@ -109,7 +109,7 @@ namespace EPPlus.Core.Extensions
                 {
                     var item = new T();
 
-                    foreach (ColumnPositionAndPropertyInfoAndIsOptional map in mapping)
+                    foreach (ColumnAttributeAndPropertyInfo map in mapping)
                     {
                         var exists = table.WorkSheet.Cells[row, map.ColumnPosition + table.Address.Start.Column];
                         object cell = exists.Value;
@@ -168,10 +168,10 @@ namespace EPPlus.Core.Extensions
         /// <param name="table">Table to get columns from</param>
         /// <param name="configuration"></param>
         /// <returns>A list of mappings from column index to property</returns>
-        private static IEnumerable<ColumnPositionAndPropertyInfoAndIsOptional> PrepareMappings<T>(ExcelTable table, ExcelReadConfiguration<T> configuration)
+        private static IEnumerable<ColumnAttributeAndPropertyInfo> PrepareMappings<T>(ExcelTable table, ExcelReadConfiguration<T> configuration)
         {
             // Get only the properties that have ExcelTableColumnAttribute
-            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             // Build property-table column mapping
             foreach (var propertyInfoAndColumnAttribute in propertyInfoAndColumnAttributes)
@@ -215,8 +215,8 @@ namespace EPPlus.Core.Extensions
                                            CellAddress = new ExcelCellAddress(table.Address.Start.Row, columnAttribute.ColumnIndex + table.Address.Start.Column)
                                        });
                 }
-
-                yield return new ColumnPositionAndPropertyInfoAndIsOptional(col, propertyInfo, columnAttribute.IsOptional);
+                
+                yield return new ColumnAttributeAndPropertyInfo(col, propertyInfo, columnAttribute);
             }
         }
 

@@ -353,9 +353,9 @@ namespace EPPlus.Core.Extensions
 
         public static void CheckAndThrowIfDuplicatedColumnsFound<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
-            foreach (ExcelTableColumnAttributeAndPropertyInfo columnAttribute in propertyInfoAndColumnAttributes)
+            foreach (ColumnAttributeAndPropertyInfo columnAttribute in propertyInfoAndColumnAttributes)
             {
                 if (worksheet.IsColumnDuplicatedOnRow(rowIndex, columnAttribute.ToString()))
                 {
@@ -453,7 +453,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="formattedExceptionMessage"></param>
         public static void CheckHeadersAndThrow<T>(this ExcelWorksheet worksheet, int headerRowIndex, string formattedExceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             for (var i = 0; i < propertyInfoAndColumnAttributes.Count; i++)
             {
@@ -527,7 +527,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Checks existence of columns on given row, and throws the <see cref="ExcelValidationException" /> if one of the
+        ///     Checks the existence of the columns on the given row, and throws the <see cref="ExcelValidationException" /> if one of the
         ///     columns is missing
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -536,14 +536,14 @@ namespace EPPlus.Core.Extensions
         /// <param name="exceptionMessage"></param>
         public static void CheckExistenceOfColumnsAndThrow<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
             List<KeyValuePair<int, string>> columns = worksheet.GetColumns(rowIndex).ToList();
 
-            for (var i = 0; i < propertyInfoAndColumnAttributes.Count; i++)
+            foreach (var columnAttributeAndPropertyInfo in propertyInfoAndColumnAttributes)
             {
-                if (!columns.Any(x => x.Value.Equals(propertyInfoAndColumnAttributes[i].ToString())))
+                if (!columns.Any(x => x.Value.Equals(columnAttributeAndPropertyInfo.ToString())))
                 {
-                    throw new ExcelValidationException(string.Format(exceptionMessage ?? "'{0}' column is not found on the worksheet.", propertyInfoAndColumnAttributes[i]));
+                    throw new ExcelValidationException(string.Format(exceptionMessage ?? "'{0}' column is not found on the worksheet.", columnAttributeAndPropertyInfo));
                 }
             }
         }

@@ -61,8 +61,8 @@ namespace EPPlus.Core.Extensions.Tests
 
     internal enum Genders
     {
-        MALE = 1,
-        FEMALE = 2
+        Male = 1,
+        Female = 2
     }
 
     internal class EnumStringMap

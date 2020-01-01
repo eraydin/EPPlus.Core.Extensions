@@ -11,7 +11,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class AssemblyExtensions_Tests
+    public class AssemblyExtensionsTests
     {
         [Fact]
         public void Should_get_a_type_from_ExcelWorksheet_marked_types_by_name()
@@ -65,7 +65,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<ExcelTableColumnAttributeAndPropertyInfo> results = firstType.GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ColumnAttributeAndPropertyInfo> results = firstType.GetExcelTableColumnAttributesWithPropertyInfo();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions
 
             ThrowIfConditionMet(type == null, "The '{0}' type could not found in the assembly.", typeName);
             
-            List<ExcelTableColumnAttributeAndPropertyInfo> headerColumns = type.GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ColumnAttributeAndPropertyInfo> headerColumns = type.GetExcelTableColumnAttributesWithPropertyInfo();
 
             ExcelWorksheet worksheet = excelPackage.AddWorksheet(type.GetWorksheetName() ?? typeName);
 

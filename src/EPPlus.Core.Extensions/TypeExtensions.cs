@@ -23,10 +23,14 @@ namespace EPPlus.Core.Extensions
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        internal static List<ExcelTableColumnAttributeAndPropertyInfo> GetExcelTableColumnAttributesWithPropertyInfo(this Type type)
+        internal static List<ColumnAttributeAndPropertyInfo> GetExcelTableColumnAttributesWithPropertyInfo(this Type type)
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> columnAttributesWithPropertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                                                                                 .Select(property => new ExcelTableColumnAttributeAndPropertyInfo(property, property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))
+            List<ColumnAttributeAndPropertyInfo> columnAttributesWithPropertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                                                                                 .Select(property =>
+                                                                                                 {
+                                                                                                     var columnAttribute = property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute;
+                                                                                                     return new ColumnAttributeAndPropertyInfo(0, property, columnAttribute);
+                                                                                                 })
                                                                                                  .Where(p => p.ColumnAttribute != null)
                                                                                                  .ToList();
 

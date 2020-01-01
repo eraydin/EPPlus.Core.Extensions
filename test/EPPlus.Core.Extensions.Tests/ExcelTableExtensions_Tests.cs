@@ -14,7 +14,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ExcelTableExtensions_Tests : TestBase
+    public class ExcelTableExtensionsTests : TestBase
     {
         [Fact]
         public void Should_automatically_map_if_column_name_and_index_not_specified()
@@ -22,7 +22,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetTable("TEST1");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -43,7 +43,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetTable("TEST3");
+            ExcelTable table = ExcelPackage1.GetTable("TEST3");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -79,7 +79,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table1 = excelPackage1.GetWorksheet("TEST2").GetTable(0);  
+            ExcelTable table1 = ExcelPackage1.GetWorksheet("TEST2").GetTable(0);  
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -99,7 +99,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetTable("TEST1");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -122,7 +122,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable tableWithoutHeaderRow = excelPackage1.GetWorksheet("TEST6").AsExcelTable(false);
+            ExcelTable tableWithoutHeaderRow = ExcelPackage1.GetWorksheet("TEST6").AsExcelTable(false);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -143,7 +143,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable tableWithHeaderRow = excelPackage1.GetWorksheet("TEST6").AsExcelTable();
+            ExcelTable tableWithHeaderRow = ExcelPackage1.GetWorksheet("TEST6").AsExcelTable();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -164,7 +164,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable tableWithoutHeaderRow = excelPackage1.GetWorksheet("TEST6").AsExcelTable(false);
+            ExcelTable tableWithoutHeaderRow = ExcelPackage1.GetWorksheet("TEST6").AsExcelTable(false);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -186,7 +186,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetTable("TEST1");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -210,7 +210,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST1").GetTable(0);
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable(0);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -231,7 +231,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -252,7 +252,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -274,7 +274,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -285,8 +285,8 @@ namespace EPPlus.Core.Extensions.Tests
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             list.Count.Should().Be(5, "We have expected 5 elements");
-            list.Count(x => x.Gender == Genders.MALE).Should().Be(3, "We have expected 3 males");
-            list.Count(x => x.Gender == Genders.FEMALE).Should().Be(2, "We have expected 2 females");
+            list.Count(x => x.Gender == Genders.Male).Should().Be(3, "We have expected 3 males");
+            list.Count(x => x.Gender == Genders.Female).Should().Be(2, "We have expected 2 females");
         }
 
         [Fact]
@@ -295,7 +295,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST4").Tables["TEST4"];
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST4").Tables["TEST4"];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -316,7 +316,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -338,7 +338,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.Workbook.Worksheets["TEST7"].AsExcelTable();
+            ExcelTable table = ExcelPackage1.Workbook.Worksheets["TEST7"].AsExcelTable();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -357,7 +357,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST6").AsExcelTable();
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST6").AsExcelTable();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -376,7 +376,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable tableWithoutHeaderRow = excelPackage1.GetWorksheet("TEST6").AsExcelTable(false);
+            ExcelTable tableWithoutHeaderRow = ExcelPackage1.GetWorksheet("TEST6").AsExcelTable(false);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -395,7 +395,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -414,7 +414,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
@@ -442,7 +442,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetWorksheet("TEST1").GetTable("TEST1");  
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");  
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -463,7 +463,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelTable table = excelPackage1.GetTable("TEST3");
+            ExcelTable table = ExcelPackage1.GetTable("TEST3");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

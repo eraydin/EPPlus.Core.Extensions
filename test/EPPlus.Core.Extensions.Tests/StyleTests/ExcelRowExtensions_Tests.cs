@@ -12,7 +12,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests.StyleTests
 {
-    public class ExcelRowExtensions_Tests : TestBase
+    public class ExcelRowExtensionsTests : TestBase
     {
         [Fact]
         public void Should_change_background_color_of_the_row()
@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(4);
+            ExcelRow row = ExcelPackage1.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(4);
+            ExcelRow row = ExcelPackage1.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -59,7 +59,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(4);
+            ExcelRow row = ExcelPackage1.Workbook.Worksheets.First().Row(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -79,7 +79,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(8);
+            ExcelRow row = ExcelPackage1.Workbook.Worksheets.First().Row(8);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -98,7 +98,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRow row = excelPackage1.Workbook.Worksheets.First().Row(5);
+            ExcelRow row = ExcelPackage1.Workbook.Worksheets.First().Row(5);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

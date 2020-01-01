@@ -112,7 +112,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         private List<WorksheetColumn<T>> AutoGenerateColumns()
         {
-            List<ExcelTableColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             var columns = propertyInfoAndColumnAttributes.Select(x => new WorksheetColumn<T>
                                                          {
