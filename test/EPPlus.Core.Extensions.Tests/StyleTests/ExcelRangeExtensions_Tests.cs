@@ -12,7 +12,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests.StyleTests
 {
-    public class ExcelRangeExtensions_Tests : TestBase
+    public class ExcelRangeExtensionsTests : TestBase
     {
         [Fact]
         public void Should_change_background_color_of_the_range()
@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = ExcelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = ExcelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -63,7 +63,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = ExcelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -91,7 +91,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = ExcelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -110,7 +110,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = ExcelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -130,7 +130,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = ExcelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -152,7 +152,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = ExcelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -171,7 +171,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelRange forthColumn = excelPackage1.Workbook.Worksheets.First().Cells[1, 4];
+            ExcelRange forthColumn = ExcelPackage1.Workbook.Worksheets.First().Cells[1, 4];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

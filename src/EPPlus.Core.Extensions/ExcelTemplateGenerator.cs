@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-using EPPlus.Core.Extensions.Enrichments;
+using EPPlus.Core.Extensions.Attributes;
 
 using OfficeOpenXml;
 
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions
 
             ThrowIfConditionMet(type == null, "The '{0}' type could not found in the assembly.", typeName);
             
-            List<ExcelTableColumnAttributeAndPropertyInfo> headerColumns = type.GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnDetails> headerColumns = type.GetExcelTableColumnAttributesWithPropertyInfo();
 
             ExcelWorksheet worksheet = excelPackage.AddWorksheet(type.GetWorksheetName() ?? typeName);
 

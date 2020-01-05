@@ -8,10 +8,10 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ExcelTableColumnAttribute_Tests
+    public class ExcelTableColumnAttributeTests
     {
         [Fact]
-        public void Should_cannot_set_both_column_index_and_name()
+        public void Should_not_set_both_column_index_and_name()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange

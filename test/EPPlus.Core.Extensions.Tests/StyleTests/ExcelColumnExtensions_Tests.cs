@@ -12,7 +12,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests.StyleTests
 {
-    public class ExcelColumnExtensions_Tests : TestBase
+    public class ExcelColumnExtensionsTests : TestBase
     {
         [Fact]
         public void Should_change_background_color_of_the_column()
@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = ExcelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -40,7 +40,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = ExcelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -59,7 +59,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = ExcelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -79,7 +79,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = ExcelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -98,7 +98,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelColumn forthColumn = excelPackage1.Workbook.Worksheets.First().Column(4);
+            ExcelColumn forthColumn = ExcelPackage1.Workbook.Worksheets.First().Column(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

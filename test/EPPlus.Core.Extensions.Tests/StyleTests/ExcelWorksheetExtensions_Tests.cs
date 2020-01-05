@@ -12,7 +12,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests.StyleTests
 {
-    public class ExcelWorksheet_Tests : TestBase
+    public class ExcelWorksheetTests : TestBase
     {
         [Fact]
         public void Should_change_background_color_of_specific_range_of_worksheet()
@@ -20,7 +20,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(2);
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet(2);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -42,7 +42,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(2);
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet(2);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -62,7 +62,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(3);
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet(3);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -85,7 +85,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(3);
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet(3);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -106,7 +106,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(3);
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet(3);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -129,7 +129,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.Workbook.Worksheets.First();
+            ExcelWorksheet worksheet = ExcelPackage1.Workbook.Worksheets.First();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -150,7 +150,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet(4);
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet(4);
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -169,7 +169,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.Workbook.Worksheets.Last();
+            ExcelWorksheet worksheet = ExcelPackage1.Workbook.Worksheets.Last();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

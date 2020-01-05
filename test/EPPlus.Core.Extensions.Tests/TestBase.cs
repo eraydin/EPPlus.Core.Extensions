@@ -7,23 +7,23 @@ namespace EPPlus.Core.Extensions.Tests
 {
     public class TestBase : IDisposable
     {
-        protected readonly ExcelPackage excelPackage1;
-        protected readonly ExcelPackage excelPackage2;
-        private readonly string resourceName1 = "EPPlus.Core.Extensions.Tests.Resources.testsheets1.xlsx";
-        private readonly string resourceName2 = "EPPlus.Core.Extensions.Tests.Resources.testsheets2.xlsx";
+        protected readonly ExcelPackage ExcelPackage1;
+        protected readonly ExcelPackage ExcelPackage2;
+        private const string ResourceName1 = "EPPlus.Core.Extensions.Tests.Resources.testsheets1.xlsx";
+        private const string ResourceName2 = "EPPlus.Core.Extensions.Tests.Resources.testsheets2.xlsx";
 
-        public TestBase()
+        protected TestBase()
         {
-            excelPackage1 = new ExcelPackage(typeof(TestBase).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName1));
-            excelPackage2 = new ExcelPackage(typeof(TestBase).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName2));
+            ExcelPackage1 = new ExcelPackage(typeof(TestBase).GetTypeInfo().Assembly.GetManifestResourceStream(ResourceName1));
+            ExcelPackage2 = new ExcelPackage(typeof(TestBase).GetTypeInfo().Assembly.GetManifestResourceStream(ResourceName2));
         }
 
         public void Dispose()
         {
-            excelPackage1.Dispose();
-            excelPackage2.Dispose();
+            ExcelPackage1.Dispose();
+            ExcelPackage2.Dispose();
         }
 
-        public string GetRandomName() => new Random(Guid.NewGuid().GetHashCode()).Next().ToString();
+        protected string GetRandomName() => new Random(Guid.NewGuid().GetHashCode()).Next().ToString();
     }
 }

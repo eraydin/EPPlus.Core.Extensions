@@ -2,59 +2,56 @@
 
 namespace EPPlus.Core.Extensions.Configuration
 {
-    public abstract class ExcelReadConfiguration<T>
+    public class ExcelReadConfiguration<T>
     {
-        internal string CastingExceptionMessage { get; private set; } = "The expected type of '{0}' property is '{1}', but the cell [{2}] contains an invalid value.";
+        public static ExcelReadConfiguration<T> Instance => new ExcelReadConfiguration<T>();
 
-        internal string ColumnValidationExceptionMessage { get; private set; } = "'{0}' column could not found on the worksheet.";
+        public virtual string CastingExceptionMessage { get; private set; } = "The expected type of '{0}' property is '{1}', but the cell [{2}] contains an invalid value.";
 
-        internal bool HasHeaderRow { get; private set; } = true;
+        public virtual string ColumnValidationExceptionMessage { get; private set; } = "'{0}' column could not found on the worksheet.";
 
-        internal bool ThrowValidationExceptions { get; private set; } = true;
+        public virtual bool HasHeaderRow { get; private set; } = true;
 
-        internal bool ThrowCastingExceptions { get; private set; } = true;
+        public virtual bool ThrowValidationExceptions { get; private set; } = true;
 
-        internal OnCaught<T> OnCaught { get; private set; }
+        public virtual bool ThrowCastingExceptions { get; private set; } = true;
 
-        public ExcelReadConfiguration<T> WithCastingExceptionMessage(string message)
+        public virtual OnCaught<T> OnCaught { get; private set; }
+
+        public virtual ExcelReadConfiguration<T> WithCastingExceptionMessage(string message)
         {
             CastingExceptionMessage = message;
             return this;
         }
 
-        public ExcelReadConfiguration<T> WithHeaderValidationExceptionMessage(string message)
+        public virtual ExcelReadConfiguration<T> WithHeaderValidationExceptionMessage(string message)
         {
             ColumnValidationExceptionMessage = message;
             return this;
         }
 
-        public ExcelReadConfiguration<T> SkipValidationErrors()
+        public virtual ExcelReadConfiguration<T> SkipValidationErrors()
         {
             ThrowValidationExceptions = false;
             return this;
         }
 
-        public ExcelReadConfiguration<T> SkipCastingErrors()
+        public virtual ExcelReadConfiguration<T> SkipCastingErrors()
         {
             ThrowCastingExceptions = false;
             return this;
         }  
 
-        public ExcelReadConfiguration<T> WithoutHeaderRow()
+        public virtual ExcelReadConfiguration<T> WithoutHeaderRow()
         {
             HasHeaderRow = false;
             return this;
         }
 
-        public ExcelReadConfiguration<T> Intercept(OnCaught<T> onCaught)
+        public virtual ExcelReadConfiguration<T> Intercept(OnCaught<T> onCaught)
         {
             OnCaught = onCaught;
             return this;
         }
-    }
-
-    public class DefaultExcelReadConfiguration<T> : ExcelReadConfiguration<T>
-    {
-        public static ExcelReadConfiguration<T> Instance => new DefaultExcelReadConfiguration<T>();
     }
 }  

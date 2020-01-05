@@ -16,7 +16,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ExcelWorksheetExtensions_Tests : TestBase
+    public class ExcelWorksheetExtensionsTests : TestBase
     {
         [Fact]
         public void Should_add_an_header_without_configuration()
@@ -24,7 +24,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -47,7 +47,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
             Color color = Color.AntiqueWhite;
 
             //-----------------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -97,7 +97,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -117,7 +117,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
             DateTime dateTime = DateTime.MaxValue;
 
             var stocks = new List<StocksNullable>
@@ -142,6 +142,7 @@ namespace EPPlus.Core.Extensions.Tests
             list.Count().Should().Be(4);
             list.Last().Barcode.Should().Be("barcode123");
             list.Last().Quantity.Should().Be(5);
+            list.Last().UpdatedDate.HasValue.Should().BeTrue();
             list.Last().UpdatedDate.Value.Date.Should().Be(dateTime.Date);
             list.Last().UpdatedDate.Value.Hour.Should().Be(dateTime.Hour);
         }
@@ -152,7 +153,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             var stocks = new List<StocksNullable>
                          {
@@ -183,7 +184,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
             var stocks = new List<StocksNullable>
                          {
                              new StocksNullable
@@ -211,7 +212,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -236,7 +237,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+            ExcelWorksheet worksheet1 = ExcelPackage2.GetWorksheet("RandomOrderedColumns");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -257,7 +258,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+            ExcelWorksheet worksheet1 = ExcelPackage2.GetWorksheet("RandomOrderedColumns");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -278,7 +279,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -299,8 +300,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
-            ExcelWorksheet worksheet2 = excelPackage2.GetWorksheet("EmptyWorksheet");
+            ExcelWorksheet worksheet1 = ExcelPackage2.GetWorksheet("RandomOrderedColumns");
+            ExcelWorksheet worksheet2 = ExcelPackage2.GetWorksheet("EmptyWorksheet");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -330,7 +331,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            dataTable = excelPackage1.GetWorksheet("TEST5").ToDataTable();
+            dataTable = ExcelPackage1.GetWorksheet("TEST5").ToDataTable();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -343,14 +344,9 @@ namespace EPPlus.Core.Extensions.Tests
         public void Should_convert_to_datatable_without_headers()
         {
             //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            DataTable dataTable;
-
-            //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            dataTable = excelPackage1.GetWorksheet("TEST5").ToDataTable(false);
+            var dataTable = ExcelPackage1.GetWorksheet("TEST5").ToDataTable(false);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -365,8 +361,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage1.GetWorksheet("TEST4");
-            ExcelWorksheet worksheet2 = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet1 = ExcelPackage1.GetWorksheet("TEST4");
+            ExcelWorksheet worksheet2 = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -396,7 +392,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST6");
             const string columnName = "Quantity";
 
             //-----------------------------------------------------------------------------------------------------------
@@ -418,7 +414,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST6");
             const string columnName = "Quantity";
 
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
@@ -446,10 +442,10 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet1 = ExcelPackage1.GetWorksheet("TEST5");
             worksheet1.Cells[18, 2, 18, 2].Formula = "=SUM(B2:B4)";
 
-            ExcelWorksheet worksheet2 = excelPackage1.GetWorksheet("TEST4");
+            ExcelWorksheet worksheet2 = ExcelPackage1.GetWorksheet("TEST4");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -472,7 +468,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet excelWorksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet excelWorksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -493,7 +489,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet excelWorksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet excelWorksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -515,7 +511,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -535,7 +531,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet excelWorksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet excelWorksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -555,7 +551,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet excelWorksheet = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet excelWorksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -575,7 +571,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.Workbook.Worksheets["TEST7"];
+            ExcelWorksheet worksheet = ExcelPackage1.Workbook.Worksheets["TEST7"];
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -596,8 +592,8 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage1.GetWorksheet("TEST4");
-            ExcelWorksheet worksheet2 = excelPackage1.GetWorksheet("TEST5");
+            ExcelWorksheet worksheet1 = ExcelPackage1.GetWorksheet("TEST4");
+            ExcelWorksheet worksheet2 = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -624,12 +620,12 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_parse_datetime_value_as_correctly_if_formatted_customly()
+        public void Should_parse_datetime_value_as_correctly_even_if_field_has_a_custom_format()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -652,7 +648,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage2.GetWorksheet("RandomOrderedColumns");
+            ExcelWorksheet worksheet = ExcelPackage2.GetWorksheet("RandomOrderedColumns");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -682,9 +678,9 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage1.GetWorksheet("TEST6");
-            ExcelWorksheet emptySheet1 = excelPackage1.GetWorksheet("EmptySheet");
-            ExcelWorksheet emptySheet2 = excelPackage1.GetWorksheet("EmptySheet");
+            ExcelWorksheet worksheet1 = ExcelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet emptySheet1 = ExcelPackage1.GetWorksheet("EmptySheet");
+            ExcelWorksheet emptySheet2 = ExcelPackage1.GetWorksheet("EmptySheet");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -715,7 +711,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("EmptySheet");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("EmptySheet");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -734,13 +730,12 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST5");
-            List<StocksValidation> list;
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = worksheet.ToList<StocksValidation>(); };
+            Action action = () => { worksheet.ToList<StocksValidation>(); };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -756,7 +751,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST6");
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST6");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -774,12 +769,13 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_valued_dimension_be_E9G13()
+        public void Should_valued_dimension_be_correct()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet = excelPackage1.GetWorksheet("TEST4");
+            const string expectedAddress = "E9:G13";
+            ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST4");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -789,7 +785,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            valuedDimension.Address.Should().Be("E9:G13");
+            valuedDimension.Address.Should().Be(expectedAddress);
             valuedDimension.Start.Column.Should().Be(5);
             valuedDimension.Start.Row.Should().Be(9);
             valuedDimension.End.Column.Should().Be(7);
@@ -803,9 +799,9 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
-            ExcelWorksheet emptySheet1 = excelPackage1.GetWorksheet("EmptySheet");
-            ExcelWorksheet emptySheet2 = excelPackage1.GetWorksheet("EmptySheet");
+            ExcelWorksheet worksheet1 = ExcelPackage2.GetWorksheet("RandomOrderedColumns");
+            ExcelWorksheet emptySheet1 = ExcelPackage1.GetWorksheet("EmptySheet");
+            ExcelWorksheet emptySheet2 = ExcelPackage1.GetWorksheet("EmptySheet");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
@@ -836,20 +832,40 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorksheet worksheet1 = excelPackage2.GetWorksheet("RandomOrderedColumns");
+            ExcelWorksheet worksheet1 = ExcelPackage2.GetWorksheet("RandomOrderedColumns");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action act = () =>
-            {
-                var result = worksheet1.ToList<DefaultMap>();
-            };
+            Action act = () => worksheet1.ToList<DefaultMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Name' column could not found on the worksheet.");
+        }
+
+
+        [Fact]
+        public void Should_not_throw_exception_if_a_column_is_marked_as_Optional_and_missing()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheetWithOptionalColumns = ExcelPackage1.GetWorksheet("WithOptionalFields");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            var results = worksheetWithOptionalColumns.ToList<ExcelWithOptionalFields>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            results.Count.Should().Be(2);
+            results.All(x => x.MissingColumn1 == default).Should().BeTrue();
+            results.All(x => x.MissingColumn2 == null).Should().BeTrue();
+            results.All(x => x.MissingColumn3 == null).Should().BeTrue();
         }
     }
 }

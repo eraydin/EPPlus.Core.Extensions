@@ -18,13 +18,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="package"></param>
         public static IEnumerable<ExcelTable> GetAllTables(this ExcelPackage package)
         {
-            foreach (ExcelWorksheet ws in package.Workbook.Worksheets)
-            {
-                foreach (ExcelTable t in ws.Tables)
-                {
-                    yield return t;
-                }
-            }
+            return package.Workbook.Worksheets.SelectMany(x => x.Tables.Select(t => t));
         }
 
         /// <summary>
@@ -74,7 +68,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="configurationAction"></param>
         /// <param name="worksheetIndex"></param>
         /// <returns></returns> 
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 1, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => package.GetWorksheet(worksheetIndex).AsEnumerable(configurationAction);
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 1, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.GetWorksheet(worksheetIndex).AsEnumerable(configurationAction);
 #else
         /// <summary>
         ///     Converts given package into list of objects as enumerable
@@ -84,7 +78,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="configurationAction"></param>
         /// <param name="worksheetIndex"></param>
         /// <returns></returns>    
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 0, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => package.GetWorksheet(worksheetIndex).AsEnumerable(configurationAction);
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 0, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.GetWorksheet(worksheetIndex).AsEnumerable(configurationAction);
 #endif
 
 
@@ -97,7 +91,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheetIndex"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 1, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => package.AsEnumerable(worksheetIndex, configurationAction).ToList();
+        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 1, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.AsEnumerable(worksheetIndex, configurationAction).ToList();
 #else
         /// <summary>
         ///     Converts given package into list of objects
@@ -107,7 +101,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheetIndex"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 0, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() => package.AsEnumerable(worksheetIndex, configurationAction).ToList();
+        public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 0, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.AsEnumerable(worksheetIndex, configurationAction).ToList();
 #endif
         public static ExcelWorksheet AddWorksheet(this ExcelPackage package, string worksheetName) => package.Workbook.Worksheets.Add(worksheetName);
 

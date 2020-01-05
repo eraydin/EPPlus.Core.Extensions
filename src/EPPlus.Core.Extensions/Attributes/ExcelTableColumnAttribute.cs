@@ -15,22 +15,30 @@ namespace EPPlus.Core.Extensions.Attributes
         private int _columnIndex;
 
         private string _columnName;
+        
 
-        public ExcelTableColumnAttribute()
+        public ExcelTableColumnAttribute(bool isOptional = false)
         {
+            IsOptional = isOptional;
         }
 
         /// <inheritdoc />
         /// <summary>
         ///     Set this property to map by 1-based index
         /// </summary>
-        public ExcelTableColumnAttribute(int columnIndex) => ColumnIndex = columnIndex;
+        public ExcelTableColumnAttribute(int columnIndex, bool isOptional = false) : this(isOptional)
+        {
+            ColumnIndex = columnIndex;
+        }
 
         /// <inheritdoc />
         /// <summary>
         ///     Set this property to map by name
         /// </summary>
-        public ExcelTableColumnAttribute(string columnName) => ColumnName = columnName;
+        public ExcelTableColumnAttribute(string columnName, bool isOptional = false) : this(isOptional)
+        {
+            ColumnName = columnName;
+        } 
 
         /// <summary>
         ///     Set this property to map by name
@@ -60,5 +68,7 @@ namespace EPPlus.Core.Extensions.Attributes
                 _columnIndex = value;
             }
         }
+
+        public bool IsOptional { get; set; }
     }
 }

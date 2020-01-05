@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using EPPlus.Core.Extensions.Enrichments;
+using EPPlus.Core.Extensions.Attributes;
 
 using FluentAssertions;
 
@@ -11,7 +11,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class AssemblyExtensions_Tests
+    public class AssemblyExtensionsTests
     {
         [Fact]
         public void Should_get_a_type_from_ExcelWorksheet_marked_types_by_name()
@@ -45,7 +45,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<Type> results = executingAssembly.GetExcelWorksheetMarkedTypes();
+            List<Type> results = executingAssembly.GetTypesMarkedAsExcelWorksheet();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -60,12 +60,12 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type firstType = executingAssembly.GetExcelWorksheetMarkedTypes().First();
+            Type firstType = executingAssembly.GetTypesMarkedAsExcelWorksheet().First();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<ExcelTableColumnAttributeAndPropertyInfo> results = firstType.GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnDetails> results = firstType.GetExcelTableColumnAttributesWithPropertyInfo();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

@@ -1,13 +1,12 @@
 ﻿using System.Reflection;
 
-using EPPlus.Core.Extensions.Attributes;
-
-namespace EPPlus.Core.Extensions.Enrichments
+namespace EPPlus.Core.Extensions.Attributes
 {
-    internal class ExcelTableColumnAttributeAndPropertyInfo
+    internal class ExcelTableColumnDetails
     {
-        public ExcelTableColumnAttributeAndPropertyInfo(PropertyInfo propertyInfo, ExcelTableColumnAttribute columnAttribute)
+        public ExcelTableColumnDetails(int columnPosition, PropertyInfo propertyInfo, ExcelTableColumnAttribute columnAttribute)
         {
+            ColumnPosition = columnPosition;
             PropertyInfo = propertyInfo;
             ColumnAttribute = columnAttribute;
         }
@@ -15,6 +14,8 @@ namespace EPPlus.Core.Extensions.Enrichments
         public PropertyInfo PropertyInfo { get; }
 
         public ExcelTableColumnAttribute ColumnAttribute { get; }
+
+        public int ColumnPosition { get; }
 
         public override string ToString() => !string.IsNullOrEmpty(ColumnAttribute.ColumnName) ? ColumnAttribute.ColumnName : PropertyInfo.Name;
     }

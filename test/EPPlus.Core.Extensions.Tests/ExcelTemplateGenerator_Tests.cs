@@ -14,7 +14,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests
 {
-    public class ExcelTemplateGenerator_Tests
+    public class ExcelTemplateGeneratorTests
     {
         [Fact]
         public void Should_generate_an_Excel_package_from_given_ExcelExportable_class_name()
@@ -23,7 +23,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type wrongCarsType = executingAssembly.GetExcelWorksheetMarkedTypes().First(x => x.Name == "WrongCars");
+            Type wrongCarsType = executingAssembly.GetTypesMarkedAsExcelWorksheet().First(x => x.Name == "WrongCars");
             var worksheetIndex = 0;
 #if NETFRAMEWORK
             worksheetIndex = 1;
@@ -52,7 +52,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type wrongCarsType = executingAssembly.GetExcelWorksheetMarkedTypes().First(x => x.Name == "WrongCars");
+            Type wrongCarsType = executingAssembly.GetTypesMarkedAsExcelWorksheet().First(x => x.Name == "WrongCars");
             KeyValuePair<string, string> defaultMapType = executingAssembly.GetExcelWorksheetNamesOfMarkedTypes().First(x => x.Key == "DefaultMap");
 
             var excelPackage = new ExcelPackage();

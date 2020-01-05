@@ -13,7 +13,7 @@ using Xunit;
 
 namespace EPPlus.Core.Extensions.Tests.StyleTests
 {
-    public class ExcelWorkbook_Tests : TestBase
+    public class ExcelWorkbookTests : TestBase
     {
         [Fact]
         public void Should_create_a_named_style_with_style_actions()
@@ -21,7 +21,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorkbook workbook = excelPackage1.Workbook;
+            ExcelWorkbook workbook = ExcelPackage1.Workbook;
             ExcelWorksheet firstWorksheet = workbook.GetWorksheet(1);
             ExcelWorksheet secondWorksheet = workbook.GetWorksheet(2);
             var nameOfStyle1 = "NamedStyle1";
@@ -81,7 +81,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorkbook workbook = excelPackage1.Workbook;
+            ExcelWorkbook workbook = ExcelPackage1.Workbook;
             var nameOfStyle = "NamedStyle1";
             var fontName = "Arial";
 
@@ -116,7 +116,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            ExcelWorkbook workbook = excelPackage1.Workbook;
+            ExcelWorkbook workbook = ExcelPackage1.Workbook;
             var nameOfStyle = "NamedStyle1";
             var fontName = "Arial";
 
