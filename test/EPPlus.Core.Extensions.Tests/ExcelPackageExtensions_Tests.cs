@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 
 using FluentAssertions;
@@ -53,7 +54,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_be_interceptable_current_row_when_its_converting_to_a_list()
+        public void Should_be_intercept_current_row_while_converting_into_a_list()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -93,19 +94,18 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            DataSet dataset;
-            const int expectedCount = 8;
+            const int expectedCount = 9;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            dataset = ExcelPackage1.ToDataSet();
+            var dataSet = ExcelPackage1.ToDataSet();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            dataset.Should().NotBeNull($"We have {expectedCount} tables");
-            dataset.Tables.Count.Should().Be(expectedCount, $"We have {expectedCount} tables");
+            dataSet.Should().NotBeNull($"We have {expectedCount} tables");
+            dataSet.Tables.Count.Should().Be(expectedCount, $"We have {expectedCount} tables");
         }
 
         [Fact]
@@ -168,6 +168,29 @@ namespace EPPlus.Core.Extensions.Tests
 
             ExcelPackage1.HasTable("NOTABLE").Should().BeFalse("We don't have NOTABLE table");
             ExcelPackage1.GetTable("NOTABLE").Should().BeNull("We don't have NOTABLE table");
+        }
+
+
+        [Fact]
+        public void Should_generate_ExcelPackage_with_optional_columns()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheetWithOptionalColumns = ExcelPackage1.GetWorksheet("WithOptionalFields");
+            var list = worksheetWithOptionalColumns.ToList<ExcelWithOptionalFields>();
+            const string expectedWorksheetName = "worksheet-name";
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            var result = list.ToWorksheet(expectedWorksheetName).ToExcelPackage();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            var generatedWorksheet = result.GetWorksheet(expectedWorksheetName);
+            generatedWorksheet.ToList<ExcelWithOptionalFields>().Count.Should().Be(2);
         }
     }
 }

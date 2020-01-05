@@ -344,14 +344,9 @@ namespace EPPlus.Core.Extensions.Tests
         public void Should_convert_to_datatable_without_headers()
         {
             //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            DataTable dataTable;
-
-            //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            dataTable = ExcelPackage1.GetWorksheet("TEST5").ToDataTable(false);
+            var dataTable = ExcelPackage1.GetWorksheet("TEST5").ToDataTable(false);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -625,7 +620,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_parse_datetime_value_as_correctly_if_formatted_customly()
+        public void Should_parse_datetime_value_as_correctly_even_if_field_has_a_custom_format()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -736,12 +731,11 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST5");
-            List<StocksValidation> list;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action action = () => { list = worksheet.ToList<StocksValidation>(); };
+            Action action = () => { worksheet.ToList<StocksValidation>(); };
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -775,11 +769,12 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_valued_dimension_be_E9G13()
+        public void Should_valued_dimension_be_correct()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
+            const string expectedAddress = "E9:G13";
             ExcelWorksheet worksheet = ExcelPackage1.GetWorksheet("TEST4");
 
             //-----------------------------------------------------------------------------------------------------------
@@ -790,7 +785,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            valuedDimension.Address.Should().Be("E9:G13");
+            valuedDimension.Address.Should().Be(expectedAddress);
             valuedDimension.Start.Column.Should().Be(5);
             valuedDimension.Start.Row.Should().Be(9);
             valuedDimension.End.Column.Should().Be(7);
@@ -842,15 +837,35 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action act = () =>
-            {
-                var result = worksheet1.ToList<DefaultMap>();
-            };
+            Action act = () => worksheet1.ToList<DefaultMap>();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<ExcelValidationException>().And.Message.Should().Be("'Name' column could not found on the worksheet.");
+        }
+
+
+        [Fact]
+        public void Should_not_throw_exception_if_a_column_is_marked_as_Optional_and_missing()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            ExcelWorksheet worksheetWithOptionalColumns = ExcelPackage1.GetWorksheet("WithOptionalFields");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            var results = worksheetWithOptionalColumns.ToList<ExcelWithOptionalFields>();
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            results.Count.Should().Be(2);
+            results.All(x => x.MissingColumn1 == default).Should().BeTrue();
+            results.All(x => x.MissingColumn2 == null).Should().BeTrue();
+            results.All(x => x.MissingColumn3 == null).Should().BeTrue();
         }
     }
 }

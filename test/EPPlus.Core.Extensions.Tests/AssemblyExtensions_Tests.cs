@@ -45,7 +45,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<Type> results = executingAssembly.GetExcelWorksheetMarkedTypes();
+            List<Type> results = executingAssembly.GetTypesMarkedAsExcelWorksheet();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -60,7 +60,7 @@ namespace EPPlus.Core.Extensions.Tests
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Type firstType = executingAssembly.GetExcelWorksheetMarkedTypes().First();
+            Type firstType = executingAssembly.GetTypesMarkedAsExcelWorksheet().First();
 
             //-----------------------------------------------------------------------------------------------------------
             // Act

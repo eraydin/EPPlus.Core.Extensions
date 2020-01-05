@@ -117,7 +117,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_get_databounds_of_Excel_table_including_header_row()
+        public void Should_get_dataBounds_of_Excel_table_including_header_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -138,7 +138,7 @@ namespace EPPlus.Core.Extensions.Tests
         }
 
         [Fact]
-        public void Should_get_databounds_of_Excel_table_without_header_row()
+        public void Should_get_dataBounds_of_Excel_table_without_header_row()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange

@@ -18,7 +18,7 @@ namespace EPPlus.Core.Extensions
     public static class ExcelWorksheetExtensions
     {
         /// <summary>
-        ///     Returns the data bounds of the Excel worksheet
+        ///     Returns the data bounds of the worksheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
@@ -59,7 +59,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Creates an Excel table using the data bounds of the given worksheet.
+        ///     Creates an Excel table using the data bounds of the worksheet.
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
@@ -74,7 +74,7 @@ namespace EPPlus.Core.Extensions
         public static ExcelTable GetTable(this ExcelWorksheet worksheet, int tableIndex) => worksheet.Tables[tableIndex];
 
         /// <summary>
-        ///     Creates an Excel table using the data bounds of the given worksheet.
+        ///     Creates an Excel table using the data bounds of the worksheet.
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="tableName"></param>
@@ -212,7 +212,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Adds a line to the worksheet
+        ///     Appends a line to the worksheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="rowIndex"></param>
@@ -231,7 +231,7 @@ namespace EPPlus.Core.Extensions
         public static ExcelWorksheet AddLine(this ExcelWorksheet worksheet, int rowIndex, Action<ExcelRange> configureCells = null, params object[] values) => worksheet.AddLine(rowIndex, 1, configureCells, values);
 
         /// <summary>
-        ///     Adds a line to the worksheet
+        ///     Appends a line to the worksheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="rowIndex"></param>
@@ -250,7 +250,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Adds given list of objects to the worksheet
+        ///     Appends the given list of objects to the worksheet
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -275,7 +275,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Adds given list of objects to the worksheet with propery selectors
+        ///     Appends the given list of objects to the worksheet using selected properties
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -286,7 +286,7 @@ namespace EPPlus.Core.Extensions
         public static ExcelWorksheet AddObjects<T>(this ExcelWorksheet worksheet, IEnumerable<T> items, int startRowIndex, params Func<T, object>[] propertySelectors) => worksheet.AddObjects(items, startRowIndex, 1, null, propertySelectors);
 
         /// <summary>
-        ///     Adds given list of objects to the worksheet with propery selectors
+        ///     Appends given list of objects to the worksheet using selected properties
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -321,12 +321,14 @@ namespace EPPlus.Core.Extensions
         {
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension();
 
-            if (valuedDimension != null)
+            if (valuedDimension == null)
             {
-                for (int i = valuedDimension.Start.Column; i <= valuedDimension.End.Column; i++)
-                {
-                    yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Text);
-                }
+                yield break;
+            }
+
+            for (int i = valuedDimension.Start.Column; i <= valuedDimension.End.Column; i++)
+            {
+                yield return new KeyValuePair<int, string>(i, worksheet.Cells[rowIndex, i, rowIndex, i].Text);
             }
         }
 
@@ -339,15 +341,7 @@ namespace EPPlus.Core.Extensions
         {
             foreach (KeyValuePair<int, string> column in worksheet.GetColumns(rowIndex).Where(x => !string.IsNullOrEmpty(x.Value)))
             {
-                if (worksheet.IsColumnDuplicatedOnRow(rowIndex, column.Value))
-                {
-                    if (!string.IsNullOrEmpty(exceptionMessage))
-                    {
-                        throw new ExcelValidationException(string.Format(exceptionMessage, column.Value, rowIndex));
-                    }
-
-                    throw new ExcelValidationException($"'{column.Value}' column is duplicated on {rowIndex}. row.");
-                }
+                CheckAndThrowIfDuplicatedColumnsFound(worksheet, rowIndex, exceptionMessage, column.Value);
             }
         }
 
@@ -357,18 +351,10 @@ namespace EPPlus.Core.Extensions
 
             foreach (ExcelTableColumnDetails columnAttribute in propertyInfoAndColumnAttributes)
             {
-                if (worksheet.IsColumnDuplicatedOnRow(rowIndex, columnAttribute.ToString()))
-                {
-                    if (!string.IsNullOrEmpty(exceptionMessage))
-                    {
-                        throw new ExcelValidationException(string.Format(exceptionMessage, columnAttribute, rowIndex));
-                    }
-
-                    throw new ExcelValidationException($"'{columnAttribute}' column is duplicated on {rowIndex}. row.");
-                }
+                CheckAndThrowIfDuplicatedColumnsFound(worksheet, rowIndex, exceptionMessage, columnAttribute.ToString());
             }
         }
-
+        
         /// <summary>
         ///     Deletes a column from worksheet by using column header text
         /// </summary>
@@ -390,7 +376,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Deletes columns from worksheet by using given header text
+        ///     Deletes all existing columns from the worksheet by using given header text
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="headerText"></param>
@@ -419,15 +405,17 @@ namespace EPPlus.Core.Extensions
         /// <param name="exceptionMessage">Custom exception message with format parameters: columnIndex, expectedValue</param>
         public static void CheckColumnAndThrow(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, string expectedValue, string exceptionMessage = null)
         {
-            if (!worksheet.GetColumns(rowIndex).Any(x => x.Value == expectedValue && x.Key == columnIndex))
+            if (worksheet.GetColumns(rowIndex).Any(x => x.Value == expectedValue && x.Key == columnIndex))
             {
-                if (!string.IsNullOrEmpty(exceptionMessage))
-                {
-                    throw new ExcelValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
-                }
-
-                throw new ExcelValidationException($"The {columnIndex}. column of worksheet should be '{expectedValue}'.");
+                return;
             }
+
+            if (!string.IsNullOrEmpty(exceptionMessage))
+            {
+                throw new ExcelValidationException(string.Format(exceptionMessage, columnIndex, expectedValue));
+            }
+
+            throw new ExcelValidationException($"The {columnIndex}. column of worksheet should be '{expectedValue}'.");
         }
 
         /// <summary>
@@ -546,6 +534,21 @@ namespace EPPlus.Core.Extensions
                     throw new ExcelValidationException(string.Format(exceptionMessage ?? "'{0}' column is not found on the worksheet.", columnAttributeAndPropertyInfo));
                 }
             }
+        }
+
+        private static void CheckAndThrowIfDuplicatedColumnsFound(ExcelWorksheet worksheet, int rowIndex, string exceptionMessage, string columnName)
+        {
+            if (!worksheet.IsColumnDuplicatedOnRow(rowIndex, columnName))
+            {
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(exceptionMessage))
+            {
+                throw new ExcelValidationException(string.Format(exceptionMessage, columnName, rowIndex));
+            }
+
+            throw new ExcelValidationException($"'{columnName}' column is duplicated on {rowIndex}. row.");
         }
     }
 }
