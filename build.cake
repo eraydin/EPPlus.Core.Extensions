@@ -1,4 +1,5 @@
-#addin "nuget:?package=NuGet.Protocol"
+#addin "nuget:?package=NuGet.Protocol&version=5.0.2"
+#addin "nuget:?package=NuGet.Versioning&version=5.0.2"
 #addin "nuget:?package=Cake.ExtendedNuGet"
 #addin "nuget:?package=NuGet.Core"
 #addin "nuget:?package=Cake.Codecov"
