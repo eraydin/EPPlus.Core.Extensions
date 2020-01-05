@@ -7,14 +7,16 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 ### **Dependencies**
 
 **.NET Framework 4.6.1**
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.1*
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.2* 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*System.ComponentModel.Annotations >= 4.7.0*
 
 **.NET Standard 2.0**
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.1*
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.2*
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*System.ComponentModel.Annotations >= 4.7.0*
 
 ### **Documentation and Examples**
 
-The project will be documented soon. For now, just look at the test project (EPPlus.Core.Extensions.Tests). It has just enough examples to show you how to use these extension methods. 
+The project will be documented soon. You cant look at the test project for now. I hope it has enough number of examples to give you better understanding about how to use these extension methods. 
 
 ##### Basic examples:
 
@@ -26,7 +28,7 @@ public class PersonDto
         [MaxLength(50, ErrorMessage = "First name cannot be more than {1} characters.")] 
         public string FirstName { get; set; }
 
-        [ExcelTableColumn("Last name")]       
+        [ExcelTableColumn(columnName = "Last name", isOptional = true)]       
         public string LastName { get; set; }
         
         [ExcelTableColumn(3)]
@@ -34,6 +36,12 @@ public class PersonDto
         public int YearBorn { get; set; }
         
         public decimal NotMapped { get; set; }
+
+        [ExcelTableColumn(isOptional = true)]
+        public decimal OptionalColumn1 { get; set; }
+
+        [ExcelTableColumn(columnIndex=999, isOptional = true)]
+        public decimal OptionalColumn2 { get; set; }
     }      
 ```
 

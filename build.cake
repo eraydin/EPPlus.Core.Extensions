@@ -1,3 +1,4 @@
+#addin "nuget:?package=NuGet.Protocol"
 #addin "nuget:?package=Cake.ExtendedNuGet"
 #addin "nuget:?package=NuGet.Core"
 #addin "nuget:?package=Cake.Codecov"
