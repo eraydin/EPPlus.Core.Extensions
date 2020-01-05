@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Attributes;
 using EPPlus.Core.Extensions.Configuration;
-using EPPlus.Core.Extensions.Enrichments;
 using EPPlus.Core.Extensions.Exceptions;
 using EPPlus.Core.Extensions.Helpers;
 
@@ -18,11 +18,11 @@ namespace EPPlus.Core.Extensions
     public static class ExcelWorksheetExtensions
     {
         /// <summary>
-        ///     Returns data bounds of the worksheet as ExcelAddress
+        ///     Returns the data bounds of the Excel worksheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
-        /// <returns></returns>
+        /// <returns>ExcelAddress</returns>
         public static ExcelAddress GetDataBounds(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
             ExcelAddressBase valuedDimension = worksheet.GetValuedDimension() ?? worksheet.Dimension;
@@ -59,11 +59,11 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Extracts an ExcelTable from given ExcelWorkSheet
+        ///     Creates an Excel table using the data bounds of the given worksheet.
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="hasHeaderRow"></param>
-        /// <returns></returns>
+        /// <returns>ExcelTable</returns>
         public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, bool hasHeaderRow = true)
         {
             return worksheet.AsExcelTable(StringHelper.GenerateRandomTableName(), hasHeaderRow);
@@ -74,12 +74,12 @@ namespace EPPlus.Core.Extensions
         public static ExcelTable GetTable(this ExcelWorksheet worksheet, int tableIndex) => worksheet.Tables[tableIndex];
 
         /// <summary>
-        ///     Converts given worksheet into ExcelTable
+        ///     Creates an Excel table using the data bounds of the given worksheet.
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="tableName"></param>
         /// <param name="hasHeaderRow"></param>
-        /// <returns></returns>
+        /// <returns>ExcelTable</returns>
         public static ExcelTable AsExcelTable(this ExcelWorksheet worksheet, string tableName, bool hasHeaderRow)
         {
             if (worksheet.Tables.Any())
@@ -102,10 +102,10 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Indicates whether the ExcelWorksheet contains any formula or not
+        ///     Checks whether the worksheet has any formulas or not
         /// </summary>
         /// <param name="worksheet"></param>
-        /// <returns></returns>
+        /// <returns>true or false</returns>
         public static bool HasAnyFormula(this ExcelWorksheet worksheet)
         {
             return worksheet.Cells.Any(x => !string.IsNullOrEmpty(x.Formula)) || worksheet.Cells.Any(x => !string.IsNullOrEmpty(x.FormulaR1C1));
@@ -147,15 +147,15 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Converts the worksheet into list of objects as enumerable
+        ///     Converts the worksheet into the list of objects
         /// </summary>
-        /// <typeparam name="T">Type of object</typeparam>
+        /// <typeparam name="T">Type of object which will be generated</typeparam>
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new()
+        public static IEnumerable<T> AsEnumerable<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new()
         {
-            ExcelReadConfiguration<T> configuration = DefaultExcelReadConfiguration<T>.Instance;
+            ExcelReadConfiguration<T> configuration = ExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
             return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(configurationAction);
@@ -168,7 +168,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="worksheet"></param>
         /// <param name="configurationAction"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : class, new() 
+        public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() 
             => worksheet.AsEnumerable(configurationAction).ToList();
 
         public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value, Action<ExcelRange> configureCell = null)
@@ -353,9 +353,9 @@ namespace EPPlus.Core.Extensions
 
         public static void CheckAndThrowIfDuplicatedColumnsFound<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
-            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnDetails> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
-            foreach (ColumnAttributeAndPropertyInfo columnAttribute in propertyInfoAndColumnAttributes)
+            foreach (ExcelTableColumnDetails columnAttribute in propertyInfoAndColumnAttributes)
             {
                 if (worksheet.IsColumnDuplicatedOnRow(rowIndex, columnAttribute.ToString()))
                 {
@@ -453,7 +453,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="formattedExceptionMessage"></param>
         public static void CheckHeadersAndThrow<T>(this ExcelWorksheet worksheet, int headerRowIndex, string formattedExceptionMessage = null)
         {
-            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnDetails> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             for (var i = 0; i < propertyInfoAndColumnAttributes.Count; i++)
             {
@@ -536,7 +536,7 @@ namespace EPPlus.Core.Extensions
         /// <param name="exceptionMessage"></param>
         public static void CheckExistenceOfColumnsAndThrow<T>(this ExcelWorksheet worksheet, int rowIndex, string exceptionMessage = null)
         {
-            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnDetails> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
             List<KeyValuePair<int, string>> columns = worksheet.GetColumns(rowIndex).ToList();
 
             foreach (var columnAttributeAndPropertyInfo in propertyInfoAndColumnAttributes)

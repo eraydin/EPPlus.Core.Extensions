@@ -5,7 +5,7 @@ namespace EPPlus.Core.Extensions
     public static class ExcelAddressExtensions
     {
         /// <summary>
-        ///     Checks whether given range empty or not
+        ///     Checks whether the given range is empty or not
         /// </summary>
         /// <param name="address">Excel cell range</param>
         /// <param name="hasHeaderRow">'false' as default</param>

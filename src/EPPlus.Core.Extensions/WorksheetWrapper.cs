@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
+using EPPlus.Core.Extensions.Attributes;
 using EPPlus.Core.Extensions.Configuration;
-using EPPlus.Core.Extensions.Enrichments;
 using EPPlus.Core.Extensions.Helpers;
 
 using OfficeOpenXml;
@@ -26,7 +26,7 @@ namespace EPPlus.Core.Extensions
 
         internal List<WorksheetTitleRow> Titles { get; set; }
 
-        internal ExcelCreateConfiguration<T> Configuration { get; } = DefaultExcelCreateConfiguration<T>.Instance;
+        internal ExcelCreateConfiguration<T> Configuration { get; } = ExcelCreateConfiguration<T>.Instance;
 
         /// <summary>
         ///     Wraps creation of an Excel worksheet
@@ -112,7 +112,7 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         private List<WorksheetColumn<T>> AutoGenerateColumns()
         {
-            List<ColumnAttributeAndPropertyInfo> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnDetails> propertyInfoAndColumnAttributes = typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
 
             var columns = propertyInfoAndColumnAttributes.Select(x => new WorksheetColumn<T>
                                                          {

@@ -8,7 +8,6 @@ using OfficeOpenXml;
 
 using static EPPlus.Core.Extensions.Helpers.Guard;
 
-
 namespace EPPlus.Core.Extensions
 {
     public static class ToExcelExtensions
@@ -113,7 +112,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Sets configurations of output Excel
+        ///    Configures the Excel cells, cell ranges, columns...etc
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="worksheet"></param>
@@ -126,7 +125,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Converts given list of objects to ExcelPackage
+        ///     Converts the given list into an ExcelPackage
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rows"></param>
@@ -190,7 +189,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Creates a new instance of the ExcelPackage class based on a stream
+        ///     Creates a new instance of the ExcelPackage class based on the given stream
         /// </summary>
         /// <param name="stream">The byte array</param>
         /// <returns>Excel package</returns>
@@ -202,7 +201,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Creates a new instance of the ExcelPackage class based on a stream
+        ///     Creates a new instance of the ExcelPackage class based on the given stream
         /// </summary>
         /// <param name="stream">The byte array</param>
         /// <param name="password">The password to decrypt the document</param>
@@ -216,7 +215,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Converts list of items to Excel and returns the Excel file as bytearray.
+        ///     Converts the given list into an Excel file, and returns as a byte array.
         /// </summary>
         /// <typeparam name="T">Type of object</typeparam>
         /// <param name="rows">List of objects</param>
@@ -235,7 +234,7 @@ namespace EPPlus.Core.Extensions
         }
 
         /// <summary>
-        ///     Returns the Excel file as byte array.
+        ///     Generates Excel file, and returns a byte array.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lastWorksheet"></param>

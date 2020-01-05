@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using EPPlus.Core.Extensions.Enrichments;
+using EPPlus.Core.Extensions.Attributes;
 
 using FluentAssertions;
 
@@ -65,7 +65,7 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            List<ColumnAttributeAndPropertyInfo> results = firstType.GetExcelTableColumnAttributesWithPropertyInfo();
+            List<ExcelTableColumnDetails> results = firstType.GetExcelTableColumnAttributesWithPropertyInfo();
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

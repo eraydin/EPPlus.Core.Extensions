@@ -1,12 +1,10 @@
 ﻿using System.Reflection;
 
-using EPPlus.Core.Extensions.Attributes;
-
-namespace EPPlus.Core.Extensions.Enrichments
+namespace EPPlus.Core.Extensions.Attributes
 {
-    internal class ColumnAttributeAndPropertyInfo
+    internal class ExcelTableColumnDetails
     {
-        public ColumnAttributeAndPropertyInfo(int columnPosition, PropertyInfo propertyInfo, ExcelTableColumnAttribute columnAttribute)
+        public ExcelTableColumnDetails(int columnPosition, PropertyInfo propertyInfo, ExcelTableColumnAttribute columnAttribute)
         {
             ColumnPosition = columnPosition;
             PropertyInfo = propertyInfo;
