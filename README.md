@@ -7,11 +7,11 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 ### **Dependencies**
 
 **.NET Framework 4.6.1**
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.2* 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.3* 
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*System.ComponentModel.Annotations >= 4.7.0*
 
 **.NET Standard 2.0**
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.2*
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.3*
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*System.ComponentModel.Annotations >= 4.7.0*
 
 ### **Documentation and Examples**
