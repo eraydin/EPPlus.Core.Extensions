@@ -19,7 +19,7 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 The project will be documented soon but you can look at the test project for now. I hope it has enough number of examples to give you better idea about how to use these extension methods. 
 
 - Converts IEnumerable<T> into an Excel worksheet/package
-- Reads data from Excel packages and convert then into a List<T>.
+- Reads data from Excel packages and convert them into a List<T>.
 
 ##### Basic examples:
 
