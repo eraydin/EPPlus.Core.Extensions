@@ -2,10 +2,10 @@
   <Import Project="..\..\common.props">
   </Import>
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="4.5.3.3" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />   
-  </ItemGroup>   
+    <PackageReference Include="EPPlus" Version="8.5.3" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
 </Project>

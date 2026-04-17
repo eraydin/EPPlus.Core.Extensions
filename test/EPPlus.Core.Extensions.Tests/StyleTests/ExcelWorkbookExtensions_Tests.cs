@@ -35,15 +35,13 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
 
             workbook.CreateNamedStyle(nameOfStyle1, style => style
                                                              .SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown)
-                                                             .SetFont(new Font(fontName, 12, FontStyle.Bold),
-                                                                 Color.Yellow)
+                                                             .SetFont(fontName, 12, Color.Yellow, bold: true)
                                                              .BorderAround(ExcelBorderStyle.Double, Color.AliceBlue));
 
             workbook.CreateNamedStyleIfNotExists(nameOfStyle2, style => style
                                                                         .SetBackgroundColor(Color.Blue,
                                                                             ExcelFillStyle.DarkDown)
-                                                                        .SetFont(new Font(fontName, 12, FontStyle.Bold),
-                                                                            Color.Yellow)
+                                                                        .SetFont(fontName, 12, Color.Yellow, bold: true)
                                                                         .BorderAround(ExcelBorderStyle.Double,
                                                                             Color.AliceBlue));
 
@@ -88,7 +86,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             workbook.CreateNamedStyle(nameOfStyle, style =>
             {
                 style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
-                style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
+                style.SetFont(fontName, 12, Color.Yellow, bold: true);
             });
 
             //-----------------------------------------------------------------------------------------------------------
@@ -100,7 +98,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
                 workbook.CreateNamedStyle(nameOfStyle, style =>
                 {
                     style.SetBackgroundColor(Color.Aquamarine, ExcelFillStyle.DarkGrid);
-                    style.SetFont(new Font(fontName, 15, FontStyle.Italic), Color.Beige);
+                    style.SetFont(fontName, 15, Color.Beige, italic: true);
                 });
             };
 
@@ -123,7 +121,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             workbook.CreateNamedStyle(nameOfStyle, style =>
             {
                 style.SetBackgroundColor(Color.Blue, ExcelFillStyle.DarkDown);
-                style.SetFont(new Font(fontName, 12, FontStyle.Bold), Color.Yellow);
+                style.SetFont(fontName, 12, Color.Yellow, bold: true);
             });
 
             //-----------------------------------------------------------------------------------------------------------
@@ -135,7 +133,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
                 workbook.CreateNamedStyleIfNotExists(nameOfStyle, style =>
                 {
                     style.SetBackgroundColor(Color.Aquamarine, ExcelFillStyle.DarkGrid);
-                    style.SetFont(new Font(fontName, 15, FontStyle.Italic), Color.Beige);
+                    style.SetFont(fontName, 15, Color.Beige, italic: true);
                 });
             };
 

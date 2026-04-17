@@ -57,11 +57,14 @@ namespace EPPlus.Core.Extensions.Style
         ///     Sets font of Excel style
         /// </summary>
         /// <param name="thisStyle">The Excel style</param>
-        /// <param name="font">The font</param>
+        /// <param name="fontName">The font name</param>
+        /// <param name="size">The font size</param>
+        /// <param name="bold">Bold</param>
+        /// <param name="italic">Italic</param>
         /// <returns></returns>
-        public static ExcelStyle SetFont(this ExcelStyle thisStyle, Font font)
+        public static ExcelStyle SetFont(this ExcelStyle thisStyle, string fontName, float size, bool bold = false, bool italic = false)
         {
-            thisStyle.Font.SetFromFont(font);
+            thisStyle.Font.SetFromFont(fontName, size, bold, italic);
             return thisStyle;
         }
 
@@ -69,12 +72,15 @@ namespace EPPlus.Core.Extensions.Style
         ///     Sets font and color of Excel style
         /// </summary>
         /// <param name="thisStyle">The Excel style</param>
-        /// <param name="font">The font</param>
+        /// <param name="fontName">The font name</param>
+        /// <param name="size">The font size</param>
         /// <param name="color">The color</param>
+        /// <param name="bold">Bold</param>
+        /// <param name="italic">Italic</param>
         /// <returns></returns>
-        public static ExcelStyle SetFont(this ExcelStyle thisStyle, Font font, Color color)
+        public static ExcelStyle SetFont(this ExcelStyle thisStyle, string fontName, float size, Color color, bool bold = false, bool italic = false)
         {
-            thisStyle.Font.SetFromFont(font);
+            thisStyle.Font.SetFromFont(fontName, size, bold, italic);
             thisStyle.SetFontColor(color);
             return thisStyle;
         }

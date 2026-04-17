@@ -14,6 +14,7 @@ namespace EPPlus.Core.Extensions.Tests
 
         protected TestBase()
         {
+            ExcelPackage.License.SetNonCommercialPersonal("EPPlus.Core.Extensions");
             ExcelPackage1 = new ExcelPackage(typeof(TestBase).GetTypeInfo().Assembly.GetManifestResourceStream(ResourceName1));
             ExcelPackage2 = new ExcelPackage(typeof(TestBase).GetTypeInfo().Assembly.GetManifestResourceStream(ResourceName2));
         }

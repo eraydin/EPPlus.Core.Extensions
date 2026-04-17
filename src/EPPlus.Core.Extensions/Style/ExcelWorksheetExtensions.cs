@@ -8,27 +8,33 @@ namespace EPPlus.Core.Extensions.Style
     public static class ExcelWorksheetExtensions
     {
         /// <summary>
-        ///     Sets the font of ExcelWorksheet cells from a Font object
+        ///     Sets the font of ExcelWorksheet cells from font name and size
         /// </summary>
         /// <param name="worksheet"></param>
-        /// <param name="font"></param>
+        /// <param name="fontName"></param>
+        /// <param name="size"></param>
+        /// <param name="bold">Bold</param>
+        /// <param name="italic">Italic</param>
         /// <returns></returns>
-        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, Font font)
+        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, string fontName, float size, bool bold = false, bool italic = false)
         {
-            worksheet.Cells.SetFont(font);
+            worksheet.Cells.SetFont(fontName, size, bold, italic);
             return worksheet;
         }
 
         /// <summary>
-        ///     Sets the font of given cell range from a Font object
+        ///     Sets the font of given cell range from font name and size
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="cellRange"></param>
-        /// <param name="font"></param>
+        /// <param name="fontName"></param>
+        /// <param name="size"></param>
+        /// <param name="bold">Bold</param>
+        /// <param name="italic">Italic</param>
         /// <returns></returns>
-        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelRange cellRange, Font font)
+        public static ExcelWorksheet SetFont(this ExcelWorksheet worksheet, ExcelRange cellRange, string fontName, float size, bool bold = false, bool italic = false)
         {
-            worksheet.Cells[cellRange.Address].SetFont(font);
+            worksheet.Cells[cellRange.Address].SetFont(fontName, size, bold, italic);
             return worksheet;
         }
 

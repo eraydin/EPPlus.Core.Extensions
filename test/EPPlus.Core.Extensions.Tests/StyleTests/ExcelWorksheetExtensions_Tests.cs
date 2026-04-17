@@ -69,7 +69,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             worksheet.SetFontColor(Color.Yellow);
             worksheet.SetFontColor(worksheet.Cells[1, 2, 1, 3], Color.BlueViolet);
-            worksheet.SetFont(new Font("Verdana", 12));
+            worksheet.SetFont("Verdana", 12);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -91,7 +91,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.SetFontColor(Color.BlueViolet);
-            worksheet.SetFont(new Font("Verdana", 12));
+            worksheet.SetFont("Verdana", 12);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -112,8 +112,8 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             // Act
             //-----------------------------------------------------------------------------------------------------------
             worksheet.SetFontColor(Color.BlueViolet);
-            worksheet.SetFont(new Font("Arial", 12));
-            worksheet.SetFont(worksheet.Cells[1, 2, 1, 2], new Font("Verdana", 12));
+            worksheet.SetFont("Arial", 12);
+            worksheet.SetFont(worksheet.Cells[1, 2, 1, 2], "Verdana", 12);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -134,7 +134,7 @@ namespace EPPlus.Core.Extensions.Tests.StyleTests
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            worksheet.SetFont(new Font("Arial", 15));
+            worksheet.SetFont("Arial", 15);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert

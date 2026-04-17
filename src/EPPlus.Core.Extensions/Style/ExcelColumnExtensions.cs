@@ -8,14 +8,17 @@ namespace EPPlus.Core.Extensions.Style
     public static class ExcelColumnExtensions
     {
         /// <summary>
-        ///     Sets the font of ExcelColumn from a Font object
+        ///     Sets the font of ExcelColumn from font name and size
         /// </summary>
         /// <param name="column"></param>
-        /// <param name="font"></param>
+        /// <param name="fontName"></param>
+        /// <param name="size"></param>
+        /// <param name="bold">Bold</param>
+        /// <param name="italic">Italic</param>
         /// <returns></returns>
-        public static ExcelColumn SetFont(this ExcelColumn column, Font font)
+        public static ExcelColumn SetFont(this ExcelColumn column, string fontName, float size, bool bold = false, bool italic = false)
         {
-            column.Style.SetFont(font);
+            column.Style.SetFont(fontName, size, bold, italic);
             return column;
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -139,14 +139,14 @@ namespace EPPlus.Core.Extensions.Tests
                 .ToWorksheet("< 1950")
                 .WithConfiguration(configuration =>
                                    configuration.WithColumnConfiguration(x => x.SetFontColor(Color.Purple))
-                                                .WithHeaderConfiguration(x => x.SetFont(new Font("Arial", 13, FontStyle.Bold))
+                                                .WithHeaderConfiguration(x => x.SetFont("Arial", 13, bold: true)
                                                                                .SetFontColor(Color.White)
                                                                                .SetBackgroundColor(Color.Black))
                                                 .WithHeaderRowConfiguration(x => x.BorderAround(ExcelBorderStyle.Thin)
                                                                                   .SetFontName("Verdana"))
                                                 .WithCellConfiguration((x, y) =>
                                                                        {
-                                                                           x.SetFont(new Font("Times New Roman", 13));
+                                                                           x.SetFont("Times New Roman", 13);
                                                                            y.YearBorn = y.YearBorn % 2 == 0 ? y.YearBorn : 1990;
                                                                        })
                                                 .WithTitleConfiguration(x => x.SetBackgroundColor(Color.Yellow))

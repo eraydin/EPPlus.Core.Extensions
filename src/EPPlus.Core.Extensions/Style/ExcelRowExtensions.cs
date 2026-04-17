@@ -8,14 +8,17 @@ namespace EPPlus.Core.Extensions.Style
     public static class ExcelRowExtensions
     {
         /// <summary>
-        ///     Sets the font of ExcelRow from a Font object
+        ///     Sets the font of ExcelRow from font name and size
         /// </summary>
         /// <param name="row"></param>
-        /// <param name="font"></param>
+        /// <param name="fontName"></param>
+        /// <param name="size"></param>
+        /// <param name="bold">Bold</param>
+        /// <param name="italic">Italic</param>
         /// <returns></returns>
-        public static ExcelRow SetFont(this ExcelRow row, Font font)
+        public static ExcelRow SetFont(this ExcelRow row, string fontName, float size, bool bold = false, bool italic = false)
         {
-            row.Style.SetFont(font);
+            row.Style.SetFont(fontName, size, bold, italic);
             return row;
         }
 
