@@ -24,6 +24,8 @@ For commercial use, see [EPPlus licensing](https://epplussoftware.com/developers
 
 - Converts `IEnumerable<T>` into an Excel worksheet or package
 - Reads data from Excel packages and converts them into a `List<T>`
+- Supports reading headers from any row via `WithHeaderRowIndex`
+- Maps nested class properties as flat columns via `[ExcelNestedColumn]`
 - Supports data annotations for validation (`[Required]`, `[MaxLength]`, `[Range]`, etc.)
 - Fluent API for building multi-worksheet workbooks
 - Generates Excel templates from classes marked with `[ExcelWorksheet]`
@@ -67,6 +69,43 @@ List<PersonDto> persons = excelPackage.ToList<PersonDto>(c => c.SkipCastingError
 
 // From a named worksheet:
 List<PersonDto> persons = excelPackage.GetWorksheet("Persons").ToList<PersonDto>();
+```
+
+#### Reading when the header row is not on row 1
+
+Use `WithHeaderRowIndex` when your sheet has title rows above the actual column headers:
+
+```cs
+// Header is on row 3 — rows 1 and 2 are skipped
+List<PersonDto> persons = worksheet.ToList<PersonDto>(c => c.WithHeaderRowIndex(3));
+```
+
+#### Mapping nested class properties as flat columns
+
+Use `[ExcelNestedColumn]` on a complex-type property to have its sub-properties mapped as flat columns:
+
+```cs
+public class Order
+{
+    [ExcelTableColumn]
+    public string OrderId { get; set; }
+
+    [ExcelNestedColumn]
+    public Address ShippingAddress { get; set; }
+}
+
+public class Address
+{
+    [ExcelTableColumn]
+    public string Street { get; set; }
+
+    [ExcelTableColumn]
+    public string City { get; set; }
+}
+
+// A worksheet with columns OrderId | Street | City maps correctly:
+List<Order> orders = worksheet.ToList<Order>();
+// orders[0].ShippingAddress.Street => "123 Main St"
 ```
 
 #### Writing a list to an Excel package
