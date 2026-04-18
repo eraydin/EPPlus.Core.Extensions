@@ -2,7 +2,7 @@
 
 ### **Installation** [![NuGet version](https://badge.fury.io/nu/EPPlus.Core.Extensions.svg)](https://badge.fury.io/nu/EPPlus.Core.Extensions)
 
-It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http://nuget.org/packages/EPPlus.Core.Extensions)
+It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](https://nuget.org/packages/EPPlus.Core.Extensions)
 
 ### **Dependencies**
 
@@ -11,10 +11,10 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 
 ### **Documentation and Examples**
 
-The project will be documented soon but you can look at the test project for now. I hope it has enough number of examples to give you better idea about how to use these extension methods. 
+The project will be documented soon but you can look at the test project for now. I hope it has enough examples to give you a better idea of how to use these extension methods.
 
 - Converts IEnumerable<T> into an Excel worksheet/package
-- Reads data from Excel packages and convert them into a List<T>.
+- Reads data from Excel packages and converts them into a List<T>.
 
 ##### Basic examples:
 
