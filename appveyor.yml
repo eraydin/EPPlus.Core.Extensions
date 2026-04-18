@@ -4,10 +4,9 @@ image: Visual Studio 2022
 pull_requests:
   do_not_increment_build_number: true
 
-install:
-- ps: dotnet --version
-
 build_script:
-- ps: .\build.ps1 -experimental
+- dotnet restore
+- dotnet build --configuration Release --no-restore
 
-test: off
+test_script:
+- dotnet test --configuration Release --no-build
