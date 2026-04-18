@@ -165,10 +165,7 @@ namespace EPPlus.Core.Extensions
         {
             NotNullOrEmpty(buffer, nameof(buffer));
 
-            using (var memoryStream = new MemoryStream(buffer))
-            {
-                return new ExcelPackage(memoryStream);
-            }
+            return new ExcelPackage(new MemoryStream(buffer));
         }
 
         /// <summary>
@@ -182,10 +179,7 @@ namespace EPPlus.Core.Extensions
             NotNullOrEmpty(buffer, nameof(buffer));
             NotNullOrWhiteSpace(password, nameof(password));
 
-            using (var memoryStream = new MemoryStream(buffer))
-            {
-                return new ExcelPackage(memoryStream, password);
-            }
+            return new ExcelPackage(new MemoryStream(buffer), password);
         }
 
         /// <summary>
