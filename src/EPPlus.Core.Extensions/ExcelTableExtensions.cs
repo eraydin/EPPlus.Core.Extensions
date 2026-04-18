@@ -250,6 +250,11 @@ namespace EPPlus.Core.Extensions
 
             if (type == typeof(DateTime))
             {
+                if (cell == null)
+                {
+                    throw new InvalidCastException($"Cannot cast null to {nameof(DateTime)}.");
+                }
+
                 if (!DateTime.TryParse(cell.ToString(), out DateTime parsedDate))
                 {
                     parsedDate = DateTime.FromOADate((double)cell);
