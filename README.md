@@ -1,4 +1,4 @@
-# **EPPlus.Core.Extensions** [![Build status](https://ci.appveyor.com/api/projects/status/cdhoa8m20k2k71ke?svg=true)](https://ci.appveyor.com/project/eraydin/epplus-core-extensions) [![codecov](https://codecov.io/gh/eraydin/EPPlus.Core.Extensions/graph/badge.svg)](https://codecov.io/gh/eraydin/EPPlus.Core.Extensions)
+# **EPPlus.Core.Extensions** [![CI](https://github.com/eraydin/EPPlus.Core.Extensions/actions/workflows/ci.yml/badge.svg)](https://github.com/eraydin/EPPlus.Core.Extensions/actions/workflows/ci.yml)
 
 ### **Installation** [![NuGet version](https://badge.fury.io/nu/EPPlus.Core.Extensions.svg)](https://badge.fury.io/nu/EPPlus.Core.Extensions)
 
@@ -8,7 +8,6 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 
 **.NET 10.0**
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 8.5.3*
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*System.ComponentModel.Annotations >= 5.0.0*
 
 ### **Documentation and Examples**
 
