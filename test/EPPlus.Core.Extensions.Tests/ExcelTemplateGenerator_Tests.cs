@@ -16,6 +16,11 @@ namespace EPPlus.Core.Extensions.Tests
 {
     public class ExcelTemplateGeneratorTests
     {
+        public ExcelTemplateGeneratorTests()
+        {
+            ExcelPackage.License.SetNonCommercialPersonal("EPPlus.Core.Extensions");
+        }
+
         [Fact]
         public void Should_generate_an_Excel_package_from_given_ExcelExportable_class_name()
         {
