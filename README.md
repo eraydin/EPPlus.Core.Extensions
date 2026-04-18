@@ -1,6 +1,6 @@
 # **EPPlus.Core.Extensions** [![CI](https://github.com/eraydin/EPPlus.Core.Extensions/actions/workflows/ci.yml/badge.svg)](https://github.com/eraydin/EPPlus.Core.Extensions/actions/workflows/ci.yml)
 
-### **Installation** [![NuGet version](https://badge.fury.io/nu/EPPlus.Core.Extensions.svg)](https://badge.fury.io/nu/EPPlus.Core.Extensions)
+### **Installation** [![NuGet version](https://img.shields.io/nuget/v/EPPlus.Core.Extensions.svg)](https://www.nuget.org/packages/EPPlus.Core.Extensions)
 
 It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](https://nuget.org/packages/EPPlus.Core.Extensions)
 
