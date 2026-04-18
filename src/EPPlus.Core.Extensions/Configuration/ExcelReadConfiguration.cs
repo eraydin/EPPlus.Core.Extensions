@@ -42,9 +42,17 @@ namespace EPPlus.Core.Extensions.Configuration
             return this;
         }  
 
+        public virtual int? HeaderRowIndex { get; private set; }
+
         public virtual ExcelReadConfiguration<T> WithoutHeaderRow()
         {
             HasHeaderRow = false;
+            return this;
+        }
+
+        public virtual ExcelReadConfiguration<T> WithHeaderRowIndex(int rowIndex)
+        {
+            HeaderRowIndex = rowIndex;
             return this;
         }
 

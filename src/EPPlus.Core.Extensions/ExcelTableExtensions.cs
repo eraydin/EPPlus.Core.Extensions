@@ -60,9 +60,20 @@ namespace EPPlus.Core.Extensions
 
                     PropertyInfo property = map.PropertyInfo;
 
+                    object target = item;
+                    if (map.OwnerPropertyInfo != null)
+                    {
+                        target = map.OwnerPropertyInfo.GetValue(item);
+                        if (target == null)
+                        {
+                            target = Activator.CreateInstance(map.OwnerPropertyInfo.PropertyType);
+                            map.OwnerPropertyInfo.SetValue(item, target);
+                        }
+                    }
+
                     try
                     {
-                        TrySetProperty(item, property, cell);
+                        TrySetProperty(target, property, cell);
                     }
                     catch
                     {
@@ -118,9 +129,20 @@ namespace EPPlus.Core.Extensions
 
                     PropertyInfo property = map.PropertyInfo;
 
+                    object target = item;
+                    if (map.OwnerPropertyInfo != null)
+                    {
+                        target = map.OwnerPropertyInfo.GetValue(item);
+                        if (target == null)
+                        {
+                            target = Activator.CreateInstance(map.OwnerPropertyInfo.PropertyType);
+                            map.OwnerPropertyInfo.SetValue(item, target);
+                        }
+                    }
+
                     try
                     {
-                        TrySetProperty(item, property, cell);
+                        TrySetProperty(target, property, cell);
                     }
                     catch (Exception ex)
                     {
@@ -217,7 +239,7 @@ namespace EPPlus.Core.Extensions
                                        });
                 }
                 
-                yield return new ExcelTableColumnDetails(col, propertyInfo, columnAttribute);
+                yield return new ExcelTableColumnDetails(col, propertyInfo, columnAttribute, propertyInfoAndColumnAttribute.OwnerPropertyInfo);
             }
         }
 

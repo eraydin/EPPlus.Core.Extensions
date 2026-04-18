@@ -158,7 +158,11 @@ namespace EPPlus.Core.Extensions
             ExcelReadConfiguration<T> configuration = ExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
-            return worksheet.AsExcelTable(configuration.HasHeaderRow).AsEnumerable(configurationAction);
+            ExcelTable table = configuration.HeaderRowIndex.HasValue
+                ? worksheet.AsExcelTableFromRow(StringHelper.GenerateRandomTableName(), configuration.HasHeaderRow, configuration.HeaderRowIndex.Value)
+                : worksheet.AsExcelTable(configuration.HasHeaderRow);
+
+            return table.AsEnumerable(configurationAction);
         }
 
         /// <summary>
@@ -549,6 +553,32 @@ namespace EPPlus.Core.Extensions
             }
 
             throw new ExcelValidationException($"'{columnName}' column is duplicated on {rowIndex}. row.");
+        }
+
+        private static ExcelTable AsExcelTableFromRow(this ExcelWorksheet worksheet, string tableName, bool hasHeaderRow, int startRow)
+        {
+            ExcelAddressBase valuedDimension = worksheet.GetValuedDimension() ?? worksheet.Dimension;
+
+            if (valuedDimension == null || startRow > valuedDimension.End.Row)
+            {
+                return worksheet.AsExcelTable(tableName, hasHeaderRow);
+            }
+
+            ExcelRange dataRange = worksheet.Cells[startRow, valuedDimension.Start.Column, valuedDimension.End.Row, valuedDimension.End.Column];
+
+            if (worksheet.Tables.Any())
+            {
+                ExcelTable excelTable = worksheet.Tables.FirstOrDefault(x => x.Address.End.Address.Equals(dataRange.End.Address, StringComparison.OrdinalIgnoreCase));
+                if (excelTable != null)
+                {
+                    return excelTable;
+                }
+            }
+
+            worksheet.Tables.Add(dataRange, tableName);
+            worksheet.Tables[tableName].ShowHeader = hasHeaderRow;
+
+            return worksheet.Tables[tableName];
         }
     }
 }

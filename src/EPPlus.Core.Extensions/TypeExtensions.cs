@@ -24,18 +24,34 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         internal static List<ExcelTableColumnDetails> GetExcelTableColumnAttributesWithPropertyInfo(this Type type)
         {
-            List<ExcelTableColumnDetails> columnAttributesWithPropertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                                                                                 .Select(property =>
-                                                                                                 {
-                                                                                                     var columnAttribute = property.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute;
-                                                                                                     return new ExcelTableColumnDetails(0, property, columnAttribute);
-                                                                                                 })
-                                                                                                 .Where(p => p.ColumnAttribute != null)
-                                                                                                 .ToList();
+            var result = new List<ExcelTableColumnDetails>();
 
-            ThrowIfConditionMet(!columnAttributesWithPropertyInfo.Any(), "Given object does not have any '{0}'.", nameof(ExcelTableColumnAttribute));
-           
-            return columnAttributesWithPropertyInfo;
+            // Direct [ExcelTableColumn] properties
+            var direct = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                             .Select(p => new ExcelTableColumnDetails(0, p, p.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute))
+                             .Where(p => p.ColumnAttribute != null)
+                             .ToList();
+
+            result.AddRange(direct);
+
+            // Nested [ExcelNestedColumn] properties — recurse one level deep
+            var nested = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                             .Where(p => p.GetCustomAttributes(typeof(ExcelNestedColumnAttribute), true).Any());
+
+            foreach (PropertyInfo ownerProp in nested)
+            {
+                var nestedColumns = ownerProp.PropertyType
+                                             .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                             .Select(p => new { Property = p, Attr = p.GetCustomAttributes(typeof(ExcelTableColumnAttribute), true).FirstOrDefault() as ExcelTableColumnAttribute })
+                                             .Where(p => p.Attr != null)
+                                             .Select(p => new ExcelTableColumnDetails(0, p.Property, p.Attr, ownerProp));
+
+                result.AddRange(nestedColumns);
+            }
+
+            ThrowIfConditionMet(!result.Any(), "Given object does not have any '{0}'.", nameof(ExcelTableColumnAttribute));
+
+            return result;
         }
 
         /// <summary>

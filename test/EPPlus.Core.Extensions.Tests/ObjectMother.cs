@@ -275,4 +275,22 @@ namespace EPPlus.Core.Extensions.Tests
         [ExcelTableColumn("UpdatedDate")]
         public DateTime UpdatedDate { get; set; }
     }
+
+    internal class PersonWithAddress
+    {
+        [ExcelTableColumn("Name")]
+        public string Name { get; set; }
+
+        [ExcelNestedColumn]
+        public HomeAddress Address { get; set; }
+    }
+
+    internal class HomeAddress
+    {
+        [ExcelTableColumn("Street")]
+        public string Street { get; set; }
+
+        [ExcelTableColumn("City")]
+        public string City { get; set; }
+    }
 }
