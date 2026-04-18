@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [main, dev]
+    tags: ['v*']
   pull_request:
     branches: [main, dev]
 
@@ -21,16 +22,12 @@ jobs:
       - run: dotnet test --configuration Release --no-build
 
       - name: Pack
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: startsWith(github.ref, 'refs/tags/v')
         run: dotnet pack --configuration Release --no-build --output ./nupkg
 
       - name: Publish to NuGet
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: startsWith(github.ref, 'refs/tags/v')
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
-          if [ -z "$NUGET_API_KEY" ]; then
-            echo "NUGET_API_KEY secret is not set, skipping publish."
-            exit 0
-          fi
           dotnet nuget push ./nupkg/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
