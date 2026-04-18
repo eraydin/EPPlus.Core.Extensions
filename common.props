@@ -5,7 +5,7 @@
 
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <PackageIconUrl></PackageIconUrl>
-    <PackageTags>EPPlus, EPPlus Core, Microsoft Excel, Excel, netstandard2.0, net462</PackageTags>
+    <PackageTags>EPPlus, EPPlus Core, Microsoft Excel, Excel, net10.0</PackageTags>
     <PackageProjectUrl>https://eraydin.github.io/EPPlus.Core.Extensions</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
