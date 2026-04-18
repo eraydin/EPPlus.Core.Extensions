@@ -17,3 +17,10 @@ build_script:
 
 test_script:
 - dotnet test --configuration Release --no-build
+
+after_test:
+- ps: |
+    if ($env:APPVEYOR_REPO_BRANCH -eq "main" -and -not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
+      dotnet pack --configuration Release --no-build --output ./nupkg
+      dotnet nuget push ./nupkg/*.nupkg --api-key $env:nugetApiKey --source https://api.nuget.org/v3/index.json --skip-duplicate
+    }
