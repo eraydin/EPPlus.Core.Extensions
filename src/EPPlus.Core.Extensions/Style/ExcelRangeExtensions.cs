@@ -58,14 +58,17 @@ namespace EPPlus.Core.Extensions.Style
         }
 
         /// <summary>
-        ///     Sets the font of given range from a Font object
+        ///     Sets the font of given range from font name and size
         /// </summary>
         /// <param name="range"></param>
-        /// <param name="font"></param>
+        /// <param name="fontName"></param>
+        /// <param name="size"></param>
+        /// <param name="bold">Bold</param>
+        /// <param name="italic">Italic</param>
         /// <returns></returns>
-        public static ExcelRangeBase SetFont(this ExcelRangeBase range, Font font)
+        public static ExcelRangeBase SetFont(this ExcelRangeBase range, string fontName, float size, bool bold = false, bool italic = false)
         {
-            range.Style.Font.SetFromFont(font);
+            range.Style.Font.SetFromFont(fontName, size, bold, italic);
             return range;
         }
 

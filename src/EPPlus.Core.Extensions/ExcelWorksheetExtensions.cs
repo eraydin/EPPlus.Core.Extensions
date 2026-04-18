@@ -511,7 +511,7 @@ namespace EPPlus.Core.Extensions
                 }
             }
 
-            return hasValue ? new ExcelAddressBase(minRow, minCol, maxRow, maxCol) : null;
+            return hasValue ? new ExcelAddress(minRow, minCol, maxRow, maxCol) : null;
         }
 
         /// <summary>

@@ -7,16 +7,19 @@ It's as easy as `PM> Install-Package EPPlus.Core.Extensions` from [nuget](http:/
 ### **Dependencies**
 
 **.NET Framework 4.6.1**
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.2* 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.3* 
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*System.ComponentModel.Annotations >= 4.7.0*
 
 **.NET Standard 2.0**
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.2*
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*EPPlus >= 4.5.3.3*
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*System.ComponentModel.Annotations >= 4.7.0*
 
 ### **Documentation and Examples**
 
-The project will be documented soon. You cant look at the test project for now. I hope it has enough number of examples to give you better understanding about how to use these extension methods. 
+The project will be documented soon but you can look at the test project for now. I hope it has enough number of examples to give you better idea about how to use these extension methods. 
+
+- Converts IEnumerable<T> into an Excel worksheet/package
+- Reads data from Excel packages and convert them into a List<T>.
 
 ##### Basic examples:
 
