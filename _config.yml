@@ -1,4 +1,4 @@
 theme: jekyll-theme-minimal
 title: EPPlus.Core.Extensions
-description: Extensions library for both EPPlus and EPPlus.Core packages to manipulate MS Excel files easily.
+description: An extensions library for EPPlus to generate and manipulate Excel files easily in .NET 10.
 show_downloads: true
