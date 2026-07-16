@@ -38,6 +38,9 @@ namespace EPPlus.Core.Extensions
                 Package = new ExcelPackage();
             }
 
+            List<T> rows = Rows as List<T> ?? Rows?.ToList();
+            Rows = rows;
+
             ExcelWorksheet worksheet = Package.Workbook.Worksheets.Add(Name);
             
             var rowOffset = 0;
@@ -85,15 +88,15 @@ namespace EPPlus.Core.Extensions
             CreateTableIfPossible(worksheet);
 
             //render data
-            if (Rows != null)
+            if (rows != null)
             {
-                for (var r = 0; r < Rows.Count(); r++)
+                for (var r = 0; r < rows.Count; r++)
                 {
                     for (var c = 0; c < Columns.Count(); c++)
                     {
-                        worksheet.Cells[r + rowOffset + 1, c + 1].Value = Columns[c].Map(Rows.ElementAt(r));
+                        worksheet.Cells[r + rowOffset + 1, c + 1].Value = Columns[c].Map(rows[r]);
 
-                        Configuration.ConfigureCell?.Invoke(worksheet.Cells[r + rowOffset + 1, c + 1], Rows.ElementAt(r));
+                        Configuration.ConfigureCell?.Invoke(worksheet.Cells[r + rowOffset + 1, c + 1], rows[r]);
                     }
                 }
             }

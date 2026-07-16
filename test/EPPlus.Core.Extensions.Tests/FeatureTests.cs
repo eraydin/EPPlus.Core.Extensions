@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using EPPlus.Core.Extensions.Attributes;
@@ -110,6 +111,26 @@ namespace EPPlus.Core.Extensions.Tests
 
             result.Should().HaveCount(1);
             result[0].FirstName.Should().Be("Alice");
+        }
+    }
+
+    public class EpplusCompatibilityTests
+    {
+        [Fact]
+        public void Epplus_8_6_1_should_calculate_regex_formulas_and_round_trip_workbooks()
+        {
+            ExcelPackage.License.SetNonCommercialPersonal("EPPlus.Core.Extensions");
+            using var package = new ExcelPackage();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Regex");
+            worksheet.Cells["A1"].Formula = "REGEXTEST(\"abc123\",\"[0-9]+\")";
+
+            package.Workbook.Calculate();
+
+            worksheet.Cells["A1"].Value.Should().Be(true);
+
+            byte[] buffer = package.GetAsByteArray();
+            using var reopened = new ExcelPackage(new MemoryStream(buffer));
+            reopened.Workbook.Worksheets["Regex"].Cells["A1"].Formula.Should().EndWith("REGEXTEST(\"abc123\",\"[0-9]+\")");
         }
     }
 }

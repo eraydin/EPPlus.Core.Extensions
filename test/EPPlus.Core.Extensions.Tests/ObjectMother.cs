@@ -293,4 +293,10 @@ namespace EPPlus.Core.Extensions.Tests
         [ExcelTableColumn("City")]
         public string City { get; set; }
     }
+
+    internal class MissingIndexMap
+    {
+        [ExcelTableColumn(999)]
+        public string Value { get; set; }
+    }
 }

@@ -8,7 +8,7 @@ PM> Install-Package EPPlus.Core.Extensions
 
 ### **Dependencies**
 
-**.NET 10.0** — *EPPlus >= 8.5.3*
+**.NET 10.0** — *EPPlus >= 8.6.1*
 
 ### **License Setup**
 
@@ -24,6 +24,8 @@ For commercial use, see [EPPlus licensing](https://epplussoftware.com/developers
 
 - Converts `IEnumerable<T>` into an Excel worksheet or package
 - Reads data from Excel packages and converts them into a `List<T>`
+- Supports result-based imports that collect mapping, casting, and validation errors
+- Provides safe `TryGetWorksheet` and `TryGetTable` lookup helpers
 - Supports reading headers from any row via `WithHeaderRowIndex`
 - Maps nested class properties as flat columns via `[ExcelNestedColumn]`
 - Supports data annotations for validation (`[Required]`, `[MaxLength]`, `[Range]`, etc.)
@@ -65,10 +67,47 @@ public class PersonDto
 
 ```cs
 // From the first worksheet:
-List<PersonDto> persons = excelPackage.ToList<PersonDto>(c => c.SkipCastingErrors());
+List<PersonDto> firstWorksheetPersons = excelPackage.ToList<PersonDto>(c => c.SkipCastingErrors());
 
 // From a named worksheet:
-List<PersonDto> persons = excelPackage.GetWorksheet("Persons").ToList<PersonDto>();
+List<PersonDto> namedWorksheetPersons = excelPackage.GetWorksheet("Persons").ToList<PersonDto>();
+
+// Or read a named worksheet directly from the package:
+List<PersonDto> directNamedWorksheetPersons = excelPackage.ToListFromWorksheet<PersonDto>("Persons");
+```
+
+#### Reading without exceptions
+
+Use `Read<T>` when a workbook is user input and all usable rows and errors should be returned together:
+
+```cs
+ExcelReadResult<PersonDto> result = excelPackage.Read<PersonDto>("Persons");
+
+foreach (PersonDto person in result.Items)
+{
+    // Rows with invalid cells are retained and may be partially populated.
+}
+
+foreach (ExcelReadError error in result.Errors)
+{
+    Console.WriteLine($"{error.Kind}: {error.Context.CellAddress} - {error.Message}");
+}
+```
+
+`ToList<T>` and `AsEnumerable<T>` keep their existing throw/skip behavior. `Read<T>` captures missing-column mappings, casting failures, and data annotation validation errors.
+
+#### Safe workbook lookups
+
+```cs
+if (excelPackage.TryGetWorksheet("Persons", out ExcelWorksheet worksheet))
+{
+    List<PersonDto> persons = worksheet.ToList<PersonDto>();
+}
+
+if (excelPackage.TryGetTable("PeopleTable", out ExcelTable table))
+{
+    ExcelReadResult<PersonDto> result = table.Read<PersonDto>();
+}
 ```
 
 #### Reading when the header row is not on row 1
@@ -116,6 +155,12 @@ ExcelPackage excelPackage = persons.ToExcelPackage();
 
 // Convert to byte array
 byte[] xlsx = persons.ToXlsx();
+
+// Specify the worksheet name
+byte[] namedXlsx = persons.ToXlsx("Persons", addHeaderRow: true);
+
+// Start the fluent builder with the default worksheet name (typeof(T).Name)
+WorksheetWrapper<PersonDto> worksheet = persons.ToWorksheet();
 
 // Fluent multi-worksheet builder
 List<PersonDto> pre50  = persons.Where(x => x.YearBorn < 1950).ToList();

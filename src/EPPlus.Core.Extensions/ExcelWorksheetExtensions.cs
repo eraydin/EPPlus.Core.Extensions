@@ -73,6 +73,12 @@ namespace EPPlus.Core.Extensions
 
         public static ExcelTable GetTable(this ExcelWorksheet worksheet, int tableIndex) => worksheet.Tables[tableIndex];
 
+        public static bool TryGetTable(this ExcelWorksheet worksheet, string tableName, out ExcelTable table)
+        {
+            table = worksheet.GetTable(tableName);
+            return table != null;
+        }
+
         /// <summary>
         ///     Creates an Excel table using the data bounds of the worksheet.
         /// </summary>
@@ -174,6 +180,21 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static List<T> ToList<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() 
             => worksheet.AsEnumerable(configurationAction).ToList();
+
+        /// <summary>
+        ///     Imports all rows and returns both mapped items and captured mapping, casting and validation errors.
+        /// </summary>
+        public static Results.ExcelReadResult<T> Read<T>(this ExcelWorksheet worksheet, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new()
+        {
+            ExcelReadConfiguration<T> configuration = ExcelReadConfiguration<T>.Instance;
+            configurationAction?.Invoke(configuration);
+
+            ExcelTable table = configuration.HeaderRowIndex.HasValue
+                ? worksheet.AsExcelTableFromRow(StringHelper.GenerateRandomTableName(), configuration.HasHeaderRow, configuration.HeaderRowIndex.Value)
+                : worksheet.AsExcelTable(configuration.HasHeaderRow);
+
+            return ExcelTableExtensions.Read(table, configuration);
+        }
 
         public static ExcelWorksheet ChangeCellValue(this ExcelWorksheet worksheet, int rowIndex, int columnIndex, object value, Action<ExcelRange> configureCell = null)
         {
