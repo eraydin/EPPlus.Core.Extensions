@@ -4,6 +4,7 @@ using System.Linq;
 
 using EPPlus.Core.Extensions.Attributes;
 using EPPlus.Core.Extensions.Exceptions;
+using EPPlus.Core.Extensions.Results;
 
 using FluentAssertions;
 
@@ -479,6 +480,67 @@ namespace EPPlus.Core.Extensions.Tests
 
             validationResults.Exists(x => x.CellAddress.Address.Equals("C6", StringComparison.InvariantCultureIgnoreCase)).Should().BeTrue("Toyota is not in the enumeration");
             validationResults.Exists(x => x.CellAddress.Address.Equals("D7", StringComparison.InvariantCultureIgnoreCase)).Should().BeTrue("Date is null");
+        }
+
+        [Fact]
+        public void Read_should_not_capture_exceptions_thrown_by_user_callbacks()
+        {
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+
+            Action action = () => table.Read<DateMap>(configuration =>
+                configuration.OnRow((item, rowIndex) => throw new InvalidOperationException("Callback failed.")));
+
+            action.Should().Throw<InvalidOperationException>().WithMessage("Callback failed.");
+        }
+
+        [Fact]
+        public void Read_should_capture_casting_errors_and_keep_partially_mapped_items()
+        {
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+
+            ExcelReadResult<EnumFailMap> result = table.Read<EnumFailMap>();
+
+            result.Items.Should().HaveCount(5);
+            result.Errors.Should().NotBeEmpty();
+            result.Errors.Should().OnlyContain(error => error.Kind == ExcelReadErrorKind.Casting);
+            result.Errors.Should().OnlyContain(error => error.Context != null && error.Exception != null);
+            result.HasErrors.Should().BeTrue();
+            result.IsSuccess.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Read_should_capture_missing_column_mappings()
+        {
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+
+            ExcelReadResult<ObjectWithWrongAttributeMappings> result = table.Read<ObjectWithWrongAttributeMappings>();
+
+            result.Items.Should().HaveCount(5);
+            result.Errors.Should().ContainSingle(error => error.Kind == ExcelReadErrorKind.Mapping);
+            result.Errors.Single().Context.PropertyName.Should().Be(nameof(ObjectWithWrongAttributeMappings.LastName));
+        }
+
+        [Fact]
+        public void Read_should_capture_out_of_range_index_mappings()
+        {
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+
+            ExcelReadResult<MissingIndexMap> result = table.Read<MissingIndexMap>();
+
+            result.Items.Should().HaveCount(5);
+            result.Errors.Should().ContainSingle(error => error.Kind == ExcelReadErrorKind.Mapping);
+            result.Errors.Single().Context.PropertyName.Should().Be(nameof(MissingIndexMap.Value));
+        }
+
+        [Fact]
+        public void Read_should_report_a_mapping_error_when_the_type_has_no_column_attributes()
+        {
+            ExcelTable table = ExcelPackage1.GetWorksheet("TEST1").GetTable("TEST1");
+
+            ExcelReadResult<ObjectWithoutExcelTableAttributes> result = table.Read<ObjectWithoutExcelTableAttributes>();
+
+            result.Items.Should().BeEmpty();
+            result.Errors.Should().ContainSingle(error => error.Kind == ExcelReadErrorKind.Mapping);
         }
     }
 }

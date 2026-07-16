@@ -31,6 +31,12 @@ namespace EPPlus.Core.Extensions
             return package.GetAllTables().FirstOrDefault(t => t.Name.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        public static bool TryGetTable(this ExcelPackage package, string tableName, out ExcelTable table)
+        {
+            table = package.GetTable(tableName);
+            return table != null;
+        }
+
         /// <summary>
         ///     Checks whether a table is existing in the package or not
         /// </summary>
@@ -69,6 +75,8 @@ namespace EPPlus.Core.Extensions
         /// <returns></returns>
         public static IEnumerable<T> AsEnumerable<T>(this ExcelPackage package, int worksheetIndex = 0, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.GetWorksheet(worksheetIndex).AsEnumerable(configurationAction);
 
+        public static IEnumerable<T> AsEnumerableFromWorksheet<T>(this ExcelPackage package, string worksheetName, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.GetWorksheet(worksheetName).AsEnumerable(configurationAction);
+
         /// <summary>
         ///     Converts given package into list of objects
         /// </summary>
@@ -78,6 +86,13 @@ namespace EPPlus.Core.Extensions
         /// <param name="configurationAction"></param>
         /// <returns></returns>
         public static List<T> ToList<T>(this ExcelPackage package, int worksheetIndex = 0, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.AsEnumerable(worksheetIndex, configurationAction).ToList();
+
+        public static List<T> ToListFromWorksheet<T>(this ExcelPackage package, string worksheetName, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.AsEnumerableFromWorksheet(worksheetName, configurationAction).ToList();
+
+        public static Results.ExcelReadResult<T> Read<T>(this ExcelPackage package, int worksheetIndex = 0, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.GetWorksheet(worksheetIndex).Read(configurationAction);
+
+        public static Results.ExcelReadResult<T> Read<T>(this ExcelPackage package, string worksheetName, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => package.GetWorksheet(worksheetName).Read(configurationAction);
+
         public static ExcelWorksheet AddWorksheet(this ExcelPackage package, string worksheetName) => package.Workbook.Worksheets.Add(worksheetName);
 
         public static ExcelWorksheet AddWorksheet(this ExcelPackage package, string worksheetName, ExcelWorksheet copyWorksheet) => package.Workbook.Worksheets.Add(worksheetName, copyWorksheet);
@@ -85,5 +100,7 @@ namespace EPPlus.Core.Extensions
         public static ExcelWorksheet GetWorksheet(this ExcelPackage package, string worksheetName) => package.Workbook.GetWorksheet(worksheetName);
 
         public static ExcelWorksheet GetWorksheet(this ExcelPackage package, int worksheetIndex) => package.Workbook.GetWorksheet(worksheetIndex);
+
+        public static bool TryGetWorksheet(this ExcelPackage package, string worksheetName, out ExcelWorksheet worksheet) => package.Workbook.TryGetWorksheet(worksheetName, out worksheet);
     }
 }
