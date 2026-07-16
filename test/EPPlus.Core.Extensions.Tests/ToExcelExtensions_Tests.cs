@@ -668,5 +668,46 @@ namespace EPPlus.Core.Extensions.Tests
             worksheet.Cells[2, 1].Value.Should().Be("title 2");
             worksheet.Cells[3, 1].Value.Should().Be("title 3");
         }
+
+        [Fact]
+        public void Export_should_offer_default_and_explicit_worksheet_names()
+        {
+            var people = new[] { new Person { LastName = "Lovelace", YearBorn = 1815 } };
+
+            using ExcelPackage defaultPackage = people.ToWorksheet().ToExcelPackage();
+            defaultPackage.Workbook.Worksheets.Single().Name.Should().Be(nameof(Person));
+
+            byte[] buffer = people.ToXlsx("People", addHeaderRow: true);
+            using var namedPackage = new ExcelPackage(new MemoryStream(buffer));
+            namedPackage.Workbook.Worksheets.Single().Name.Should().Be("People");
+        }
+
+        [Fact]
+        public void Export_should_enumerate_source_rows_once()
+        {
+            var enumerationCount = 0;
+
+            IEnumerable<Person> Rows()
+            {
+                enumerationCount++;
+                yield return new Person { LastName = "Lovelace", YearBorn = 1815 };
+                yield return new Person { LastName = "Hopper", YearBorn = 1906 };
+            }
+
+            using ExcelPackage package = Rows().ToExcelPackage();
+
+            enumerationCount.Should().Be(1);
+            package.Workbook.Worksheets.Single().Dimension.Rows.Should().Be(3);
+        }
+
+        [Fact]
+        public void Existing_export_default_literal_call_should_remain_unambiguous()
+        {
+            var people = new[] { new Person { LastName = "Lovelace", YearBorn = 1815 } };
+
+            byte[] buffer = people.ToXlsx(default);
+
+            buffer.Should().NotBeEmpty();
+        }
     }
 }

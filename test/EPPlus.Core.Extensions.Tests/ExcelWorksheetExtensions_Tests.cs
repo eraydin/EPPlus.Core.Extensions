@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 
 using EPPlus.Core.Extensions.Exceptions;
+using EPPlus.Core.Extensions.Results;
 using EPPlus.Core.Extensions.Style;
 
 using FluentAssertions;
@@ -866,6 +867,25 @@ namespace EPPlus.Core.Extensions.Tests
             results.All(x => x.MissingColumn1 == default).Should().BeTrue();
             results.All(x => x.MissingColumn2 == null).Should().BeTrue();
             results.All(x => x.MissingColumn3 == null).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Read_should_capture_data_annotation_validation_errors()
+        {
+            using var package = new ExcelPackage();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Validation");
+            worksheet.Cells[1, 1].Value = "Barcode";
+            worksheet.Cells[1, 2].Value = "Quantity";
+            worksheet.Cells[1, 3].Value = "UpdatedDate";
+            worksheet.Cells[2, 1].Value = "ABC";
+            worksheet.Cells[2, 2].Value = 1;
+            worksheet.Cells[2, 3].Value = DateTime.Today;
+
+            ExcelReadResult<StocksValidation> result = worksheet.Read<StocksValidation>();
+
+            result.Items.Should().ContainSingle();
+            result.Errors.Should().ContainSingle(error => error.Kind == ExcelReadErrorKind.Validation);
+            result.Errors.Single().Context.CellAddress.Address.Should().Be("B2");
         }
     }
 }

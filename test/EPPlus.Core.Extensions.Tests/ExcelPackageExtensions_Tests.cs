@@ -3,9 +3,12 @@ using System.Data;
 using System.IO;
 using System.Linq;
 
+using EPPlus.Core.Extensions.Results;
+
 using FluentAssertions;
 
 using OfficeOpenXml;
+using OfficeOpenXml.Table;
 
 using Xunit;
 
@@ -191,6 +194,71 @@ namespace EPPlus.Core.Extensions.Tests
             //-----------------------------------------------------------------------------------------------------------
             var generatedWorksheet = result.GetWorksheet(expectedWorksheetName);
             generatedWorksheet.ToList<ExcelWithOptionalFields>().Count.Should().Be(2);
+        }
+
+        [Fact]
+        public void Try_get_helpers_should_return_found_objects_and_false_for_missing_objects()
+        {
+            ExcelPackage1.TryGetWorksheet("TEST1", out ExcelWorksheet worksheet).Should().BeTrue();
+            worksheet.Should().NotBeNull();
+
+            ExcelPackage1.Workbook.TryGetWorksheet("TEST1", out ExcelWorksheet workbookWorksheet).Should().BeTrue();
+            workbookWorksheet.Should().BeSameAs(worksheet);
+
+            ExcelPackage1.TryGetTable("test1", out ExcelTable packageTable).Should().BeTrue();
+            packageTable.Should().NotBeNull();
+
+            worksheet.TryGetTable("TEST1", out ExcelTable worksheetTable).Should().BeTrue();
+            worksheetTable.Should().BeSameAs(packageTable);
+
+            ExcelPackage1.TryGetWorksheet("missing", out _).Should().BeFalse();
+            ExcelPackage1.TryGetTable("missing", out _).Should().BeFalse();
+            worksheet.TryGetTable("missing", out _).Should().BeFalse();
+        }
+
+        [Fact]
+        public void Package_should_read_rows_by_worksheet_name()
+        {
+            List<DateMap> list = ExcelPackage1.ToListFromWorksheet<DateMap>("TEST1");
+            IEnumerable<DateMap> enumerable = ExcelPackage1.AsEnumerableFromWorksheet<DateMap>("TEST1");
+
+            list.Should().HaveCount(5);
+            enumerable.Should().HaveCount(5);
+        }
+
+        [Fact]
+        public void On_row_should_be_a_discoverable_alias_for_intercept()
+        {
+            List<DateMap> list = ExcelPackage1.ToListFromWorksheet<DateMap>("TEST1", configuration =>
+                configuration.OnRow((item, rowIndex) => item.NotMappedProperty = rowIndex));
+
+            list.Should().OnlyContain(item => item.NotMappedProperty > 0);
+        }
+
+        [Fact]
+        public void Package_read_should_support_named_worksheets_and_header_configuration()
+        {
+            using var package = new ExcelPackage();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("People");
+            worksheet.Cells[1, 1].Value = "Title";
+            worksheet.Cells[2, 1].Value = "Name";
+            worksheet.Cells[2, 2].Value = "Gender";
+            worksheet.Cells[3, 1].Value = "Ada";
+            worksheet.Cells[3, 2].Value = "Female";
+
+            ExcelReadResult<NamedMap> result = package.Read<NamedMap>("People", configuration => configuration.WithHeaderRowIndex(2));
+
+            result.IsSuccess.Should().BeTrue();
+            result.Items.Should().ContainSingle();
+            result.Items[0].FirstName.Should().Be("Ada");
+        }
+
+        [Fact]
+        public void Existing_package_default_literal_call_should_remain_unambiguous()
+        {
+            List<DateMap> rows = ExcelPackage1.ToList<DateMap>(default);
+
+            rows.Should().HaveCount(5);
         }
     }
 }
