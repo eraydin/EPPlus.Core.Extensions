@@ -108,6 +108,12 @@ namespace EPPlus.Core.Extensions
             ExcelReadConfiguration<T> configuration = ExcelReadConfiguration<T>.Instance;
             configurationAction?.Invoke(configuration);
 
+            return AsEnumerable(table, configuration);
+        }
+
+        internal static IEnumerable<T> AsEnumerable<T>(ExcelTable table, ExcelReadConfiguration<T> configuration) where T : new()
+        {
+
             if (table.IsEmpty(configuration.HasHeaderRow))
             {
                 yield break;
@@ -166,6 +172,15 @@ namespace EPPlus.Core.Extensions
                             throw new ExcelException(string.Format(configuration.CastingExceptionMessage, exceptionArgs.ColumnName, exceptionArgs.CellAddress.Address, exceptionArgs.CellValue, exceptionArgs.ExpectedType.Name), ex)
                                 .WithArguments(exceptionArgs);
                         }
+
+                        Results.ExcelReadErrorKind errorKind = ex is ValidationException
+                            ? Results.ExcelReadErrorKind.Validation
+                            : Results.ExcelReadErrorKind.Casting;
+                        ExcelException capturedException = ex is ValidationException
+                            ? new ExcelValidationException(ex.Message, ex).WithArguments(exceptionArgs)
+                            : new ExcelException(string.Format(configuration.CastingExceptionMessage, exceptionArgs.ColumnName, exceptionArgs.CellAddress.Address, exceptionArgs.CellValue, exceptionArgs.ExpectedType.Name), ex).WithArguments(exceptionArgs);
+
+                        configuration.ErrorCollector?.Invoke(new Results.ExcelReadError(errorKind, capturedException.Message, capturedException, exceptionArgs));
                     }
                 }
 
@@ -175,6 +190,38 @@ namespace EPPlus.Core.Extensions
         }
 
         public static List<T> ToList<T>(this ExcelTable table, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new() => AsEnumerable(table, configurationAction).ToList();
+
+        /// <summary>
+        ///     Imports all rows and returns both mapped items and captured mapping, casting and validation errors.
+        /// </summary>
+        public static Results.ExcelReadResult<T> Read<T>(this ExcelTable table, Action<ExcelReadConfiguration<T>> configurationAction = null) where T : new()
+        {
+            ExcelReadConfiguration<T> configuration = ExcelReadConfiguration<T>.Instance;
+            configurationAction?.Invoke(configuration);
+
+            return Read(table, configuration);
+        }
+
+        internal static Results.ExcelReadResult<T> Read<T>(ExcelTable table, ExcelReadConfiguration<T> configuration) where T : new()
+        {
+            var items = new List<T>();
+            var errors = new List<Results.ExcelReadError>();
+            configuration.CollectErrors(errors.Add);
+
+            try
+            {
+                typeof(T).GetExcelTableColumnAttributesWithPropertyInfo();
+            }
+            catch (InvalidOperationException ex)
+            {
+                var exceptionArgs = new ExcelExceptionArgs();
+                errors.Add(new Results.ExcelReadError(Results.ExcelReadErrorKind.Mapping, ex.Message, ex, exceptionArgs));
+                return new Results.ExcelReadResult<T>(items, errors);
+            }
+
+            items.AddRange(AsEnumerable(table, configuration));
+            return new Results.ExcelReadResult<T>(items, errors);
+        }
 
         /// <summary>
         ///     Checks whether the given table is empty or not
@@ -217,7 +264,9 @@ namespace EPPlus.Core.Extensions
                     col = table.Columns[propertyInfo.Name].Position;
                 }
                 else if (columnAttribute.ColumnIndex > 0
-                         && CheckColumnByIndexIfExists(table, columnAttribute.ColumnIndex - 1, columnAttribute.IsOptional)) // Column index was specified
+                         && (configuration.CaptureMappingErrors
+                             ? columnAttribute.ColumnIndex <= table.Columns.Count
+                             : CheckColumnByIndexIfExists(table, columnAttribute.ColumnIndex - 1, columnAttribute.IsOptional))) // Column index was specified
                 {
                     col = table.Columns[columnAttribute.ColumnIndex - 1].Position;
                 }
@@ -228,15 +277,23 @@ namespace EPPlus.Core.Extensions
 
                 if (!columnAttribute.IsOptional && col == -1)
                 {
-                    throw new ExcelValidationException(string.Format(configuration.ColumnValidationExceptionMessage, columnAttribute.ColumnName ?? propertyInfo.Name))
-                        .WithArguments(new ExcelExceptionArgs
-                                       {
-                                           ColumnName = columnAttribute.ColumnName,
-                                           ExpectedType = propertyInfo.PropertyType,
-                                           PropertyName = propertyInfo.Name,
-                                           CellValue = table.WorkSheet.Cells[table.Address.Start.Row, columnAttribute.ColumnIndex + table.Address.Start.Column].Value,
-                                           CellAddress = new ExcelCellAddress(table.Address.Start.Row, columnAttribute.ColumnIndex + table.Address.Start.Column)
-                                       });
+                    var exceptionArgs = new ExcelExceptionArgs
+                    {
+                        ColumnName = columnAttribute.ColumnName,
+                        ExpectedType = propertyInfo.PropertyType,
+                        PropertyName = propertyInfo.Name,
+                        CellValue = table.WorkSheet.Cells[table.Address.Start.Row, columnAttribute.ColumnIndex + table.Address.Start.Column].Value,
+                        CellAddress = new ExcelCellAddress(table.Address.Start.Row, columnAttribute.ColumnIndex + table.Address.Start.Column)
+                    };
+                    ExcelException exception = new ExcelValidationException(string.Format(configuration.ColumnValidationExceptionMessage, columnAttribute.ColumnName ?? propertyInfo.Name))
+                        .WithArguments(exceptionArgs);
+
+                    if (!configuration.CaptureMappingErrors)
+                    {
+                        throw exception;
+                    }
+
+                    configuration.ErrorCollector?.Invoke(new Results.ExcelReadError(Results.ExcelReadErrorKind.Mapping, exception.Message, exception, exceptionArgs));
                 }
                 
                 yield return new ExcelTableColumnDetails(col, propertyInfo, columnAttribute, propertyInfoAndColumnAttribute.OwnerPropertyInfo);

@@ -13,6 +13,11 @@ namespace EPPlus.Core.Extensions
     public static class ToExcelExtensions
     {
         /// <summary>
+        ///     Generates an Excel worksheet using the row type name as the worksheet name.
+        /// </summary>
+        public static WorksheetWrapper<T> ToWorksheet<T>(this IEnumerable<T> rows) => rows.ToWorksheet(typeof(T).Name);
+
+        /// <summary>
         ///     Generates an Excel worksheet from given list
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -218,6 +223,21 @@ namespace EPPlus.Core.Extensions
         public static byte[] ToXlsx<T>(this IEnumerable<T> rows, bool addHeaderRow = true)
         {
             WorksheetWrapper<T> worksheet = rows.ToWorksheet(typeof(T).Name);
+
+            if (!addHeaderRow)
+            {
+                worksheet.WithoutHeader();
+            }
+
+            return worksheet.ToXlsx();
+        }
+
+        /// <summary>
+        ///     Converts the given rows into an Excel file using the specified worksheet name.
+        /// </summary>
+        public static byte[] ToXlsx<T>(this IEnumerable<T> rows, string worksheetName, bool addHeaderRow)
+        {
+            WorksheetWrapper<T> worksheet = rows.ToWorksheet(worksheetName);
 
             if (!addHeaderRow)
             {

@@ -61,5 +61,23 @@ namespace EPPlus.Core.Extensions.Configuration
             OnCaught = onCaught;
             return this;
         }
+
+        /// <summary>
+        ///     Runs an action after each row has been mapped.
+        /// </summary>
+        public virtual ExcelReadConfiguration<T> OnRow(OnCaught<T> onCaught) => Intercept(onCaught);
+
+        internal System.Action<Results.ExcelReadError> ErrorCollector { get; private set; }
+
+        internal bool CaptureMappingErrors { get; private set; }
+
+        internal ExcelReadConfiguration<T> CollectErrors(System.Action<Results.ExcelReadError> errorCollector)
+        {
+            ErrorCollector = errorCollector;
+            CaptureMappingErrors = true;
+            ThrowValidationExceptions = false;
+            ThrowCastingExceptions = false;
+            return this;
+        }
     }
-}  
+}

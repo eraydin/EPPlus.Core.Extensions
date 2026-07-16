@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>3.1.0</VersionPrefix>
+    <VersionPrefix>3.2.0</VersionPrefix>
     <Description>An extensions library for EPPlus to generate and manipulate Excel files easily in .NET 10.</Description>
 
     <NoWarn>$(NoWarn);CS1591</NoWarn>
@@ -24,6 +24,9 @@
     <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>true</GenerateAssemblyFileVersionAttribute>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>3.1.0</PackageValidationBaselineVersion>
     
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     
